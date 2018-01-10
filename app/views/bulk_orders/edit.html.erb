@@ -1,0 +1,6 @@
+<h1>Adding to Bulk Order</h1>
+<%=@bulk_order.percent_filled%>
+<%= render 'form', bulk_order: @bulk_order %>
+
+<%= link_to 'Show', @bulk_order %> |
+<%= link_to 'Back', bulk_orders_path %>

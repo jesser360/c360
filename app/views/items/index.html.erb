@@ -1,0 +1,165 @@
+<p id="notice"><%= notice %></p>
+<br>
+<div class='container'>
+<h1 id='item_count'>Item Shop</h1>
+
+
+    <% @items.each do |item| %>
+    <div class ="row card" >
+      <tr>
+        <div class="col-md-2">
+          <h3><%= item.item_name %></h3>
+        </div>
+        <div class="col-md-2">
+        <span><%= image_tag(item.image, :size => "100x100") if item.image %></span>
+        </div>
+        <div class="col-md-6">
+          <h4><%= link_to 'Buy Retail: $'+(item.price).to_s, new_user_order_url(:item => item.item_name)%></h4><br>
+        <%if @bulk_orders.present?%>
+
+          <%@bulk_orders.each_with_index do |bulk,i|%>
+            <%if bulk.item == item.item_name %>
+             <div class="row" >
+              <div class='col-md-8'>
+                <h4><%= link_to 'Join Bulk Order: $'+(item.price-2).to_s, edit_bulk_order_url(bulk) %></h4>
+              </div>
+              <div class='col-md-4'>
+                <div id="pieChart" style='margin:-15vh'>
+                </div>
+              </div>
+            </div>
+            <%break%>
+            <%elsif i == @bulk_orders.length-1%>
+            <div class="row">
+              <div class='col-md-6'>
+                <h4><%= link_to 'Join New Bulk Order: $'+(item.price-2).to_s, new_bulk_order_url(:item => item.item_name) %></h4>
+              </div>
+              <div class='col-md-6'>
+                <div id="pieChart">
+                </div>
+              </div>
+            </div>
+            <%end%>
+          <%end%>
+
+        <%else%>
+        <div class="row">
+          <div class='col-md-6'>
+            <h4><%= link_to 'Join New Bulk Order: $'+(item.price-2).to_s, new_bulk_order_url(:item => item.item_name) %></h4>
+          </div>
+          <div class='col-md-6'>
+            <div id="pieChart">
+            </div>
+          </div>
+        </div>
+        <%end%>
+      </div>
+      </tr>
+    </div>
+    <br><br>
+    <% end %>
+</div>
+
+<!--
+<script>
+var contentArray = []
+contentArray.push(
+      {
+				"label": 'paid',
+				"value": 3,
+				"color": 'green',
+			},
+      {
+				"label": 'available',
+				"value": 10,
+				"color": 'red',
+			},
+    );
+var pie = new d3pie("pieChart", {
+	"header": {
+		"title": {
+			"text": "Projects",
+			"fontSize": 22,
+			"font": "courier"
+		},
+		"subtitle": {
+			"text": "Current Status",
+			"color": "#999999",
+			"fontSize": 14,
+			"font": "courier"
+		},
+		"location": "pie-center",
+		"titleSubtitlePadding": 1
+	},
+	"footer": {
+		"text": "",
+		"color": "#999999",
+		"fontSize": 14,
+		"font": "open sans",
+		"location": "bottom-left"
+	},
+	"size": {
+		"canvasWidth": 250,
+		"canvasHeight": 250,
+		"pieInnerRadius": "84%",
+		"pieOuterRadius": "100%"
+	},
+	"data": {
+		"sortOrder": "label-desc",
+		"smallSegmentGrouping": {
+			"enabled": true,
+			"valueType": "value",
+			"color": "#cab4b4"
+		},
+		"content":contentArray
+	},
+  "labels": {
+  		"outer": {
+  			"pieDistance": 12
+  		},
+  		"inner": {
+  			"format": "none",
+  		},
+  		"mainLabel": {
+  			"fontSize": 12
+  		},
+  		"percentage": {
+  			"color": "#999999",
+  			"fontSize": 11,
+  			"decimalPlaces": 0
+  		},
+  		"value": {
+  			"color": "#cccc43",
+  			"fontSize": 0
+  		},
+  		"lines": {
+  			"enabled": true,
+  			"color": "#777777"
+  		},
+  		"truncation": {
+  			"enabled": true
+  		}
+  	},
+	"tooltips": {
+		"enabled": true,
+		"type": "placeholder",
+		"string": "{label}: {percentage}%",
+		"styles": {
+			"fontSize": 15
+		}
+	},
+	"effects": {
+		"pullOutSegmentOnClick": {
+			"effect": "linear",
+			"speed": 400,
+			"size": 8
+		}
+	},
+	"misc": {
+		"colors": {
+			"segmentStroke": "#000000",
+		}
+	},
+	"callbacks": {}
+});
+</script> -->

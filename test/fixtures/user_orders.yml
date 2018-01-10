@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  item: MyString
+  user: one
+  bulk_order: one
+
+two:
+  item: MyString
+  user: two
+  bulk_order: two

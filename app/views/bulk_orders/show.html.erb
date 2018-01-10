@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Percent filled:</strong>
+  <%= @bulk_order.percent_filled %>
+</p>
+
+<p>
+  <strong>Expiration:</strong>
+  <%= @bulk_order.expiration %>
+</p>
+
+<p>
+  <strong>Item:</strong>
+  <%= @bulk_order.item %>
+</p>
+
+<%= link_to 'Edit', edit_bulk_order_path(@bulk_order) %> |
+<%= link_to 'Back', bulk_orders_path %>

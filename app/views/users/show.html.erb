@@ -1,0 +1,22 @@
+<br /><br /><br />
+<div class="container">
+  <h1 class="text-center">Profile Page</h1>
+  <div class="row " style="background-color:#86A397;border-radius:20px">
+    <div class="col-xs-4 prof-pic">
+      <h1>Company: <%= @user.company_name%></h1>
+
+      <img class="profilePic" src="http://i.imgur.com/IulSm39.jpg" alt="profile pic" style ="margin:10px">
+
+    </div>
+    <div class="col-xs-4 prof-info">
+      <h2>Email: <%= @user.email%></h2>
+      <h2>Current Orders:<h2>
+        <ul>
+          <%@user.user_orders.each do |order|%>
+          <h3><%=order.item%>: <%=order.quantity rescue nil%><h3>
+          <%end%>
+        </ul>
+    </div>
+
+  </div>
+</div>

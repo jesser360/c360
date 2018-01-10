@@ -1,0 +1,35 @@
+<%= form_with(model: bulk_order, local: true) do |form| %>
+  <% if bulk_order.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(bulk_order.errors.count, "error") %> prohibited this bulk_order from being saved:</h2>
+
+      <ul>
+      <% bulk_order.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :item %>
+    <span>: <%=params[:item]%></span>
+  </div>
+  <div class="field">
+    <%= form.label :quantity %>
+    <%= form.text_field :quantity %>
+  </div>
+  <%= hidden_field_tag(:user_id, @user.id)%>
+  <%= hidden_field_tag(:item,params[:item])%>
+
+
+  <!-- <div class="field">
+    <%= form.label :percent_filled %>
+    <%= form.number_field :percent_filled, id: :bulk_order_percent_filled %>
+  </div> -->
+
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

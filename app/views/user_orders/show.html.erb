@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Item:</strong>
+  <%= @user_order.item %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @user_order.user %>
+</p>
+
+<p>
+  <strong>Bulk order:</strong>
+  <%= @user_order.bulk_order %>
+</p>
+
+<%= link_to 'Edit', edit_user_order_path(@user_order) %> |
+<%= link_to 'Back', user_orders_path %>
