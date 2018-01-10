@@ -12,6 +12,9 @@
 
 ActiveRecord::Schema.define(version: 20180110040040) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "bulk_orders", force: :cascade do |t|
     t.integer "percent_filled"
     t.integer "expiration"
@@ -31,8 +34,8 @@ ActiveRecord::Schema.define(version: 20180110040040) do
 
   create_table "user_orders", force: :cascade do |t|
     t.string "item"
-    t.integer "user_id"
-    t.integer "bulk_order_id"
+    t.bigint "user_id"
+    t.bigint "bulk_order_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "quantity"
@@ -49,4 +52,6 @@ ActiveRecord::Schema.define(version: 20180110040040) do
     t.string "password_digest"
   end
 
+  add_foreign_key "user_orders", "bulk_orders"
+  add_foreign_key "user_orders", "users"
 end
