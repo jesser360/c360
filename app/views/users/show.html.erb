@@ -13,7 +13,7 @@
       <h2>Current Orders:<h2>
         <ul>
           <%@user.user_orders.each do |order|%>
-          <h3><%=order.item%>: <%=order.quantity rescue nil%><h3>
+          <h3><%=order.item%>: <%=order.quantity rescue nil%> for $<%=order.total_price rescue nil%><h3>
           <%end%>
         </ul>
     </div>

@@ -16,11 +16,17 @@
     <span>: <%=params[:item]%></span>
   </div>
   <div class="field">
+    <%= form.label :price %>
+    <span>: $<%=params[:price]%></span>
+  </div>
+  <div class="field">
     <%= form.label :quantity %>
     <%= form.text_field :quantity %>
   </div>
   <%= hidden_field_tag(:user_id, @user.id)%>
   <%= hidden_field_tag(:item,params[:item])%>
+  <%= hidden_field_tag(:price,params[:price])%>
+
 
 
 

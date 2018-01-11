@@ -25,12 +25,14 @@ class UserOrdersController < ApplicationController
   # POST /user_orders
   # POST /user_orders.json
   def create
+    @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @user_order = UserOrder.new(user_order_params)
     @user_order.quantity = params[:user_order][:quantity]
     @user_order.expiration = 14
+    @user_order.total_price = @user_order.quantity * params[:price].to_i
     respond_to do |format|
       if @user_order.save
-        format.html { redirect_to @user_order, notice: 'User order was successfully created.' }
+        format.html { redirect_to user_path_url(@user), notice: 'User order was successfully created.' }
         format.json { render :show, status: :created, location: @user_order }
       else
         format.html { render :new }

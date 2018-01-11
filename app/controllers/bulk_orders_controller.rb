@@ -28,23 +28,22 @@ class BulkOrdersController < ApplicationController
   # POST /bulk_orders
   # POST /bulk_orders.json
   def create
-    puts 'PARAMALANMDINGDONG'
-    puts params
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
-    @bulk_order = BulkOrder.new(bulk_order_params)
+    @bulk_order = BulkOrder.new()
     @user_order = UserOrder.new()
     @user_order.expiration = 14
     @user_order.quantity = params[:bulk_order][:quantity]
     @user_order.item = params[:item]
     @user_order.user= @user
+    @user_order.total_price = @user_order.quantity * params[:price].to_i
+    @user_order.save
     @bulk_order.user_orders.push(@user_order)
     @bulk_order.max_amount=100
     @bulk_order.item = params[:item]
-    @bulk_order.percent_filled = @bulk_order.max_amount - @user_order.quantity
-
+    @bulk_order.percent_filled = (@bulk_order.percent_filled || 0 + @user_order.quantity)
     respond_to do |format|
       if @bulk_order.save
-        format.html { redirect_to @bulk_order, notice: 'Bulk order was successfully created.' }
+        format.html { redirect_to user_path_url(@user), notice: 'Bulk order was successfully created.' }
         format.json { render :show, status: :created, location: @bulk_order }
       else
         format.html { render :new }
@@ -56,8 +55,18 @@ class BulkOrdersController < ApplicationController
   # PATCH/PUT /bulk_orders/1
   # PATCH/PUT /bulk_orders/1.json
   def update
+    @user = User.find_by_id(session[:user_id]) if session[:user_id]
+    @user_order = UserOrder.new()
+    @user_order.expiration = 14
+    @user_order.quantity = params[:bulk_order][:quantity]
+    @user_order.item = params[:item]
+    @user_order.total_price = @user_order.quantity * params[:price].to_i
+    @user_order.user= @user
+    @user_order.save
+    @bulk_order.user_orders.push(@user_order)
+    @bulk_order.percent_filled = (@bulk_order.percent_filled +  params[:bulk_order][:quantity].to_i)
     respond_to do |format|
-      if @bulk_order.update(bulk_order_params)
+      if @bulk_order.save
         format.html { redirect_to @bulk_order, notice: 'Bulk order was successfully updated.' }
         format.json { render :show, status: :ok, location: @bulk_order }
       else
@@ -85,6 +94,6 @@ class BulkOrdersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def bulk_order_params
-      params.require(:bulk_order).permit(:percent_filled, :expiration, :item)
+      params.require(:bulk_order).permit(:percent_filled, :expiration, :item,:quantity)
     end
 end

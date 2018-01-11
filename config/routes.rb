@@ -3,7 +3,8 @@ Rails.application.routes.draw do
   resources :bulk_orders
   resources :items
 
-  get '/' => 'items#index'
+  get '/' => 'sessions#new'
+  get '/items' => 'items#index'
 
   get '/users/:id', to: 'users#show', as: 'user_path'
   get '/signup' => 'users#new'
