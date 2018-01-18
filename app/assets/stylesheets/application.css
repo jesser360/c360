@@ -9,7 +9,9 @@
  * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
- *
+
+ *= require c3
+ *= require flipclock
  *= require_tree .
  *= require_self
  */
@@ -22,10 +24,87 @@
  .card {
   color: black;
   margin-top: 10px;
-  margin-right: 10px;
-  margin-left: 10px;
-  background-color: white;
-  opacity: 0.9;
+  margin-right: 100px;
+  margin-left: 100px;
+  background-image: url('https://i.imgur.com/XnnIvP9.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
   border: 2px solid;
   border-radius: 15px;
+}
+.all-items{
+  margin-top: 95vh;
+  background-image: url('https://i.imgur.com/8wTAGcx.jpg');
+  z-index: 1;
+  margin-left: -10vw;
+  margin-right: -10vw;
+}
+.clock_first{
+  zoom:35%;
+}
+#pieChart_first{
+  zoom:80%;
+}
+.price_first{
+font: bold 11px Arial;
+background-color: Transparent;
+ background-repeat:no-repeat;
+ border: none;
+ cursor:pointer;
+ overflow: hidden;
+ outline:none;
+ border-radius: 15px;
+padding: 5px 6px 5px 6px;
+border-top: 1px solid #CCCCCC;
+border-right: 1px solid #333333;
+border-bottom: 1px solid #333333;
+border-left: 1px solid #CCCCCC;
+width:90%;
+font-size: 1.3vw;
+}
+.price_first:hover {
+  background: #3cb0fd;
+  background-color: lightgray;
+  text-decoration: none;
+}
+.price_first a:hover {
+  background: #3cb0fd;
+  background-color: lightgray;
+  text-decoration: none;
+  color:#4a86c3;
+}
+#oil-pic{
+  background-image: url('https://i.imgur.com/v4KWkqR.jpg');
+  background-size: cover;
+   margin-left: -100px;
+   margin-right: -100px;
+   padding:10px;
+   height: 90vh;
+   width: 120%;
+   z-index: -99;
+   position:fixed;
+}
+#item_header{
+  z-index: -1;
+  position: fixed;
+  vertical-align: middle;
+  color:lightgray;
+  margin-left: 19vw;
+}
+#item_bottom_header{
+  z-index: -1;
+  position: fixed;
+  vertical-align: middle;
+  color:lightgray;
+  margin-left: 19vw;
+  margin-top: 6vw;
+}
+.oil-image{
+  margin-left:1vw;
+}
+.c3-chart-arcs-title{
+  font-size: 15px;
+}
+.pie{
+  margin: 12vw;
 }

@@ -1,56 +1,70 @@
 <p id="notice"><%= notice %></p>
 <br>
-<div class='container'>
-<h1 id='item_count'>Item Shop</h1>
-
-
+<div class='container-fluid'>
+<h1 id='item_header'>CBD 360</h1>
+<h3 id='item_bottom_header'>high quality oil, for an affordable price</h3>
+<div id='oil-pic'>
+</div>
+<div class='all-items'>
     <% @items.each do |item| %>
+    <div class="card">
     <div class ="row " >
-      <tr>
-        <div class="col-md-2">
-          <h3><%= item.item_name %></h3>
+        <div hidden>
+          <h3 class='item_name'><%= item.item_name %></h3>
         </div>
-        <div class="col-md-2">
-        <span><%= image_tag(item.image, :size => "100x100") if item.image %></span>
+        <div class="col-md-3">
+        <span class='oil-image'><%= image_tag(item.image, :size => "250x250") if item.image %></span>
+        </div>
+        <div class="col-md-3">
+          <h1><%= item.item_name %></h1>
+          <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
         </div>
         <div class="col-md-6">
-          <h4><%= link_to 'Buy Retail: $'+(item.price).to_s, new_user_order_url(:item => item.item_name, :price => item.price)%></h4><br>
+          <h4 hidden><%= link_to 'Buy Retail: $'+(item.price).to_s, new_user_order_url(:item => item.item_name, :price => item.price)%></h4><br>
         <%if @bulk_orders.present?%>
-
           <%@bulk_orders.each_with_index do |bulk,i|%>
             <%if bulk.item == item.item_name %>
              <div class="row" >
-              <div class='col-md-8'>
-                <h4><%= link_to 'Join Bulk Order: $'+(item.price-2).to_s, edit_bulk_order_url(bulk, :item => item.item_name, :price => (item.price-2)) %></h4>
-                <span id='filled' ><%=bulk.percent_filled%></span><span id='max'> / <%=bulk.max_amount%> Percent Filled</span>
-              </div>
-              <div class='col-md-4'>
-                <div id="pieChart" style='margin:-15vh'>
-                </div>
+               <div class='col-md-6'>
+                 <div  id="pieChart_first">
+                 </div>
+               </div>
+              <div class='col-md-6'>
+                <div class="clock_first"></div>
+                <h4 class='price_first'><%= link_to 'Join Bulk Order: $'+(item.price-2).to_s, edit_bulk_order_url(bulk, :item => item.item_name, :price => (item.price-2)) %></h4>
+                <h6>*Details about joining a bulk order</h6>
+                <span class='ratio' hidden><%=bulk.percent_filled%> / <%=bulk.max_amount%> Spots</span>
               </div>
             </div>
             <%break%>
             <%elsif i == @bulk_orders.length-1%>
             <div class="row">
               <div class='col-md-6'>
-                <h4><%= link_to 'Join New Bulk Order: $'+(item.price-2).to_s, new_bulk_order_url(:item => item.item_name, :price => (item.price-2))%></h4>
+                <div  id="pieChart_first">
+                </div>
               </div>
               <div class='col-md-6'>
-                <div id="pieChart">
-                </div>
+                <div class="clock_first"></div>
+                <h4 class='price_first'><%= link_to 'Join New Bulk Order: $'+(item.price-2).to_s, new_bulk_order_url(:item => item.item_name, :price => (item.price-2))%></h4>
+                <h6>*Details about joining a bulk order</h6>
+              </div>
+              <div class='col-md-6'>
               </div>
             </div>
             <%end%>
           <%end%>
-
         <%else%>
         <div class="row">
           <div class='col-md-6'>
-            <h4><%= link_to 'Join New Bulk Order: $'+(item.price-2).to_s, new_bulk_order_url(:item => item.item_name, :price => (item.price-2)) %></h4>
+            <div  id="pieChart_first">
+            </div>
           </div>
           <div class='col-md-6'>
-            <div id="pieChart">
-            </div>
+            <div class="clock_first"></div>
+            <h4 class='price_first'><%= link_to 'Join New Bulk Order: $'+(item.price-2).to_s, new_bulk_order_url(:item => item.item_name, :price => (item.price-2))%></h4>
+            <h6>*Details about joining a bulk order</h6>
+          </div>
+          <div class='col-md-6'>
           </div>
         </div>
         <%end%>
@@ -58,112 +72,180 @@
       </tr>
     </div>
     <br><br>
+  </div>
     <% end %>
+  </div>
 </div>
 
-
 <script>
-var max = $('#max');
-console.log(max,'max')
-var filled = $('#filled').val();
-var contentArray = []
-contentArray.push(
-      {
-				"label": 'paid',
-				"value": 13,
-				"color": 'green',
-			},
-      {
-				"label": 'empty',
-				"value": 83,
-				"color": 'red',
-			},
-    );
-var pie = new d3pie("pieChart", {
-	"header": {
-		"title": {
-			"text": "Bulk Order",
-			"fontSize": 15,
-			"font": "courier"
-		},
-		"subtitle": {
-			"text": "Current Status",
-			"color": "#999999",
-			"fontSize": 10,
-			"font": "courier"
-		},
-		"location": "pie-center",
-		"titleSubtitlePadding": 1
-	},
-	"footer": {
-		"text": "",
-		"color": "#999999",
-		"fontSize": 14,
-		"font": "open sans",
-		"location": "bottom-left"
-	},
-	"size": {
-		"canvasWidth": 190,
-		"canvasHeight": 190,
-		"pieInnerRadius": "84%",
-		"pieOuterRadius": "100%"
-	},
-	"data": {
-		"sortOrder": "label-desc",
-		"smallSegmentGrouping": {
-			"enabled": true,
-			"valueType": "value",
-			"color": "#cab4b4"
-		},
-		"content":contentArray
-	},
-  "labels": {
-  		"outer": {
-  			"pieDistance": 12
-  		},
-  		"inner": {
-  			"format": "none",
-  		},
-  		"mainLabel": {
-  			"fontSize": 12
-  		},
-  		"percentage": {
-  			"color": "#999999",
-  			"fontSize": 11,
-  			"decimalPlaces": 0
-  		},
-  		"value": {
-  			"color": "#cccc43",
-  			"fontSize": 0
-  		},
-  		"lines": {
-  			"enabled": true,
-  			"color": "#777777"
-  		},
-  		"truncation": {
-  			"enabled": true
-  		}
-  	},
-	"tooltips": {
-		"enabled": true,
-		"type": "placeholder",
-		"string": "{label}: {percentage}%",
-		"styles": {
-			"fontSize": 15
-		}
-	},
-	"effects": {
-		"pullOutSegmentOnClick": {
-			"effect": "linear",
-			"speed": 400,
-			"size": 8
-		}
-	},
-	"misc": {
-		"colors": {
-			"segmentStroke": "#000000",
-		}
-	},
-	"callbacks": {}
+var clock_1 = new FlipClock($('.clock_first').first(),new Date("January 25, 2018 03:24:00"), {
+countdown: true,
+clockFace: 'DailyCounter'
 });
+var clock_2 = new FlipClock($('.clock_first:eq(1)'),new Date("January 24, 2018 03:24:00"), {
+countdown: true,
+clockFace: 'DailyCounter'
+});
+var clock_3 = new FlipClock($('.clock_first:eq(2)'),new Date("January 23, 2018 03:24:00"), {
+countdown: true,
+clockFace: 'DailyCounter'
+});
+var ratio_first = $('.ratio').first().text();
+var item_name_first = $('.item_name').first().text();
+var filled_first = parseInt(ratio_first.split(' ')[0]);
+var max_first =parseInt(ratio_first.split(' ')[2]);
+var price_first_string = $('.price_first').text();
+var price_first = price_first_string.match(/\d+/)[0]
+var orders_left_first = max_first-filled_first
+var contentArray_first = []
+
+var ratio_second = $('.ratio:eq(2)').text();
+console.log(ratio_second)
+// var item_name_second = $('.item_name:eq(2)').text();
+// var filled_second = parseInt(ratio_second.split(' ')[0]);
+// var max_second =parseInt(ratio_second.split(' ')[2]);
+// var price_second_string = $('.price_second').text();
+// var price_second = price_second_string.match(/\d+/)[0]
+// var orders_left_second = max_second-filled_first
+var contentArray_second = []
+
+var Apiec3 = c3.generate({
+  bindto: '#pieChart_first',
+    data: {
+        columns: [
+            ['Filled', filled_first],
+            ['Remaining', orders_left_first],
+        ],
+        type : 'donut',
+        // onclick: function (d, i) { console.log("onclick", d, i); },
+        // onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+        // onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+    },
+    legend: {
+    position: 'right'
+    },
+    donut: {
+        title: item_name_first,
+        label: {
+          show:true
+        }
+    },
+    legend: {
+      show: false
+    }
+});
+d3.select(".c3-chart-arcs-title")
+    .append("tspan")
+    .attr("dy", 16)
+    .attr("x", 0)
+    .text(ratio_first);
+d3.select(".c3-chart-arcs-title")
+    .append("tspan")
+    .attr("dy", 16)
+    .attr("x", 0)
+    .text("$"+price_first +"/g");
+
+
+
+// contentArray_first.push(
+//       {
+// 				"label": 'paid',
+// 				"value": filled_first,
+// 				"color": 'green',
+// 			},
+//       {
+// 				"label": 'empty',
+// 				"value": orders_left_first,
+// 				"color": 'red',
+// 			},
+//     );
+// var pie = new d3pie("pieChart_first", {
+// 	"header": {
+// 		"title": {
+// 			"text": item_name_first,
+// 			"fontSize": 22,
+// 			"font": "courier"
+// 		},
+// 		"subtitle": {
+// 			"text":ratio_first +" - $"+price_first +"/g",
+// 			"color": "#999999",
+// 			"fontSize": 13,
+// 			"font": "courier"
+// 		},
+// 		"location": "pie-center",
+// 		"titleSubtitlePadding": 1
+// 	},
+// 	"footer": {
+// 		"text": "",
+// 		"color": "#999999",
+// 		"fontSize": 14,
+// 		"font": "open sans",
+// 		"location": "bottom-left"
+// 	},
+// 	"size": {
+// 		"canvasWidth": 350,
+// 		"canvasHeight": 350,
+// 		"pieInnerRadius": "70%",
+// 		"pieOuterRadius": "100%"
+// 	},
+// 	"data": {
+// 		"sortOrder": "label-desc",
+// 		"smallSegmentGrouping": {
+// 			"enabled": true,
+// 			"valueType": "value",
+// 			"color": "#cab4b4"
+// 		},
+// 		"content":contentArray_first
+// 	},
+//   "labels": {
+//   		"outer": {
+//   			"pieDistance": 12
+//   		},
+//   		"inner": {
+//   			"format": "none",
+//   		},
+//   		"mainLabel": {
+//   			"fontSize": 12
+//   		},
+//   		"percentage": {
+//   			"color": "#999999",
+//   			"fontSize": 11,
+//   			"decimalPlaces": 0
+//   		},
+//   		"value": {
+//   			"color": "#cccc43",
+//   			"fontSize": 0
+//   		},
+//   		"lines": {
+//   			"enabled": true,
+//   			"color": "#777777"
+//   		},
+//   		"truncation": {
+//   			"enabled": true
+//   		}
+//   	},
+// 	"tooltips": {
+// 		"enabled": true,
+// 		"type": "placeholder",
+// 		"string": "heyyy",
+// 		"styles": {
+// 			"fontSize": 15
+// 		}
+// 	},
+// 	"effects": {
+// 		"pullOutSegmentOnClick": {
+// 			"effect": "linear",
+// 			"speed": 400,
+// 			"size": 8
+// 		}
+// 	},
+// 	"misc": {
+// 		"colors": {
+// 			"segmentStroke": "#000000",
+// 		}
+// 	},
+// 	"callbacks": {}
+// });
+
+
 </script>

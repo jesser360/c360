@@ -5,6 +5,9 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
+gem 'flipclockjs-rails', '~> 0.7.7'
+gem 'jquery-rails'
+
 gem 'c3-rails'
 gem 'd3_rails'
 gem 'bcrypt','~>3.1.7'
