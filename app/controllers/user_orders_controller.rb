@@ -20,6 +20,8 @@ class UserOrdersController < ApplicationController
 
   # GET /user_orders/1/edit
   def edit
+    @user = User.find_by_id(session[:user_id]) if session[:user_id]
+
   end
 
   # POST /user_orders
@@ -44,10 +46,17 @@ class UserOrdersController < ApplicationController
   # PATCH/PUT /user_orders/1
   # PATCH/PUT /user_orders/1.json
   def update
+    @user = User.find_by_id(session[:user_id]) if session[:user_id]
+    @bulk_order = @user_order.bulk_order
+    @bulk_order.percent_filled = @bulk_order.percent_filled - (@bulk_order.user_orders.where(id:@user_order.id)[0].quantity)
+    @user_order.quantity = params[:user_order][:quantity]
+    @user_order.total_price = @user_order.quantity * params[:price].to_i
+    @bulk_order.percent_filled = @bulk_order.percent_filled + @user_order.quantity
+    @bulk_order.save
     respond_to do |format|
       if @user_order.update(user_order_params)
-        format.html { redirect_to @user_order, notice: 'User order was successfully updated.' }
-        format.json { render :show, status: :ok, location: @user_order }
+        format.html { redirect_to user_path_url(@user), notice: 'User order was successfully updated.' }
+        format.json { render :show, status: :ok, location: @user }
       else
         format.html { render :edit }
         format.json { render json: @user_order.errors, status: :unprocessable_entity }

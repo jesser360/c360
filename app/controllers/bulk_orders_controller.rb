@@ -31,13 +31,16 @@ class BulkOrdersController < ApplicationController
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @bulk_order = BulkOrder.new()
     @user_order = UserOrder.new()
-    @user_order.expiration = 14
+    @date = Date.today
+    @end_date= (@date+15).to_s
+    @bulk_order.expire_date = @end_date
     @user_order.quantity = params[:bulk_order][:quantity]
     @user_order.item = params[:item]
     @user_order.user= @user
     @user_order.total_price = @user_order.quantity * params[:price].to_i
     @user_order.save
     @bulk_order.user_orders.push(@user_order)
+    @bulk_order.users.push(@user)
     @bulk_order.max_amount=100
     @bulk_order.item = params[:item]
     @bulk_order.percent_filled = (@bulk_order.percent_filled || 0 + @user_order.quantity)
@@ -63,6 +66,7 @@ class BulkOrdersController < ApplicationController
     @user_order.total_price = @user_order.quantity * params[:price].to_i
     @user_order.user= @user
     @user_order.save
+    @bulk_order.users.push(@user)
     @bulk_order.user_orders.push(@user_order)
     @bulk_order.percent_filled = (@bulk_order.percent_filled +  params[:bulk_order][:quantity].to_i)
     respond_to do |format|

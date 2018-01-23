@@ -39,13 +39,25 @@
   margin-left: -10vw;
   margin-right: -10vw;
 }
-.clock_first{
+#clock_first{
+  zoom:35%;
+}
+#clock_second{
+  zoom:35%;
+}
+#clock_third{
   zoom:35%;
 }
 #pieChart_first{
   zoom:80%;
 }
-.price_first{
+#pieChart_second{
+  zoom:80%;
+}
+#pieChart_third{
+  zoom:80%;
+}
+.bulk_order_link{
 font: bold 11px Arial;
 background-color: Transparent;
  background-repeat:no-repeat;
@@ -62,12 +74,12 @@ border-left: 1px solid #CCCCCC;
 width:90%;
 font-size: 1.3vw;
 }
-.price_first:hover {
+.bulk_order_link:hover {
   background: #3cb0fd;
   background-color: lightgray;
   text-decoration: none;
 }
-.price_first a:hover {
+.bulk_order_link a:hover {
   background: #3cb0fd;
   background-color: lightgray;
   text-decoration: none;

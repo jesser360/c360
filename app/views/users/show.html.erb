@@ -2,18 +2,19 @@
 <div class="container">
   <h1 class="text-center">Profile Page</h1>
   <div class="row " style="background-color:#86A397;border-radius:20px">
-    <div class="col-xs-4 prof-pic">
-      <h1>Company: <%= @user.company_name%></h1>
+    <div class="col-md-4 prof-pic">
+      <h2>Company: <%= @user.company_name%></h2>
+      <h2>Email: <%= @user.email%></h2>
 
       <img class="profilePic" src="http://i.imgur.com/IulSm39.jpg" alt="profile pic" style ="margin:10px">
 
     </div>
-    <div class="col-xs-4 prof-info">
-      <h2>Email: <%= @user.email%></h2>
+    <div class="col-md-7 prof-info">
       <h2>Current Orders:<h2>
         <ul>
           <%@user.user_orders.each do |order|%>
-          <h3><%=order.item%>: <%=order.quantity rescue nil%> for $<%=order.total_price rescue nil%><h3>
+          <h3><%=order.item%>: <%=order.quantity rescue nil%> for $<%=order.total_price rescue nil%>
+            <%=link_to 'Edit Order', edit_user_order_path(order,:item => order.item, :price => (order.total_price/order.quantity))%><h3>
           <%end%>
         </ul>
     </div>
