@@ -180,7 +180,7 @@ var expire_first = $('#expire_date_first').text();
 var expire_second= $('#expire_date_second').text();
 var expire_third = $('#expire_date_third').text();
 
-var clock_1 = new FlipClock($('#clock_first'),new Date(expire_first), {
+var clock_1 = new FlipClock($('#clock_first'),new Date(expire_first || 0), {
 countdown: true,
 clockFace: 'DailyCounter'
 });
@@ -263,16 +263,16 @@ var Apiec3 = c3.generate({
       show: false
     }
 });
-d3.select(".c3-chart-arcs-title")
-    .append("tspan")
-    .attr("dy", 16)
-    .attr("x", 0)
-    .text(ratio_second);
-d3.select(".c3-chart-arcs-title")
-    .append("tspan")
-    .attr("dy", 16)
-    .attr("x", 0)
-    .text("$"+price_second +"/g");
+// d3.select(".c3-chart-arcs-title")
+//     .append("tspan")
+//     .attr("dy", 16)
+//     .attr("x", 0)
+//     .text(ratio_second);
+// d3.select(".c3-chart-arcs-title")
+//     .append("tspan")
+//     .attr("dy", 16)
+//     .attr("x", 0)
+//     .text("$"+price_second +"/g");
 
 var ratio_third = $('#ratio_third').first().text();
 var item_name_third = $('#item_name_third').first().text();
@@ -304,18 +304,16 @@ var Apiec3 = c3.generate({
       show: false
     }
 });
-d3.select(".c3-chart-arcs-title")
-    .append("tspan")
-    .attr("dy", 16)
-    .attr("x", 0)
-    .text(ratio_third);
-d3.select(".c3-chart-arcs-title")
-    .append("tspan")
-    .attr("dy", 16)
-    .attr("x", 0)
-    .text("$"+price_third +"/g");
-
-
+// d3.select(".c3-chart-arcs-title")
+//     .append("tspan")
+//     .attr("dy", 16)
+//     .attr("x", 0)
+//     .text(ratio_third);
+// d3.select(".c3-chart-arcs-title")
+//     .append("tspan")
+//     .attr("dy", 16)
+//     .attr("x", 0)
+//     .text("$"+price_third +"/g");
 
 
 </script>
