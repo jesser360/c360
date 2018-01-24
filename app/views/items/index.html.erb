@@ -33,9 +33,9 @@
               <div class='col-md-6'>
                 <div id="clock_first"></div>
                 <%if @bulk_first.users.where(email: @user.email).length > 0%>
-                <h4 class="bulk_order_link" id='price_first'><%= link_to 'Edit Your Bulk Order: $'+(@items[0].price-2).to_s, edit_user_order_url(@bulk_first.users.where(email: @user.email)[0].user_orders.where(item:@items[0].item_name)[0].id, :item => @items[0].item_name, :price => (@items[0].price-2)) %></h4>
+                <h4 class="bulk_order_link" id='price_first'><%= link_to 'Edit Your Bulk Order: $'+(@items[0].price).to_s, edit_user_order_url(@bulk_first.users.where(email: @user.email)[0].user_orders.where(item:@items[0].item_name)[0].id, :item => @items[0].item_name, :price => (@items[0].price)) %></h4>
                 <%else%>
-                <h4 class="bulk_order_link" id='price_first'><%= link_to 'Join Bulk Order: $'+(@items[0].price-2).to_s, edit_bulk_order_url(@bulk_first, :item => @items[0].item_name, :price => (@items[0].price-2)) %></h4>
+                <h4 class="bulk_order_link" id='price_first'><%= link_to 'Join Bulk Order: $'+(@items[0].price).to_s, edit_bulk_order_url(@bulk_first, :item => @items[0].item_name, :price => (@items[0].price)) %></h4>
                 <h6>*Details about joining a bulk order</h6>
                 <%end%>
                 <span id='ratio_first' hidden><%=@bulk_first.percent_filled%> / <%=@bulk_first.max_amount%> Spots</span>
@@ -49,7 +49,7 @@
           </div>
           <div class='col-md-6'>
             <div id="clock_first"></div>
-            <h4 class="bulk_order_link" id='price_first'><%= link_to 'Join New Bulk Order: $'+(@items[0].price-2).to_s, new_bulk_order_url(:item => @items[0].item_name, :price => (@items[0].price-2))%></h4>
+            <h4 class="bulk_order_link" id='price_first'><%= link_to 'Create New Bulk Order: $'+(@items[0].price).to_s, new_bulk_order_url(:item => @items[0].item_name, :price => (@items[0].price))%></h4>
             <h6>*Details about joining a bulk order</h6>
           </div>
           <div class='col-md-6'>
@@ -78,7 +78,7 @@
         <h4 hidden><%= link_to 'Buy Retail: $'+(@items[1].price).to_s, new_user_order_url(:item => @items[1].item_name, :price => @items[1].price)%></h4><br>
         <%if @bulk_orders.where(item: @items[1].item_name).length > 0%>
           <% @bulk_second = @bulk_orders.where(item: @items[1].item_name)[0]%>
-          <span id='expire_date_first' hidden><%=@bulk_first.expire_date%></span>
+          <span id='expire_date_second' hidden><%=@bulk_second.expire_date%></span>
            <div class="row" >
              <div class='col-md-6'>
                <div  id="pieChart_second">
@@ -87,9 +87,9 @@
             <div class='col-md-6'>
               <div id="clock_second"></div>
               <%if @bulk_second.users.where(email: @user.email).length > 0%>
-              <h4 class="bulk_order_link" id='price_second'><%= link_to 'Edit Your Bulk Order: $'+(@items[1].price-2).to_s, edit_user_order_url(@bulk_second.users.where(email: @user.email)[0].user_orders.where(item:@items[1].item_name)[0].id, :item => @items[1].item_name, :price => (@items[1].price-2)) %></h4>
+              <h4 class="bulk_order_link" id='price_second'><%= link_to 'Edit Your Bulk Order: $'+(@items[1].price).to_s, edit_user_order_url(@bulk_second.users.where(email: @user.email)[0].user_orders.where(item:@items[1].item_name)[0].id, :item => @items[1].item_name, :price => (@items[1].price)) %></h4>
               <%else%>
-              <h4 class="bulk_order_link" id='price_second'><%= link_to 'Join Bulk Order: $'+(@items[1].price-2).to_s, edit_bulk_order_url(@bulk_second, :item => @items[1].item_name, :price => (@items[1].price-2)) %></h4>
+              <h4 class="bulk_order_link" id='price_second'><%= link_to 'Join Bulk Order: $'+(@items[1].price).to_s, edit_bulk_order_url(@bulk_second, :item => @items[1].item_name, :price => (@items[1].price)) %></h4>
               <h6>*Details about joining a bulk order</h6>
               <%end%>
               <span id='ratio_second' hidden><%=@bulk_second.percent_filled%> / <%=@bulk_second.max_amount%> Spots</span>
@@ -103,7 +103,7 @@
         </div>
         <div class='col-md-6'>
           <div id="clock_second"></div>
-          <h4 class="bulk_order_link" id='price_second'><%= link_to 'Join New Bulk Order: $'+(@items[1].price-2).to_s, new_bulk_order_url(:item => @items[1].item_name, :price => (@items[1].price-2))%></h4>
+          <h4 class="bulk_order_link" id='price_second'><%= link_to 'Create New Bulk Order: $'+(@items[1].price).to_s, new_bulk_order_url(:item => @items[1].item_name, :price => (@items[1].price))%></h4>
           <h6>*Details about joining a bulk order</h6>
         </div>
         <div class='col-md-6'>
@@ -132,7 +132,7 @@
       <h4 hidden><%= link_to 'Buy Retail: $'+(@items[2].price).to_s, new_user_order_url(:item => @items[2].item_name, :price => @items[2].price)%></h4><br>
       <%if @bulk_orders.where(item: @items[2].item_name).length > 0%>
         <% @bulk_third = @bulk_orders.where(item: @items[2].item_name)[0]%>
-        <span id='expire_date_first' hidden><%=@bulk_first.expire_date%></span>
+        <span id='expire_date_third' hidden><%=@bulk_third.expire_date%></span>
          <div class="row" >
            <div class='col-md-6'>
              <div  id="pieChart_third">
@@ -141,9 +141,9 @@
           <div class='col-md-6'>
             <div id="clock_third"></div>
             <%if @bulk_third.users.where(email: @user.email).length > 0%>
-            <h4 class="bulk_order_link" id='price_third'><%= link_to 'Edit Your Bulk Order: $'+(@items[2].price-2).to_s, edit_user_order_url(@bulk_third.users.where(email: @user.email)[0].user_orders.where(item:@items[2].item_name)[0].id, :item => @items[2].item_name, :price => (@items[2].price-2)) %></h4>
+            <h4 class="bulk_order_link" id='price_third'><%= link_to 'Edit Your Bulk Order: $'+(@items[2].price).to_s, edit_user_order_url(@bulk_third.users.where(email: @user.email)[0].user_orders.where(item:@items[2].item_name)[0].id, :item => @items[2].item_name, :price => (@items[2].price)) %></h4>
             <%else%>
-            <h4 class="bulk_order_link" id='price_third'><%= link_to 'Join Bulk Order: $'+(@items[2].price-2).to_s, edit_bulk_order_url(@bulk_third, :item => @items[2].item_name, :price => (@items[2].price-2)) %></h4>
+            <h4 class="bulk_order_link" id='price_third'><%= link_to 'Join Bulk Order: $'+(@items[2].price).to_s, edit_bulk_order_url(@bulk_third, :item => @items[2].item_name, :price => (@items[2].price)) %></h4>
             <h6>*Details about joining a bulk order</h6>
             <%end%>
             <span id='ratio_third' hidden><%=@bulk_third.percent_filled%> / <%=@bulk_third.max_amount%> Spots</span>
@@ -157,7 +157,7 @@
       </div>
       <div class='col-md-6'>
         <div id="clock_third"></div>
-        <h4 class="bulk_order_link" id='price_third'><%= link_to 'Join New Bulk Order: $'+(@items[2].price-2).to_s, new_bulk_order_url(:item => @items[2].item_name, :price => (@items[2].price-2))%></h4>
+        <h4 class="bulk_order_link" id='price_third'><%= link_to 'Create New Bulk Order: $'+(@items[2].price).to_s, new_bulk_order_url(:item => @items[2].item_name, :price => (@items[2].price))%></h4>
         <h6>*Details about joining a bulk order</h6>
       </div>
       <div class='col-md-6'>
@@ -178,6 +178,7 @@
 <script>
 var expire_first = $('#expire_date_first').text();
 var expire_second= $('#expire_date_second').text();
+
 var expire_third = $('#expire_date_third').text();
 
 var clock_1 = new FlipClock($('#clock_first'),new Date(expire_first || 0), {

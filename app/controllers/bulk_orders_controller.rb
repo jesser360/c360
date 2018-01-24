@@ -14,6 +14,7 @@ class BulkOrdersController < ApplicationController
 
   # GET /bulk_orders/new
   def new
+    @item = Item.where(item_name: params[:item])[0]
     @bulk_order = BulkOrder.new
     @user_order = UserOrder.new
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
@@ -21,8 +22,9 @@ class BulkOrdersController < ApplicationController
 
   # GET /bulk_orders/1/edit
   def edit
+    @bulk = BulkOrder.find_by_id(params[:id]) 
+    @item = Item.where(item_name: params[:item])[0]
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
-
   end
 
   # POST /bulk_orders
@@ -46,6 +48,8 @@ class BulkOrdersController < ApplicationController
     @bulk_order.percent_filled = (@bulk_order.percent_filled || 0 + @user_order.quantity)
     respond_to do |format|
       if @bulk_order.save
+        puts 'bulk SAVED'
+        puts @bulk_order.expire_date
         format.html { redirect_to user_path_url(@user), notice: 'Bulk order was successfully created.' }
         format.json { render :show, status: :created, location: @bulk_order }
       else
@@ -71,7 +75,7 @@ class BulkOrdersController < ApplicationController
     @bulk_order.percent_filled = (@bulk_order.percent_filled +  params[:bulk_order][:quantity].to_i)
     respond_to do |format|
       if @bulk_order.save
-        format.html { redirect_to @bulk_order, notice: 'Bulk order was successfully updated.' }
+        format.html { redirect_to user_path_url(@user), notice: 'You were added to this BUlk Order.' }
         format.json { render :show, status: :ok, location: @bulk_order }
       else
         format.html { render :edit }

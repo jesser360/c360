@@ -1,20 +1,21 @@
 <br /><br /><br />
 <div class="container">
   <h1 class="text-center">Profile Page</h1>
-  <div class="row " style="background-color:#86A397;border-radius:20px">
+  <div class="row " style="background-color:#86A397;border-radius:20px;padding:20px">
     <div class="col-md-4 prof-pic">
-      <h2>Company: <%= @user.company_name%></h2>
-      <h2>Email: <%= @user.email%></h2>
-
       <img class="profilePic" src="http://i.imgur.com/IulSm39.jpg" alt="profile pic" style ="margin:10px">
-
+      <h3>Company: <%= @user.company_name%></h3>
+      <h3>Email: <%= @user.email%></h3>
     </div>
-    <div class="col-md-7 prof-info">
-      <h2>Current Orders:<h2>
+    <div class="col-md-7 prof-info navbar_link">
+      <h2 >Current Orders:<h2>
         <ul>
           <%@user.user_orders.each do |order|%>
-          <h3><%=order.item%>: <%=order.quantity rescue nil%> for $<%=order.total_price rescue nil%>
-            <%=link_to 'Edit Order', edit_user_order_path(order,:item => order.item, :price => (order.total_price/order.quantity))%><h3>
+          <h3><%=order.item%>: <%=order.quantity rescue nil%> grams for $<%=order.total_price rescue nil%>
+            <%=link_to '-Edit Order', edit_user_order_path(order,:item => order.item, :price => (order.total_price/order.quantity))%><h3>
+              <%@bulk_order = @bulk.where(item: order.item)[0]%>
+              <h4><%=@bulk_order.percent_filled%>/<%=@bulk_order.max_amount%> of this Order Filled</h4>
+              <hr>
           <%end%>
         </ul>
     </div>

@@ -11,28 +11,49 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= form.label :item %>
-    <span>: <%=params[:item]%></span>
-  </div>
-  <div class="field">
-    <%= form.label :price %>
-    <span>: $<%=params[:price]%></span>
-  </div>
-  <div class="field">
-    <%= form.label :quantity %>
-    <%= form.text_field :quantity %>
-  </div>
-  <%= hidden_field_tag(:user_id, @user.id)%>
-  <%= hidden_field_tag(:item,params[:item])%>
-  <%= hidden_field_tag(:price,params[:price])%>
 
-  <% if @bulk_order.percent_filled%>
-  <div class="field">
-    <%= form.label :percent_filled %>
-    <span><%=@bulk_order.percent_filled%>/<%=@bulk_order.max_amount%> </span>
+    <div class ="row edit-row">
+        <div class="col-md-3">
+        <span class='oil-image'><%= image_tag(@item.image, :size => "250x250") %></span>
+        </div>
+        <div class="col-md-3 edit-card">
+          <h1><%= @item.item_name %></h1>
+          <h3><%= @item.price %>$ / gram</h3>
+          <h4>Max Order - 100 g</h4>
+          <span hidden id='item_price'><%= @item.price %></span>
+          <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
+        </div>
+        <div class='col-md-6 '>
+          <div id='pieChart'></div>
+        </div>
+      </div>
+      <div class='row edit-row'>
+        <div class='col-md-1'>
+        </div>
+        <div class='col-md-6' style='font-size:1.2em'>
+        <div class="field" >
+          <%= form.label :quantity %>
+          <input type='number' id='order_quant' min='1' max='100'name='bulk_order[quantity]'>
+        </div>
+        <div class="field">
+          <%= form.label :price %>
+          <span id='total_price'>$</span>
+        </div>
+        <%= hidden_field_tag(:user_id, @user.id)%>
+        <%= hidden_field_tag(:item,params[:item])%>
+        <%= hidden_field_tag(:price,params[:price])%>
+        <div class="actions">
+          <%= form.submit %>
+        </div>
+      </div>
+      <div class='col-md-4 edit-card'>
+        <div id='clock'></div>
+      </div>
     </div>
-  <%end%>
+
+
+
+
 <br>
   <% if @bulk_order.user_orders.length > 1%>
   <h4>Users part of Bulk Order :</h4>
@@ -44,9 +65,60 @@
   </ul>
   <%end%>
 
-
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
 <% end %>
+<div hidden>
+<span id='percent_filled'><%=@bulk.percent_filled rescue nil%></span>
+<span id='max_amount'><%=@bulk.max_amount rescue nil%></span>
+<span id='expire_date'><%=@bulk.expire_date rescue nil%></span>
+<span id='item'><%=@bulk.item rescue nil%></span>
+</div>
+<script>
+var percent_filled = $('#percent_filled').text();
+var user_order_quant = $('#user_order_quantity').val();
+var other_order_quant = (percent_filled -user_order_quant)
+var max_amount = $('#max_amount').text();
+
+var expire_date = $('#expire_date').text();
+  var item_price = parseInt($('#item_price').text());
+  var max_amount = $('#max_amount').text();
+  var item = $('#item').val();
+  $('#order_quant').on('input',function(){
+    var order_quant = parseInt($('#order_quant').val());
+    $('#total_price').text( '$'+ (item_price * order_quant));
+  });
+
+
+  var Apiec3 = c3.generate({
+    bindto: '#pieChart',
+      data: {
+          columns: [
+              ['Other Orders', percent_filled],
+              ['Remaining',  max_amount-(percent_filled) || 100],
+          ],
+          type : 'donut',
+      },
+      legend: {
+      position: 'right'
+      },
+      donut: {
+          title: item,
+          label: {
+            show:true
+          }
+      },
+      legend: {
+        show: false
+      }
+  });
+
+  d3.select(".c3-chart-arcs-title")
+      .append("tspan")
+      .attr("dy", 16)
+      .attr("x", 0)
+      .text("$"+item_price+"/g");
+
+  var clock_1 = new FlipClock($('#clock'),new Date(expire_date || 0), {
+  countdown: true,
+  clockFace: 'DailyCounter'
+  });
+  </script>

@@ -21,7 +21,8 @@ class UserOrdersController < ApplicationController
   # GET /user_orders/1/edit
   def edit
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
-
+    @item = Item.where(item_name: params[:item])[0]
+    @bulk = BulkOrder.where(item: params[:item])[0]
   end
 
   # POST /user_orders
