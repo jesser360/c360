@@ -54,6 +54,9 @@ class UserOrdersController < ApplicationController
     @user_order.total_price = @user_order.quantity * params[:price].to_i
     @bulk_order.percent_filled = @bulk_order.percent_filled + @user_order.quantity
     @bulk_order.save
+    if @bulk_order.percent_filled >= @bulk_order.max_amount
+      NotifMailer.sample_email(@user).deliver
+    end
     respond_to do |format|
       if @user_order.update(user_order_params)
         format.html { redirect_to user_path_url(@user), notice: 'User order was successfully updated.' }
