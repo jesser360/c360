@@ -58,27 +58,14 @@
   margin-top: -3vh;
 
 }
-#clock_first{
-  zoom:35%;
-}
-#clock_second{
-  zoom:35%;
-}
-#clock_third{
-  zoom:35%;
-}
-#clock{
+
+.clock{
   zoom:55%;
 }
-#pieChart_first{
+.piechart{
   zoom:80%;
 }
-#pieChart_second{
-  zoom:80%;
-}
-#pieChart_third{
-  zoom:80%;
-}
+
 .bulk_order_link{
 font: bold 11px Arial;
 background-color: Transparent;

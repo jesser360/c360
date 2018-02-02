@@ -1,12 +1,43 @@
 <br /><br /><br />
 <div class="container">
-  <h1 class="text-center">Profile Page</h1>
+  <%if @user.is_vendor%>
+  <h1 class="text-center">Vendor Profile Page</h1>
+  <%else%>
+  <h1 class="text-center">Buyer Profile Page</h1>
+  <%end%>
   <div class="row " style="background-color:#86A397;border-radius:20px;padding:20px">
     <div class="col-md-4 prof-pic">
       <img class="profilePic" src="http://i.imgur.com/IulSm39.jpg" alt="profile pic" style ="margin:10px">
       <h3>Company: <%= @user.company_name%></h3>
       <h3>Email: <%= @user.email%></h3>
     </div>
+    <%if @user.is_vendor%>
+    <div class="col-md-8 prof-info navbar_link">
+      <h2 style='float:right;margin-right:60px'>Current Orders:</h2>
+      <h2 >Current Items:<h2>
+        <ul>
+          <%@user.items.each do |item|%>
+          <div class="row">
+            <div class='col-md-3'>
+              <h3><%=image_tag(item.image, :size => "100x100")%></h3>
+            </div>
+            <div class='col-md-4'>
+              <h3><%=item.item_name%> - $<%=item.price%>/g</h3>
+              <h3><%=item.max_amount%> g left</h3>
+            </div>
+            <div class='col-md-5'>
+              <%item.bulk_orders.each do |bulk|%>
+              <%=bulk.percent_filled%>/<%=bulk.max_amount%> spots filled<br>
+              <%=bulk.users.count%> Users in order
+              <hr>
+              <%end%>
+            </div>
+          </div>
+          <%end%>
+          <h4 style='width:20%'class="bulk_order_link"><%=link_to 'Add Item',new_item_path%></h4>
+        </ul>
+    </div>
+    <%else%>
     <div class="col-md-7 prof-info navbar_link">
       <h2 >Current Orders:<h2>
         <ul>
@@ -19,6 +50,6 @@
           <%end%>
         </ul>
     </div>
-
+    <%end%>
   </div>
 </div>

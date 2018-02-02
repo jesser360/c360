@@ -7,103 +7,54 @@
 </div>
 <div class='all-items'>
   <br>
-
-    <div class="card">
-    <div class ="row " >
-        <div hidden>
-          <h3 id='item_name_first'><%= @items[0].item_name %></h3>
-        </div>
-        <div class="col-md-3">
-        <span class='oil-image'><%= image_tag(@items[0].image, :size => "250x250") if @items[0].image %></span>
-        </div>
-        <div class="col-md-3">
-          <h1><%= @items[0].item_name %></h1>
-          <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
-        </div>
-        <div class="col-md-6">
-          <h4 hidden><%= link_to 'Buy Retail: $'+(@items[0].price).to_s, new_user_order_url(:item => @items[0].item_name, :price => @items[0].price)%></h4><br>
-          <%if @bulk_orders.where(item: @items[0].item_name).length > 0%>
-            <% @bulk_first = @bulk_orders.where(item: @items[0].item_name)[0]%>
-            <span id='expire_date_first' hidden><%=@bulk_first.expire_date%></span>
-             <div class="row" >
-               <div class='col-md-6'>
-                 <div  id="pieChart_first">
-                 </div>
-               </div>
-              <div class='col-md-6'>
-                <div id="clock_first"></div>
-                <%if @bulk_first.users.where(email: @user.email).length > 0%>
-                <h4 class="bulk_order_link" id='price_first'><%= link_to 'Edit Your Bulk Order: $'+(@items[0].price).to_s, edit_user_order_url(@bulk_first.users.where(email: @user.email)[0].user_orders.where(item:@items[0].item_name)[0].id, :item => @items[0].item_name, :price => (@items[0].price)) %></h4>
-                <%else%>
-                <h4 class="bulk_order_link" id='price_first'><%= link_to 'Join Bulk Order: $'+(@items[0].price).to_s, edit_bulk_order_url(@bulk_first, :item => @items[0].item_name, :price => (@items[0].price)) %></h4>
-                <h6>*Details about joining a bulk order</h6>
-                <%end%>
-                <span id='ratio_first' hidden><%=@bulk_first.percent_filled%> / <%=@bulk_first.max_amount%> Spots</span>
-              </div>
-            </div>
-        <%else%>
-        <div class="row">
-          <div class='col-md-6'>
-            <div  id="pieChart_first">
-            </div>
-          </div>
-          <div class='col-md-6'>
-            <div id="clock_first"></div>
-            <h4 class="bulk_order_link" id='price_first'><%= link_to 'Create New Bulk Order: $'+(@items[0].price).to_s, new_bulk_order_url(:item => @items[0].item_name, :price => (@items[0].price))%></h4>
-            <h6>*Details about joining a bulk order</h6>
-          </div>
-          <div class='col-md-6'>
-          </div>
-        </div>
-        <%end%>
-      </div>
-      </tr>
-    </div>
-    <br><br>
-  </div>
-
+  <span hidden id='item_total'><%=@items.count %></span>
+  <%@items.each_with_index do|item,i|%>
   <div class="card">
   <div class ="row " >
-      <div hidden>
-        <h3 id='item_name_second'><%= @items[1].item_name %></h3>
+      <div class='hidden'>
+        <h3 id='item_name_<%=i%>'><%= item.item_name %></h3>
+        <span id='bulk_order_amount_<%=i%>' ><%=item.bulk_order_amount%></span>
+        <span id='item_price_<%=i%>' ><%=item.price%></span>
       </div>
       <div class="col-md-3">
-      <span class='oil-image'><%= image_tag(@items[1].image, :size => "250x250") if @items[1].image %></span>
+      <span class='oil-image'><%= image_tag(item.image, :size => "250x250") if item.image %></span>
       </div>
       <div class="col-md-3">
-        <h1><%= @items[1].item_name %></h1>
+        <h1><%= item.item_name %> - $<%= item.price %>/g</h1>
         <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
       </div>
       <div class="col-md-6">
-        <h4 hidden><%= link_to 'Buy Retail: $'+(@items[1].price).to_s, new_user_order_url(:item => @items[1].item_name, :price => @items[1].price)%></h4><br>
-        <%if @bulk_orders.where(item: @items[1].item_name).length > 0%>
-          <% @bulk_second = @bulk_orders.where(item: @items[1].item_name)[0]%>
-          <span id='expire_date_second' hidden><%=@bulk_second.expire_date%></span>
+        <h4 hidden><%= link_to 'Buy Retail: $'+(item.price).to_s, new_user_order_url(:item => item.item_name, :price => item.price)%></h4><br>
+        <%if item.bulk_orders.where(completed: false).count >= 1%>
+          <% @bulk = item.bulk_orders.where(completed: false)[0]%>
+          <div hidden>
+            <span id='expire_date_<%=i%>' ><%=@bulk.expire_date%></span>
+          </div>
            <div class="row" >
              <div class='col-md-6'>
-               <div  id="pieChart_second">
-               </div>
+               <div class='piechart'id='pieChart_<%=i%>'></div>
              </div>
             <div class='col-md-6'>
-              <div id="clock_second"></div>
-              <%if @bulk_second.users.where(email: @user.email).length > 0%>
-              <h4 class="bulk_order_link" id='price_second'><%= link_to 'Edit Your Bulk Order: $'+(@items[1].price).to_s, edit_user_order_url(@bulk_second.users.where(email: @user.email)[0].user_orders.where(item:@items[1].item_name)[0].id, :item => @items[1].item_name, :price => (@items[1].price)) %></h4>
+              <div class= 'clock' id='clock_<%=i%>'></div>
+              <%if @bulk.users.where(email: @user.email).length > 0%>
+              <h4 class="bulk_order_link" ><%= link_to 'Edit Your Bulk Order: $'+(item.price).to_s+'/g', edit_user_order_url(@bulk.users.where(email: @user.email)[0].user_orders.where(item:item.item_name)[0].id, :item => item.item_name, :price => (item.price)) %></h4>
               <%else%>
-              <h4 class="bulk_order_link" id='price_second'><%= link_to 'Join Bulk Order: $'+(@items[1].price).to_s, edit_bulk_order_url(@bulk_second, :item => @items[1].item_name, :price => (@items[1].price)) %></h4>
+              <h4 class="bulk_order_link" ><%= link_to 'Join Bulk Order: $'+(item.price).to_s+'/g', edit_bulk_order_url(@bulk, :item => item.item_name, :price => (item.price)) %></h4>
               <h6>*Details about joining a bulk order</h6>
               <%end%>
-              <span id='ratio_second' hidden><%=@bulk_second.percent_filled%> / <%=@bulk_second.max_amount%> Spots</span>
+              <div hidden>
+              <span id='percent_filled_<%=i%>'><%=@bulk.percent_filled%></span>
+            </div>
             </div>
           </div>
       <%else%>
       <div class="row">
         <div class='col-md-6'>
-          <div  id="pieChart_second">
-          </div>
+          <div class='piechart'id='pieChart_<%=i%>'></div>
         </div>
         <div class='col-md-6'>
-          <div id="clock_second"></div>
-          <h4 class="bulk_order_link" id='price_second'><%= link_to 'Create New Bulk Order: $'+(@items[1].price).to_s, new_bulk_order_url(:item => @items[1].item_name, :price => (@items[1].price))%></h4>
+          <div class='clock' id='clock_<%=i%>'></div>
+          <h4 class="bulk_order_link"><%= link_to 'Create New Bulk Order: $'+(item.price).to_s+'/g', new_bulk_order_url(:item => item.item_name, :price => (item.price))%></h4>
           <h6>*Details about joining a bulk order</h6>
         </div>
         <div class='col-md-6'>
@@ -115,60 +66,7 @@
   </div>
   <br><br>
 </div>
-
-<div class="card">
-<div class ="row " >
-    <div hidden>
-      <h3 id='item_name_third'><%= @items[2].item_name %></h3>
-    </div>
-    <div class="col-md-3">
-    <span class='oil-image'><%= image_tag(@items[2].image, :size => "250x250") if @items[2].image %></span>
-    </div>
-    <div class="col-md-3">
-      <h1><%= @items[2].item_name %></h1>
-      <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
-    </div>
-    <div class="col-md-6">
-      <h4 hidden><%= link_to 'Buy Retail: $'+(@items[2].price).to_s, new_user_order_url(:item => @items[2].item_name, :price => @items[2].price)%></h4><br>
-      <%if @bulk_orders.where(item: @items[2].item_name).length > 0%>
-        <% @bulk_third = @bulk_orders.where(item: @items[2].item_name)[0]%>
-        <span id='expire_date_third' hidden><%=@bulk_third.expire_date%></span>
-         <div class="row" >
-           <div class='col-md-6'>
-             <div  id="pieChart_third">
-             </div>
-           </div>
-          <div class='col-md-6'>
-            <div id="clock_third"></div>
-            <%if @bulk_third.users.where(email: @user.email).length > 0%>
-            <h4 class="bulk_order_link" id='price_third'><%= link_to 'Edit Your Bulk Order: $'+(@items[2].price).to_s, edit_user_order_url(@bulk_third.users.where(email: @user.email)[0].user_orders.where(item:@items[2].item_name)[0].id, :item => @items[2].item_name, :price => (@items[2].price)) %></h4>
-            <%else%>
-            <h4 class="bulk_order_link" id='price_third'><%= link_to 'Join Bulk Order: $'+(@items[2].price).to_s, edit_bulk_order_url(@bulk_third, :item => @items[2].item_name, :price => (@items[2].price)) %></h4>
-            <h6>*Details about joining a bulk order</h6>
-            <%end%>
-            <span id='ratio_third' hidden><%=@bulk_third.percent_filled%> / <%=@bulk_third.max_amount%> Spots</span>
-          </div>
-        </div>
-    <%else%>
-    <div class="row">
-      <div class='col-md-6'>
-        <div  id="pieChart_third">
-        </div>
-      </div>
-      <div class='col-md-6'>
-        <div id="clock_third"></div>
-        <h4 class="bulk_order_link" id='price_third'><%= link_to 'Create New Bulk Order: $'+(@items[2].price).to_s, new_bulk_order_url(:item => @items[2].item_name, :price => (@items[2].price))%></h4>
-        <h6>*Details about joining a bulk order</h6>
-      </div>
-      <div class='col-md-6'>
-      </div>
-    </div>
-    <%end%>
-  </div>
-  </tr>
-</div>
-<br><br>
-</div>
+  <%end%>
 
 
 </div>
@@ -176,145 +74,134 @@
 </div>
 
 <script>
-var expire_first = $('#expire_date_first').text();
-var expire_second= $('#expire_date_second').text();
-
-var expire_third = $('#expire_date_third').text();
-
-var clock_1 = new FlipClock($('#clock_first'),new Date(expire_first || 0), {
-countdown: true,
-clockFace: 'DailyCounter'
-});
-var clock_2 = new FlipClock($('#clock_second'),new Date(expire_second || 0), {
-countdown: true,
-clockFace: 'DailyCounter'
-});
-var clock_3 = new FlipClock($('#clock_third'),new Date(expire_third || 0), {
-countdown: true,
-clockFace: 'DailyCounter'
-});
-var ratio_first = $('#ratio_first').first().text();
-var item_name_first = $('#item_name_first').first().text();
-var filled_first = parseInt(ratio_first.split(' ')[0]);
-var max_first =parseInt(ratio_first.split(' ')[2]);
-var price_first_string = $('#price_first').text();
-var price_first = price_first_string.match(/\d+/)[0]
-var orders_left_first = max_first-filled_first
-var contentArray_first = []
-var Apiec3 = c3.generate({
-  bindto: '#pieChart_first',
+var item_total = parseInt($('#item_total').text());
+for(i = 0; i<item_total; i++){
+  var expire = $('#expire_date_'+i).text();
+  var clock = new FlipClock($('#clock_'+i),new Date(expire || 0), {
+  countdown: true,
+  clockFace: 'DailyCounter'
+  });
+  var item_name = $('#item_name_'+i).text();
+  var percent_filled = $('#percent_filled_'+i).text();
+  var max =$('#bulk_order_amount_'+i).text();
+  var price = $('#item_price_'+i).text();
+  var orders_left = max - percent_filled
+  var ratio = (percent_filled ||0)+' / '+ max + ' spots taken'
+  var Apiec3 = c3.generate({
+    bindto: '#pieChart_'+i,
     data: {
-        columns: [
-            ['Filled', filled_first],
-            ['Remaining', orders_left_first || 100],
-        ],
-        type : 'donut',
+      columns: [
+        ['Filled', percent_filled],
+        ['Remaining', orders_left],
+      ],
+      type : 'donut',
     },
     legend: {
-    position: 'right'
+      position: 'right'
     },
     donut: {
-        title: item_name_first,
-        label: {
-          show:true
-        }
+      title: ratio,
+      label: {
+        show:true
+      }
     },
     legend: {
       show: false
     }
-});
-d3.select(".c3-chart-arcs-title")
-    .append("tspan")
-    .attr("dy", 16)
-    .attr("x", 0)
-    .text(ratio_first);
-d3.select(".c3-chart-arcs-title")
-    .append("tspan")
-    .attr("dy", 16)
-    .attr("x", 0)
-    .text("$"+price_first +"/g");
-
-var ratio_second = $('#ratio_second').first().text();
-var item_name_second = $('#item_name_second').first().text();
-var filled_second = parseInt(ratio_second.split(' ')[0]);
-var max_second =parseInt(ratio_second.split(' ')[2]);
-var price_second_string = $('#price_second').text();
-var price_second = price_second_string.match(/\d+/)[0]
-var orders_left_second = max_second-filled_second
-var contentArray_second = []
-var Apiec3 = c3.generate({
-  bindto: '#pieChart_second',
-    data: {
-        columns: [
-            ['Filled', filled_second],
-            ['Remaining', orders_left_second || 100],
-        ],
-        type : 'donut',
-    },
-    legend: {
-    position: 'right'
-    },
-    donut: {
-        title: item_name_second,
-        label: {
-          show:true
-        }
-    },
-    legend: {
-      show: false
-    }
-});
+  });
+}
+// var price = $('#item_price_0').text();
+// var percent_filled = $('#percent_filled_0').text();
+// var max =$('#bulk_order_amount_0').text();
 // d3.select(".c3-chart-arcs-title")
 //     .append("tspan")
 //     .attr("dy", 16)
 //     .attr("x", 0)
-//     .text(ratio_second);
+//     .text((percent_filled||0)+'/'+max +' spots filled');
+// d3.select(".c3-chart-arcs-title")
+//     .append("tspan")
+//     .attr("dy", 16)
+//     .attr("x", 0)
+//     .text("$"+price +"/g");
+
+// var item_name_second = $('#item_name_1').text();
+// var percent_filled_second = $('#percent_filled_1').text();
+// var max_second =$('#bulk_order_amount_1').text();
+// var price_first = $('#item_price_1').text();
+// var orders_left_second = max_second - percent_filled_second
+// var Apiec3 = c3.generate({
+//   bindto: '#pieChart_1',
+//     data: {
+//         columns: [
+//             ['Filled', percent_filled_second],
+//             ['Remaining', orders_left_second],
+//         ],
+//         type : 'donut',
+//     },
+//     legend: {
+//     position: 'right'
+//     },
+//     donut: {
+//         title: item_name_second,
+//         label: {
+//           show:true
+//         }
+//     },
+//     legend: {
+//       show: false
+//     }
+// });
+// d3.select(".c3-chart-arcs-title")
+//     .append("tspan")
+//     .attr("dy", 16)
+//     .attr("x", 0)
+//     .text((percent_filled_second||0)+'/'+max_second +' spots filled');
 // d3.select(".c3-chart-arcs-title")
 //     .append("tspan")
 //     .attr("dy", 16)
 //     .attr("x", 0)
 //     .text("$"+price_second +"/g");
 
-var ratio_third = $('#ratio_third').first().text();
-var item_name_third = $('#item_name_third').first().text();
-var filled_third = parseInt(ratio_third.split(' ')[0]);
-var max_third =parseInt(ratio_third.split(' ')[2]);
-var price_third_string = $('#price_third').text();
-var price_third = price_third_string.match(/\d+/)[0]
-var orders_left_third = max_third-filled_third
-var contentArray_third = []
-var Apiec3 = c3.generate({
-  bindto: '#pieChart_third',
-    data: {
-        columns: [
-            ['Filled', filled_third],
-            ['Remaining', orders_left_third || 100],
-        ],
-        type : 'donut',
-    },
-    legend: {
-    position: 'right'
-    },
-    donut: {
-        title: item_name_third,
-        label: {
-          show:true
-        }
-    },
-    legend: {
-      show: false
-    }
-});
-// d3.select(".c3-chart-arcs-title")
-//     .append("tspan")
-//     .attr("dy", 16)
-//     .attr("x", 0)
-//     .text(ratio_third);
-// d3.select(".c3-chart-arcs-title")
-//     .append("tspan")
-//     .attr("dy", 16)
-//     .attr("x", 0)
-//     .text("$"+price_third +"/g");
-
+// var ratio_third = $('#ratio_third').first().text();
+// var item_name_third = $('#item_name_third').first().text();
+// var filled_third = parseInt(ratio_third.split(' ')[0]);
+// var max_third =parseInt(ratio_third.split(' ')[2]);
+// var price_third_string = $('#price_third').text();
+// var price_third = price_third_string.match(/\d+/)[0]
+// var orders_left_third = max_third-filled_third
+// var contentArray_third = []
+// var Apiec3 = c3.generate({
+//   bindto: '#pieChart_third',
+//     data: {
+//         columns: [
+//             ['Filled', filled_third],
+//             ['Remaining', orders_left_third || 100],
+//         ],
+//         type : 'donut',
+//     },
+//     legend: {
+//     position: 'right'
+//     },
+//     donut: {
+//         title: item_name_third,
+//         label: {
+//           show:true
+//         }
+//     },
+//     legend: {
+//       show: false
+//     }
+// });
+// // d3.select(".c3-chart-arcs-title")
+// //     .append("tspan")
+// //     .attr("dy", 16)
+// //     .attr("x", 0)
+// //     .text(ratio_third);
+// // d3.select(".c3-chart-arcs-title")
+// //     .append("tspan")
+// //     .attr("dy", 16)
+// //     .attr("x", 0)
+// //     .text("$"+price_third +"/g");
+//
 
 </script>

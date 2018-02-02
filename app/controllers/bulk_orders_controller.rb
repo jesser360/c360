@@ -31,10 +31,11 @@ class BulkOrdersController < ApplicationController
   # POST /bulk_orders.json
   def create
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
+    @item = Item.where(item_name: params[:item])[0]
     @bulk_order = BulkOrder.new()
     @user_order = UserOrder.new()
     @date = Date.today
-    @end_date= (@date+15).to_s
+    @end_date= (@date+(rand(1..10))).to_s
     @bulk_order.expire_date = @end_date
     @user_order.quantity = params[:bulk_order][:quantity]
     @user_order.item = params[:item]
@@ -43,10 +44,13 @@ class BulkOrdersController < ApplicationController
     @user_order.save
     @bulk_order.user_orders.push(@user_order)
     @bulk_order.users.push(@user)
-    @bulk_order.max_amount=100
-    @bulk_order.item = params[:item]
+    @bulk_order.item = @item
+    @bulk_order.max_amount= @item.bulk_order_amount
+    @bulk_order.completed = false
     @bulk_order.percent_filled = (@bulk_order.percent_filled || 0 + @user_order.quantity)
     if @bulk_order.percent_filled >= @bulk_order.max_amount
+      @bulk_order.completed = true
+      @bulk_order.save
       NotifMailer.sample_email(@user).deliver
     end
     respond_to do |format|
@@ -75,6 +79,8 @@ class BulkOrdersController < ApplicationController
     @bulk_order.user_orders.push(@user_order)
     @bulk_order.percent_filled = (@bulk_order.percent_filled +  params[:bulk_order][:quantity].to_i)
     if @bulk_order.percent_filled >= @bulk_order.max_amount
+      @bulk_order.completed = true
+      @bulk_order.save
       NotifMailer.sample_email(@user).deliver
     end
     respond_to do |format|

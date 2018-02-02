@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180123055242) do
+ActiveRecord::Schema.define(version: 20180202035924) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,9 @@ ActiveRecord::Schema.define(version: 20180123055242) do
     t.datetime "updated_at", null: false
     t.integer "max_amount"
     t.datetime "expire_date"
+    t.boolean "completed"
+    t.bigint "item_id"
+    t.index ["item_id"], name: "index_bulk_orders_on_item_id"
   end
 
   create_table "bulk_orders_users", id: false, force: :cascade do |t|
@@ -38,6 +41,11 @@ ActiveRecord::Schema.define(version: 20180123055242) do
     t.string "image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.string "s"
+    t.integer "max_amount"
+    t.integer "bulk_order_amount"
+    t.index ["user_id"], name: "index_items_on_user_id"
   end
 
   create_table "user_orders", force: :cascade do |t|
@@ -59,8 +67,11 @@ ActiveRecord::Schema.define(version: 20180123055242) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "password_digest"
+    t.boolean "is_vendor"
   end
 
+  add_foreign_key "bulk_orders", "items"
+  add_foreign_key "items", "users"
   add_foreign_key "user_orders", "bulk_orders"
   add_foreign_key "user_orders", "users"
 end

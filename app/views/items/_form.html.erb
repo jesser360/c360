@@ -22,8 +22,12 @@
   </div>
 
   <div class="field">
-    <%= form.label :image %>
-    <%= form.text_field :image, id: :item_image %>
+    <%= form.label :amount %>
+    <%= form.text_field :max_amount, id: :max_amount %>
+  </div>
+  <div class="field">
+    <%= form.label :amount_in_each_bulk_order %>
+    <%= form.text_field :bulk_order_amount, id: :bulk_order_amount %>
   </div>
 
   <div class="actions">

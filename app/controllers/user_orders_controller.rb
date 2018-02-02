@@ -22,7 +22,7 @@ class UserOrdersController < ApplicationController
   def edit
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @item = Item.where(item_name: params[:item])[0]
-    @bulk = BulkOrder.where(item: params[:item])[0]
+    @bulk = @item.bulk_orders.where(completed: false)[0]
   end
 
   # POST /user_orders
@@ -55,6 +55,8 @@ class UserOrdersController < ApplicationController
     @bulk_order.percent_filled = @bulk_order.percent_filled + @user_order.quantity
     @bulk_order.save
     if @bulk_order.percent_filled >= @bulk_order.max_amount
+      @bulk_order.completed = true
+      @bulk_order.save
       NotifMailer.sample_email(@user).deliver
     end
     respond_to do |format|
