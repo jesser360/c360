@@ -1,19 +1,89 @@
-<p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Item:</strong>
-  <%= @user_order.item %>
-</p>
+  <div class ="row edit-row">
+      <div class="col-md-3">
+      <span class='oil-image'><%= image_tag(@item.image, :size => "250x250") %></span>
+      </div>
+      <div class="col-md-3 edit-card">
+        <h1><%= @item.item_name %></h1>
+        <h3><%= @item.price %>$ / gram</h3>
+        <span hidden id='item_price'><%= @item.price %></span>
+        <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
+      </div>
+      <div class="col-md-3 edit-card">
+        <h4>Order Amount:</h4>
+        <span id ='user_order_quantity'><%=@user_order.quantity%></span> grams<br>
+        <h4>Order Price:</h4>
+        <span id ='user_order_quantity'>$<%=@user_order.total_price%></span>
+      </div>
+      <div class='col-md-6 '>
+        <div id='pieChart'></div>
+      </div>
+    </div>
+    <div class='row edit-row'>
+      <div class='col-md-1'>
+      </div>
+      <div class='col-md-6' style='font-size:1.2em'>
 
-<p>
-  <strong>User:</strong>
-  <%= @user_order.user %>
-</p>
+    </div>
+    <div class='col-md-4 edit-card'>
+      <div id='clock'></div>
+    </div>
+  </div>
 
-<p>
-  <strong>Bulk order:</strong>
-  <%= @user_order.bulk_order %>
-</p>
+  <div hidden>
+  <span id='percent_filled'><%=@bulk.percent_filled rescue nil%></span>
+  <span id='max_amount'><%=@bulk.max_amount rescue nil%></span>
+  <span id='expire_date'><%=@bulk.expire_date rescue nil%></span>
+  <span id='item'><%=@bulk.item rescue nil%></span>
+  </div>
+<script>
+  var item_price = $('#item_price').text();
+  var percent_filled = $('#percent_filled').text();
+  var expire_date = $('#expire_date').text();
+  var user_order_quant = $('#user_order_quantity').text();
+  var other_order_quant = (percent_filled -user_order_quant)
+  var max_amount = $('#max_amount').text();
+  var item = $('#item').val();
+  console.log(user_order_quant)
+  $('#quant_input').on('input',function(){
+    var order_quant = $('#user_order_quantity').val();
+    $('#total_price').text( '$'+order_quant * item_price);
+    percent_filled = 23;
+  });
+var Apiec3 = c3.generate({
+  bindto: '#pieChart',
+    data: {
+        columns: [
+            ['Other Orders', other_order_quant],
+            ['Your Order', user_order_quant],
+            ['Remaining',  max_amount-(percent_filled)],
+        ],
+        type : 'donut',
+    },
+    legend: {
+    position: 'right'
+    },
+    donut: {
+        title: item,
+        label: {
+          show:true
+        }
+    },
+    legend: {
+      show: false
+    }
+});
 
-<%= link_to 'Edit', edit_user_order_path(@user_order) %> |
-<%= link_to 'Back', user_orders_path %>
+d3.select(".c3-chart-arcs-title")
+    .append("tspan")
+    .attr("dy", 16)
+    .attr("x", 0)
+    .text(percent_filled+"/"+max_amount+" spots taken");
+
+
+    var clock_1 = new FlipClock($('#clock'),new Date(expire_date), {
+    countdown: true,
+    clockFace: 'DailyCounter'
+    });
+
+</script>

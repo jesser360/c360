@@ -10,6 +10,10 @@ class UserOrdersController < ApplicationController
   # GET /user_orders/1
   # GET /user_orders/1.json
   def show
+    @user = User.find_by_id(session[:user_id]) if session[:user_id]
+    @item = Item.where(item_name: params[:item])[0]
+    @user_order =  UserOrder.find_by_id(params[:id])
+    @bulk = @user_order.bulk_order
   end
 
   # GET /user_orders/new
@@ -49,6 +53,7 @@ class UserOrdersController < ApplicationController
   def update
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @bulk_order = @user_order.bulk_order
+    @users = @bulk_order.users
     @bulk_order.percent_filled = @bulk_order.percent_filled - (@bulk_order.user_orders.where(id:@user_order.id)[0].quantity)
     @user_order.quantity = params[:user_order][:quantity]
     @user_order.total_price = @user_order.quantity * params[:price].to_i
@@ -60,7 +65,14 @@ class UserOrdersController < ApplicationController
       @item.save
       @bulk_order.completed = true
       @bulk_order.save
-      NotifMailer.sample_email(@user,@bulk_order,@user_order).deliver
+      if @bulk_order.users.count > 1
+        @bulk_order.users.each do |user|
+          @user_order = @bulk_order.user_orders.where(user_id: user.id)[0]
+          NotifMailer.single_order_email(user,@bulk_order,@user_order).deliver
+        end
+      else
+        NotifMailer.single_order_email(@user,@bulk_order,@user_order).deliver
+      end
     end
     respond_to do |format|
       if @user_order.update(user_order_params)

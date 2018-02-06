@@ -56,7 +56,7 @@ class BulkOrdersController < ApplicationController
       @item.save
       @bulk_order.completed = true
       @bulk_order.save
-      NotifMailer.sample_email(@user,@bulk_order,@user_order).deliver
+        NotifMailer.single_order_email(@user,@bulk_order,@user_order).deliver
     end
     respond_to do |format|
       if @bulk_order.save
@@ -72,6 +72,7 @@ class BulkOrdersController < ApplicationController
   # PATCH/PUT /bulk_orders/1
   # PATCH/PUT /bulk_orders/1.json
   def update
+    @users = @bulk_order.users
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @user_order = UserOrder.new()
     @user_order.expiration = 14
@@ -89,7 +90,14 @@ class BulkOrdersController < ApplicationController
       @item.save
       @bulk_order.completed = true
       @bulk_order.save
-      NotifMailer.sample_email(@user,@bulk_order,@user_order).deliver
+      if @bulk_order.users.count > 1
+        @bulk_order.users.each do |user|
+          @user_order = @bulk_order.user_orders.where(user_id: user.id)[0]
+          NotifMailer.single_order_email(user,@bulk_order,@user_order).deliver
+        end
+      else
+        NotifMailer.single_order_email(@user,@bulk_order,@user_order).deliver
+      end
     end
     respond_to do |format|
       if @bulk_order.save

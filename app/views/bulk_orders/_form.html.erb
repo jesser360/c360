@@ -33,7 +33,7 @@
         <div class='col-md-6' style='font-size:1.2em'>
         <div class="field" >
           <%= form.label :quantity %>
-          <input type='number' id='order_quant' min='1' max='<%=@item.bulk_order_amount - @bulk_order.percent_filled%>'name='bulk_order[quantity]'>
+          <input type='number' id='order_quant' min='1' max='<%=@item.bulk_order_amount - (@bulk_order.percent_filled ||0)%>'name='bulk_order[quantity]'>
         </div>
         <div class="field">
           <%= form.label :price %>

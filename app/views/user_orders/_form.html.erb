@@ -31,7 +31,7 @@
       <div class='col-md-6' style='font-size:1.2em'>
       <div class="field" id='quant_input'>
         <%= form.label :quantity %>
-        <%= form.number_field :quantity , min:1, max:@bulk.max_amount-@bulk.percent_filled+@user_order.quantity%>
+        <%= form.number_field :quantity , min:1, max:@item.bulk_order_amount-(@bulk.percent_filled rescue 0)+(@user_order.quantity rescue 0)%>
       </div>
       <div class="field">
         <%= form.label :price %>
@@ -50,10 +50,10 @@
   </div>
 <% end %>
   <div hidden>
-  <span id='percent_filled'><%=@bulk.percent_filled%></span>
-  <span id='max_amount'><%=@bulk.max_amount%></span>
-  <span id='expire_date'><%=@bulk.expire_date%></span>
-  <span id='item'><%=@bulk.item%></span>
+  <span id='percent_filled'><%=@bulk.percent_filled rescue nil%></span>
+  <span id='max_amount'><%=@bulk.max_amount rescue nil%></span>
+  <span id='expire_date'><%=@bulk.expire_date rescue nil%></span>
+  <span id='item'><%=@bulk.item rescue nil%></span>
   </div>
 <script>
   var item_price = $('#item_price').text();
