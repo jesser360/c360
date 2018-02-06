@@ -1,10 +1,11 @@
-<h1>Hello rep from<%= @user.company_name %></h1>
-<p>
-  Your Order for <%=@user_order.item%> has been Filled.
+<h1>Hello <%= @user.email %> from <%= @user.company_name %></h1>
+<h4>Your Bulk Order for <%=@user_order.item%> has been completed!</h4>
+<br><br>
+<h3>Order details</h3>
+<h5>Total Quantity: <%=@user_order.quantity%> grams</h5>
+<h5>Total Price: $<%=@user_order.total_price%></h5>
+<br>
+  <h4>You Bought this order from <strong><%=@vendor.company_name%></strong>.</h4>
+  <h4>You can get in touch with them at <strong><%=@vendor.email%></strong>.</h4>
 
-  Total Price: <%=@user_order.quantity%> grams for $<%=@user_order.total_price%>
-
-  You Bought this order from <%=@vendor.company_name%>.
-
-  There were a total of <%=@bulk_order.users.count%> users who were a part of this order.
-</p>
+<span>  There were a total of <%=@bulk_order.users.count%> users who were a part of this order.</span>
