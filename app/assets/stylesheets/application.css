@@ -58,8 +58,10 @@
   margin-top: -3vh;
 
 }
-
 .clock{
+  zoom:45%;
+}
+#clock{
   zoom:55%;
 }
 .piechart{

@@ -31,7 +31,7 @@
       <div class='col-md-6' style='font-size:1.2em'>
       <div class="field" id='quant_input'>
         <%= form.label :quantity %>
-        <%= form.number_field :quantity , min:1, max:@bulk.max_amount%>
+        <%= form.number_field :quantity , min:1, max:@bulk.max_amount-@bulk.percent_filled+@user_order.quantity%>
       </div>
       <div class="field">
         <%= form.label :price %>
@@ -96,7 +96,7 @@ d3.select(".c3-chart-arcs-title")
     .append("tspan")
     .attr("dy", 16)
     .attr("x", 0)
-    .text("$"+item_price+"/g");
+    .text(percent_filled+"/"+max_amount+" spots taken");
 
 
     var clock_1 = new FlipClock($('#clock'),new Date(expire_date), {

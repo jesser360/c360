@@ -10,6 +10,8 @@ class BulkOrdersController < ApplicationController
   # GET /bulk_orders/1
   # GET /bulk_orders/1.json
   def show
+    @bulk_order = BulkOrder.find(params[:id])
+    @item = @bulk_order.item
   end
 
   # GET /bulk_orders/new
@@ -49,9 +51,12 @@ class BulkOrdersController < ApplicationController
     @bulk_order.completed = false
     @bulk_order.percent_filled = (@bulk_order.percent_filled || 0 + @user_order.quantity)
     if @bulk_order.percent_filled >= @bulk_order.max_amount
+      @item = @bulk_order.item
+      @item.max_amount = @item.max_amount - @item.bulk_order_amount
+      @item.save
       @bulk_order.completed = true
       @bulk_order.save
-      NotifMailer.sample_email(@user).deliver
+      NotifMailer.sample_email(@user,@bulk_order,@user_order).deliver
     end
     respond_to do |format|
       if @bulk_order.save
@@ -79,9 +84,12 @@ class BulkOrdersController < ApplicationController
     @bulk_order.user_orders.push(@user_order)
     @bulk_order.percent_filled = (@bulk_order.percent_filled +  params[:bulk_order][:quantity].to_i)
     if @bulk_order.percent_filled >= @bulk_order.max_amount
+      @item = @bulk_order.item
+      @item.max_amount=@item.max_amount - @item.bulk_order_amount
+      @item.save
       @bulk_order.completed = true
       @bulk_order.save
-      NotifMailer.sample_email(@user).deliver
+      NotifMailer.sample_email(@user,@bulk_order,@user_order).deliver
     end
     respond_to do |format|
       if @bulk_order.save

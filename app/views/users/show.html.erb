@@ -6,31 +6,46 @@
   <h1 class="text-center">Buyer Profile Page</h1>
   <%end%>
   <div class="row " style="background-color:#86A397;border-radius:20px;padding:20px">
-    <div class="col-md-4 prof-pic">
+    <div class="col-md-3 prof-pic">
       <img class="profilePic" src="http://i.imgur.com/IulSm39.jpg" alt="profile pic" style ="margin:10px">
       <h3>Company: <%= @user.company_name%></h3>
       <h3>Email: <%= @user.email%></h3>
     </div>
     <%if @user.is_vendor%>
-    <div class="col-md-8 prof-info navbar_link">
+    <div class="col-md-9 prof-info navbar_link">
       <h2 style='float:right;margin-right:60px'>Current Orders:</h2>
       <h2 >Current Items:<h2>
         <ul>
           <%@user.items.each do |item|%>
+          <hr>
           <div class="row">
             <div class='col-md-3'>
               <h3><%=image_tag(item.image, :size => "100x100")%></h3>
             </div>
             <div class='col-md-4'>
-              <h3><%=item.item_name%> - $<%=item.price%>/g</h3>
-              <h3><%=item.max_amount%> g left</h3>
+              <h3><%=item.item_name%> -</h3>
+              <h4>$<%=item.price%>/g</h4>
+              <h4><%=item.max_amount%> g left</h4>
             </div>
             <div class='col-md-5'>
-              <%item.bulk_orders.each do |bulk|%>
-              <%=bulk.percent_filled%>/<%=bulk.max_amount%> spots filled<br>
-              <%=bulk.users.count%> Users in order
-              <hr>
-              <%end%>
+              <br>
+              <div class="row">
+                  <ul>
+                  <%item.bulk_orders.each do |bulk|%>
+                  <div class="col-md-7">
+                    <li><%=bulk.percent_filled%>/<%=bulk.max_amount%> spots filled<br>
+                    <%=bulk.users.count%> Users in order<br>
+                    <%if bulk.completed%>
+                    COMPLETED
+                    <%end%></li>
+                  </div>
+                  <div class="col-md-5">
+                    <span class="bulk_order_link" ><%=link_to 'see order',bulk_order_path(bulk)%></span>
+                  </div>
+                  <br>
+                  <%end%>
+                  </ul>
+              </div>
             </div>
           </div>
           <%end%>

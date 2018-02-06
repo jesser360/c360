@@ -55,9 +55,12 @@ class UserOrdersController < ApplicationController
     @bulk_order.percent_filled = @bulk_order.percent_filled + @user_order.quantity
     @bulk_order.save
     if @bulk_order.percent_filled >= @bulk_order.max_amount
+      @item = @bulk_order.item
+      @item.max_amount=@item.max_amount- @item.bulk_order_amount
+      @item.save
       @bulk_order.completed = true
       @bulk_order.save
-      NotifMailer.sample_email(@user).deliver
+      NotifMailer.sample_email(@user,@bulk_order,@user_order).deliver
     end
     respond_to do |format|
       if @user_order.update(user_order_params)

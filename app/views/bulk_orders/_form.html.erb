@@ -19,7 +19,7 @@
         <div class="col-md-3 edit-card">
           <h1><%= @item.item_name %></h1>
           <h3><%= @item.price %>$ / gram</h3>
-          <h4>Max Order - 100 g</h4>
+          <h4>Max Order - <%=@item.bulk_order_amount%> g</h4>
           <span hidden id='item_price'><%= @item.price %></span>
           <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
         </div>
@@ -33,7 +33,7 @@
         <div class='col-md-6' style='font-size:1.2em'>
         <div class="field" >
           <%= form.label :quantity %>
-          <input type='number' id='order_quant' min='1' max='100'name='bulk_order[quantity]'>
+          <input type='number' id='order_quant' min='1' max='<%=@item.bulk_order_amount - @bulk_order.percent_filled%>'name='bulk_order[quantity]'>
         </div>
         <div class="field">
           <%= form.label :price %>
@@ -67,8 +67,8 @@
 
 <% end %>
 <div hidden>
-<span id='percent_filled'><%=@bulk.percent_filled rescue nil%></span>
-<span id='max_amount'><%=@bulk.max_amount rescue nil%></span>
+<span id='percent_filled'><%=@bulk.percent_filled rescue 0%></span>
+<span id='max_amount'><%=@bulk.max_amount rescue @item.bulk_order_amount%></span>
 <span id='expire_date'><%=@bulk.expire_date rescue nil%></span>
 <span id='item'><%=@bulk.item rescue nil%></span>
 </div>
@@ -115,7 +115,7 @@ var expire_date = $('#expire_date').text();
       .append("tspan")
       .attr("dy", 16)
       .attr("x", 0)
-      .text("$"+item_price+"/g");
+      .text(percent_filled+"/"+max_amount+" spots taken");
 
   var clock_1 = new FlipClock($('#clock'),new Date(expire_date || 0), {
   countdown: true,
