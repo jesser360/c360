@@ -32,6 +32,8 @@ class ItemsController < ApplicationController
   def create
     @item = Item.new(item_params)
     @item.current_amount = item_params[:max_amount]
+    puts item_params[:max_amount]
+    puts 'MAX AMOUNTTTTT'
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @item.user = @user
     @item.image = 'http://moziru.com/images/drawn-weed-animated-7.gif'
