@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180202035924) do
+ActiveRecord::Schema.define(version: 20180206232024) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(version: 20180202035924) do
     t.string "s"
     t.integer "max_amount"
     t.integer "bulk_order_amount"
+    t.integer "current_amount"
     t.index ["user_id"], name: "index_items_on_user_id"
   end
 

@@ -15,6 +15,7 @@ class UsersController < ApplicationController
   end
 
   def show
+    @items = Item.all
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @bulk = @user.bulk_orders
   end

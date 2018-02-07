@@ -9,63 +9,66 @@
   <br>
   <span hidden id='item_total'><%=@items.count %></span>
   <%@items.each_with_index do|item,i|%>
-  <div class="card">
-  <div class ="row " >
-      <div class='hidden'>
-        <h3 id='item_name_<%=i%>'><%= item.item_name %></h3>
-        <span id='bulk_order_amount_<%=i%>' ><%=item.bulk_order_amount%></span>
-        <span id='item_price_<%=i%>' ><%=item.price%></span>
-      </div>
-      <div class="col-md-3">
-      <span class='oil-image'><%= image_tag(item.image, :size => "250x250") if item.image %></span>
-      </div>
-      <div class="col-md-3">
-        <h1><%= item.item_name %> - $<%= item.price %>/g</h1>
-        <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
-      </div>
-      <div class="col-md-6">
-        <h4 hidden><%= link_to 'Buy Retail: $'+(item.price).to_s, new_user_order_url(:item => item.item_name, :price => item.price)%></h4><br>
-        <%if item.bulk_orders.where(completed: false).count >= 1%>
-          <% @bulk = item.bulk_orders.where(completed: false)[0]%>
-          <div hidden>
-            <span id='expire_date_<%=i%>' ><%=@bulk.expire_date%></span>
+    <%if item.current_amount > 0%>
+    <div class="card">
+      <div class ="row " >
+          <div class='hidden'>
+            <h3 id='item_name_<%=i%>'><%= item.item_name %></h3>
+            <span id='bulk_order_amount_<%=i%>' ><%=item.bulk_order_amount%></span>
+            <span id='item_price_<%=i%>' ><%=item.price%></span>
           </div>
-           <div class="row" >
-             <div class='col-md-6'>
-               <div class='piechart'id='pieChart_<%=i%>'></div>
-             </div>
-            <div class='col-md-6'>
-              <div class= 'clock' id='clock_<%=i%>'></div>
-              <%if @bulk.users.where(email: @user.email).length > 0%>
-              <h4 class="bulk_order_link" ><%= link_to 'Edit Your Bulk Order: $'+(item.price).to_s+'/g', edit_user_order_url(@bulk.users.where(email: @user.email)[0].user_orders.where(item:item.item_name)[0].id, :item => item.item_name, :price => (item.price)) %></h4>
-              <%else%>
-              <h4 class="bulk_order_link" ><%= link_to 'Join Bulk Order: $'+(item.price).to_s+'/g', edit_bulk_order_url(@bulk, :item => item.item_name, :price => (item.price)) %></h4>
-              <h6>*Details about joining a bulk order</h6>
-              <%end%>
+          <div class="col-md-3">
+          <span class='oil-image'><%= image_tag(item.image, :size => "250x250") if item.image %></span>
+          </div>
+          <div class="col-md-3">
+            <h1><%= item.item_name %> - $<%= item.price %>/g</h1>
+            <h3><%=item.current_amount%> grams available</h3>
+            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
+          </div>
+          <div class="col-md-6">
+            <h4 hidden><%= link_to 'Buy Retail: $'+(item.price).to_s, new_user_order_url(:item => item.item_name, :price => item.price)%></h4><br>
+            <%if item.bulk_orders.where(completed: false).count >= 1%>
+              <% @bulk = item.bulk_orders.where(completed: false)[0]%>
               <div hidden>
-              <span id='percent_filled_<%=i%>'><%=@bulk.percent_filled%></span>
+                <span id='expire_date_<%=i%>' ><%=@bulk.expire_date%></span>
+              </div>
+               <div class="row" >
+                 <div class='col-md-6'>
+                   <div class='piechart'id='pieChart_<%=i%>'></div>
+                 </div>
+                <div class='col-md-6'>
+                  <div class= 'clock' id='clock_<%=i%>'></div>
+                  <%if @bulk.users.where(email: @user.email).length > 0%>
+                  <h4 class="bulk_order_link" ><%= link_to 'Edit Your Bulk Order: $'+(item.price).to_s+'/g', edit_user_order_url(@bulk.users.where(email: @user.email)[0].user_orders.where(item:item.item_name)[0].id, :item => item.item_name, :price => (item.price)) %></h4>
+                  <%else%>
+                  <h4 class="bulk_order_link" ><%= link_to 'Join Bulk Order: $'+(item.price).to_s+'/g', edit_bulk_order_url(@bulk, :item => item.item_name, :price => (item.price)) %></h4>
+                  <h6>*Details about joining a bulk order</h6>
+                  <%end%>
+                  <div hidden>
+                  <span id='percent_filled_<%=i%>'><%=@bulk.percent_filled%></span>
+                </div>
+                </div>
+              </div>
+          <%else%>
+          <div class="row">
+            <div class='col-md-6'>
+              <div class='piechart'id='pieChart_<%=i%>'></div>
             </div>
+            <div class='col-md-6'>
+              <div class='clock' id='clock_<%=i%>'></div>
+              <h4 class="bulk_order_link"><%= link_to 'Create New Bulk Order: $'+(item.price).to_s+'/g', new_bulk_order_url(:item => item.item_name, :price => (item.price))%></h4>
+              <h6>*Details about joining a bulk order</h6>
+            </div>
+            <div class='col-md-6'>
             </div>
           </div>
-      <%else%>
-      <div class="row">
-        <div class='col-md-6'>
-          <div class='piechart'id='pieChart_<%=i%>'></div>
+          <%end%>
         </div>
-        <div class='col-md-6'>
-          <div class='clock' id='clock_<%=i%>'></div>
-          <h4 class="bulk_order_link"><%= link_to 'Create New Bulk Order: $'+(item.price).to_s+'/g', new_bulk_order_url(:item => item.item_name, :price => (item.price))%></h4>
-          <h6>*Details about joining a bulk order</h6>
-        </div>
-        <div class='col-md-6'>
-        </div>
+        </tr>
       </div>
-      <%end%>
+      <br><br>
     </div>
-    </tr>
-  </div>
-  <br><br>
-</div>
+    <%end%>
   <%end%>
 
 

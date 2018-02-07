@@ -31,12 +31,13 @@ class ItemsController < ApplicationController
   # POST /items.json
   def create
     @item = Item.new(item_params)
+    @item.current_amount = item_params[:max_amount]
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @item.user = @user
     @item.image = 'http://moziru.com/images/drawn-weed-animated-7.gif'
     respond_to do |format|
       if @item.save
-        format.html { redirect_to @item, notice: 'Item was successfully created.' }
+        format.html { redirect_to user_path_url(@user), notice: 'Item was successfully created.' }
         format.json { render :show, status: :created, location: @item }
       else
         format.html { render :new }
@@ -48,9 +49,12 @@ class ItemsController < ApplicationController
   # PATCH/PUT /items/1
   # PATCH/PUT /items/1.json
   def update
+    @user = User.find_by_id(session[:user_id]) if session[:user_id]
+    @item = Item.find(params[:id])
+    @item.current_amount = item_params[:max_amount]
     respond_to do |format|
       if @item.update(item_params)
-        format.html { redirect_to @item, notice: 'Item was successfully updated.' }
+        format.html { redirect_to user_path_url(@user), notice: 'Item was successfully updated.' }
         format.json { render :show, status: :ok, location: @item }
       else
         format.html { render :edit }

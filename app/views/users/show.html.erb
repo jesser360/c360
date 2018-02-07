@@ -15,8 +15,9 @@
     <div class="col-md-9 prof-info navbar_link">
       <h2 style='float:right;margin-right:60px'>Current Orders:</h2>
       <h2 >Current Items:<h2>
+        <h4 style='width:20%;margin:-10px'class="bulk_order_link"><%=link_to 'Add Item',new_item_path%></h4>
         <ul>
-          <%@user.items.each do |item|%>
+          <%@user.items.each_with_index do |item,i|%>
           <hr>
           <div class="row">
             <div class='col-md-3'>
@@ -25,11 +26,15 @@
             <div class='col-md-4'>
               <h3><%=item.item_name%> -</h3>
               <h4>$<%=item.price%>/g</h4>
-              <h4><%=item.max_amount%> g left</h4>
+              <h4><%=item.current_amount%> / <%=item.max_amount%> grams left</h4>
+              <%if item.current_amount == 0%>
+                <span class="bulk_order_link"><%=link_to 'Re Up Item', edit_item_path(item)%></span>
+              <%end%>
             </div>
             <div class='col-md-5'>
+              <button class='show-btn'id='<%=i%>'>Show Orders</button>
               <br>
-              <div class="row">
+              <div class="row" class='orders' hidden id='<%=i%>_orders'>
                   <ul>
                   <%item.bulk_orders.each do |bulk|%>
                   <div class="col-md-7">
@@ -37,6 +42,7 @@
                     <%=bulk.users.count%> Users in order<br>
                     <%if bulk.completed%>
                     COMPLETED
+                    <hr>
                     <%end%></li>
                   </div>
                   <div class="col-md-5">
@@ -49,7 +55,6 @@
             </div>
           </div>
           <%end%>
-          <h4 style='width:20%'class="bulk_order_link"><%=link_to 'Add Item',new_item_path%></h4>
         </ul>
     </div>
     <%else%>
@@ -59,11 +64,12 @@
           <%@user.user_orders.each do |order|%>
           <h3><%=order.item%>: <%=order.quantity rescue nil%> grams for $<%=order.total_price rescue nil%>
             <%if order.bulk_order.completed == false%>
-              <%=link_to '-Edit Order', edit_user_order_path(order,:item => order.item, :price => (order.total_price/order.quantity))%><h3>
-                OPEN
+             <%=link_to edit_user_order_path(order,:item => order.item, :price => (order.total_price/order.quantity)) do%><i class="glyphicon glyphicon-pencil"></i><%end%>
+              <%=link_to user_order_path(order), :method => :delete do %><i class="glyphicon glyphicon-trash"></i><%end%></h3>
+              <h3>  OPEN </h3>
             <%else%>
-            <%=link_to '-View Order', user_order_path(order,:item => order.item, :price => (order.total_price/order.quantity))%><h3>
-              COMPLETED
+            <%=link_to user_order_path(order,:item => order.item, :price => (order.total_price/order.quantity)) do%><i class="glyphicon glyphicon-eye-open"></i><%end%><h3>
+            <h3>  COMPLETED </h3>
             <%end%>
               <%@bulk_order = order.bulk_order%>
               <h4><%=@bulk_order.percent_filled%>/<%=@bulk_order.max_amount%> Spots of this Order Filled</h4>
@@ -74,3 +80,10 @@
     <%end%>
   </div>
 </div>
+<script>
+  $('.show-btn').on('click',function(){
+    var text = $(this).html()
+    $('#'+this.id+'_orders').toggle('fast');
+    $(this).html(text == 'Show Orders' ? 'Hide Orders' : 'Show Orders')
+  })
+</script>

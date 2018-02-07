@@ -61,7 +61,7 @@ class UserOrdersController < ApplicationController
     @bulk_order.save
     if @bulk_order.percent_filled >= @bulk_order.max_amount
       @item = @bulk_order.item
-      @item.max_amount=@item.max_amount- @item.bulk_order_amount
+      @item.current_amount=@item.current_amount- @item.bulk_order_amount
       @item.save
       @bulk_order.completed = true
       @bulk_order.save
@@ -69,9 +69,11 @@ class UserOrdersController < ApplicationController
         @bulk_order.users.each do |user|
           @user_order = @bulk_order.user_orders.where(user_id: user.id)[0]
           NotifMailer.single_order_email(user,@bulk_order,@user_order).deliver
+          NotifMailer.vendor_email(@bulk_order).deliver
         end
       else
         NotifMailer.single_order_email(@user,@bulk_order,@user_order).deliver
+        NotifMailer.vendor_email(@bulk_order).deliver
       end
     end
     respond_to do |format|
@@ -88,9 +90,18 @@ class UserOrdersController < ApplicationController
   # DELETE /user_orders/1
   # DELETE /user_orders/1.json
   def destroy
+    @user_order = UserOrder.find(params[:id])
+    @user = @user_order.user
+    @bulk_order = @user_order.bulk_order
+    @bulk_order.percent_filled = @bulk_order.percent_filled - @user_order.quantity
+    @bulk_order.users.delete(@user)
+    @bulk_order.save
     @user_order.destroy
+    if @bulk_order.percent_filled < 1
+      @bulk_order.destroy
+    end
     respond_to do |format|
-      format.html { redirect_to user_orders_url, notice: 'User order was successfully destroyed.' }
+      format.html { redirect_to user_path_url(@user), notice: 'User order was successfully destroyed.' }
       format.json { head :no_content }
     end
   end

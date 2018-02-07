@@ -52,11 +52,12 @@ class BulkOrdersController < ApplicationController
     @bulk_order.percent_filled = (@bulk_order.percent_filled || 0 + @user_order.quantity)
     if @bulk_order.percent_filled >= @bulk_order.max_amount
       @item = @bulk_order.item
-      @item.max_amount = @item.max_amount - @item.bulk_order_amount
+      @item.current_amount = (@item.current_amount - @item.bulk_order_amount)
       @item.save
       @bulk_order.completed = true
       @bulk_order.save
         NotifMailer.single_order_email(@user,@bulk_order,@user_order).deliver
+        NotifMailer.vendor_email(@bulk_order).deliver
     end
     respond_to do |format|
       if @bulk_order.save
@@ -86,7 +87,7 @@ class BulkOrdersController < ApplicationController
     @bulk_order.percent_filled = (@bulk_order.percent_filled +  params[:bulk_order][:quantity].to_i)
     if @bulk_order.percent_filled >= @bulk_order.max_amount
       @item = @bulk_order.item
-      @item.max_amount=@item.max_amount - @item.bulk_order_amount
+      @item.current_amount=(@item.current_amount - @item.bulk_order_amount)
       @item.save
       @bulk_order.completed = true
       @bulk_order.save
@@ -94,9 +95,11 @@ class BulkOrdersController < ApplicationController
         @bulk_order.users.each do |user|
           @user_order = @bulk_order.user_orders.where(user_id: user.id)[0]
           NotifMailer.single_order_email(user,@bulk_order,@user_order).deliver
+          NotifMailer.vendor_email(@bulk_order).deliver
         end
       else
         NotifMailer.single_order_email(@user,@bulk_order,@user_order).deliver
+        NotifMailer.vendor_email(@bulk_order).deliver
       end
     end
     respond_to do |format|

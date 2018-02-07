@@ -1,3 +1,4 @@
+<div class="container card">
 <%= form_with(model: item, local: true) do |form| %>
   <% if item.errors.any? %>
     <div id="error_explanation">
@@ -10,16 +11,25 @@
       </ul>
     </div>
   <% end %>
-
-  <div class="field">
-    <%= form.label :item_name %>
-    <%= form.text_field :item_name, id: :item_item_name %>
+  <div>
+    <%=image_tag(item.image, :size => "250x250") rescue nil%>
   </div>
+  <% if item.new_record?%>
+  <br>
+    <div class="field">
+      <%= form.label :item_name %>
+      <%= form.text_field :item_name, id: :item_item_name %>
+    </div>
 
-  <div class="field">
-    <%= form.label :price_per_gram %>
-    <%= form.number_field :price, id: :item_price %>
-  </div>
+    <div class="field">
+      <%= form.label :price_per_gram %>
+      <%= form.number_field :price, id: :item_price %>
+    </div>
+  <%else%>
+  <br>
+    <label>Item: </label><span> <%=item.item_name%></span><br>
+    <label>Price: </label><span> <%=item.price%></span>
+  <%end%>
 
   <div class="field">
     <%= form.label :amount_in_total %>
@@ -34,3 +44,4 @@
     <%= form.submit %>
   </div>
 <% end %>
+</div>
