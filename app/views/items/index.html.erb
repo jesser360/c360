@@ -5,6 +5,30 @@
 <h3 id='item_bottom_header'>high quality oil, for an affordable price</h3>
 <div id='oil-pic'>
 </div>
+<div class='row all-pictos text-center'>
+  <div class='col-md-4 pictos'>
+    <strong><span class='text' style='font-size:2vw'>BUYERS</span></strong><br>
+    <image class='photos' src='https://i.imgur.com/m9UCXZj.png'></image><br>
+    <span class='text'>Explore the Available Items Below.</span><br>
+    <span class='text'>Create a New or Join an exisiting Bulk Order</span><br>
+    <span class='text'>Recieve a Confirmation email when Order is Filled</span>
+  </div>
+  <div class='col-md-4 pictos'>
+    <strong><span class='text' style='font-size:2vw'>SUPPLIERS</span></strong><br>
+    <image class='photos' src='https://i.imgur.com/mMevcSG.png'></image><br>
+    <span class='text'>Go your Profile Page to Create new Items to Sell</span><br>
+    <span class='text'>Manage the price, available oil supply, and each Order Size</span><br>
+    <span class='text'>Recieve everyone's Payment when the Order is Filled</span><br>
+
+  </div>
+  <div class='col-md-4 pictos'>
+    <strong><span class='text' style='font-size:2vw'>GROUP ORDERS</span></strong><br>
+    <image class='photos'src='https://i.imgur.com/Yms8L1G.png'></image><br>
+    <span class='text'>Join in on a Bulk Order with others for each Item</span><br>
+    <span class='text'>Order will be shipped when Entire Order is filled</span><br>
+    <span class='text'>If Timer expires before, you still recieve partial discount</span><br>
+  </div>
+</div>
 <div class='all-items'>
   <br>
   <span hidden id='item_total'><%=@items.count %></span>
@@ -23,6 +47,7 @@
           <div class="col-md-3">
             <h1><%= item.item_name %> - $<%= item.price %>/g</h1>
             <h3><%=item.current_amount%> grams available</h3>
+            <h3>Supplier - <%=item.user.company_name%></h3>
             <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
           </div>
           <div class="col-md-6">
@@ -37,13 +62,19 @@
                    <div class='piechart'id='pieChart_<%=i%>'></div>
                  </div>
                 <div class='col-md-6'>
+                  <% if item.user_id == @user.id%>
                   <div class= 'clock' id='clock_<%=i%>'></div>
-                  <%if @bulk.users.where(email: @user.email).length > 0%>
-                  <h4 class="bulk_order_link" ><%= link_to 'Edit Your Bulk Order: $'+(item.price).to_s+'/g', edit_user_order_url(@bulk.users.where(email: @user.email)[0].user_orders.where(item:item.item_name)[0].id, :item => item.item_name, :price => (item.price)) %></h4>
+                  <h4 class="bulk_order_link" ><%= link_to 'View Bulk Orders on Your Item', bulk_order_url(@bulk, :item => item.item_name, :price => (item.price)) %></h4>
                   <%else%>
-                  <h4 class="bulk_order_link" ><%= link_to 'Join Bulk Order: $'+(item.price).to_s+'/g', edit_bulk_order_url(@bulk, :item => item.item_name, :price => (item.price)) %></h4>
-                  <h6>*Details about joining a bulk order</h6>
-                  <%end%>
+                    <%if @bulk.users.where(email: @user.email).length > 0%>
+                    <div class= 'clock' id='clock_<%=i%>'></div>
+                    <h4 class="bulk_order_link" ><%= link_to 'Edit Your Bulk Order: $'+(item.price).to_s+'/g', edit_user_order_url(@bulk.user_orders.where(user_id: @user.id)[0], :item => item.item_name, :price => (item.price)) %></h4>
+                    <%else%>
+                    <div class= 'clock' id='clock_<%=i%>'></div>
+                    <h4 class="bulk_order_link" ><%= link_to 'Join Bulk Order: $'+(item.price).to_s+'/g', edit_bulk_order_url(@bulk, :item => item.item_name, :price => (item.price)) %></h4>
+                    <h6>*Details about joining a bulk order</h6>
+                    <%end%>
+                    <%end%>
                   <div hidden>
                   <span id='percent_filled_<%=i%>'><%=@bulk.percent_filled%></span>
                 </div>
@@ -55,9 +86,12 @@
               <div class='piechart'id='pieChart_<%=i%>'></div>
             </div>
             <div class='col-md-6'>
-              <div class='clock' id='clock_<%=i%>'></div>
+              <% if item.user.id == @user.id%>
+              <h4>No One has joined Order yet</h4>
+              <%else%>
               <h4 class="bulk_order_link"><%= link_to 'Create New Bulk Order: $'+(item.price).to_s+'/g', new_bulk_order_url(:item => item.item_name, :price => (item.price))%></h4>
               <h6>*Details about joining a bulk order</h6>
+              <%end%>
             </div>
             <div class='col-md-6'>
             </div>

@@ -1,6 +1,7 @@
+<div class='edit-order'>
 <p id="notice"><%= notice %></p>
-
-
+<br>
+<h1>Current Bulk Order Status</h1>
     <div class ="row edit-row">
         <div class="col-md-3">
         <span class='oil-image'><%= image_tag(@item.image, :size => "250x250") %></span>
@@ -38,6 +39,7 @@
   <span id='expire_date'><%=@bulk_order.expire_date rescue nil%></span>
   <span id='item'><%=@bulk_order.item rescue nil%></span>
   </div>
+</div>
   <script>
   var percent_filled = $('#percent_filled').text();
   var user_order_quant = $('#user_order_quantity').val();
