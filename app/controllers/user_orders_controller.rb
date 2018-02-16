@@ -32,20 +32,7 @@ class UserOrdersController < ApplicationController
   # POST /user_orders
   # POST /user_orders.json
   def create
-    @user = User.find_by_id(session[:user_id]) if session[:user_id]
-    @user_order = UserOrder.new(user_order_params)
-    @user_order.quantity = params[:user_order][:quantity]
-    @user_order.expiration = 14
-    @user_order.total_price = @user_order.quantity * params[:price].to_i
-    respond_to do |format|
-      if @user_order.save
-        format.html { redirect_to user_path_url(@user), notice: 'User order was successfully created.' }
-        format.json { render :show, status: :created, location: @user_order }
-      else
-        format.html { render :new }
-        format.json { render json: @user_order.errors, status: :unprocessable_entity }
-      end
-    end
+    # EDIT BULK ORDER INSTEAD
   end
 
   # PATCH/PUT /user_orders/1
@@ -59,6 +46,7 @@ class UserOrdersController < ApplicationController
     @user_order.total_price = @user_order.quantity * params[:price].to_i
     @bulk_order.percent_filled = @bulk_order.percent_filled + @user_order.quantity
     @bulk_order.save
+    @user_order.save
     if @bulk_order.percent_filled >= @bulk_order.max_amount
       @item = @bulk_order.item
       @item.current_amount=@item.current_amount- @item.bulk_order_amount
@@ -85,6 +73,52 @@ class UserOrdersController < ApplicationController
         format.json { render json: @user_order.errors, status: :unprocessable_entity }
       end
     end
+
+    charge = Stripe::Charge.retrieve(@user_order.charge_token)
+    re = Stripe::Refund.create(
+      charge: charge
+    )
+    charge.save
+    @user_order.charge_token = nil
+    @user_order.save
+
+    if @bulk_order.completed == true
+      @bulk_order.user_orders.each do |order|
+        unless order.charge_token.nil?
+          charge = Stripe::Charge.retrieve(order.charge_token)
+          charge.capture
+          end
+        end
+        @amount = (@user_order.total_price * 100)
+        customer = Stripe::Customer.create(
+          :email => params[:stripeEmail],
+          :source  => params[:stripeToken]
+        )
+      charge = Stripe::Charge.create(
+        :customer    => customer.id,
+        :amount      => @amount,
+        :description => 'Rails Stripe customer',
+        :currency    => 'usd'
+      )
+    else
+      @amount = (@user_order.total_price * 100)
+      customer = Stripe::Customer.create(
+        :email => params[:stripeEmail],
+        :source  => params[:stripeToken]
+      )
+      charge = Stripe::Charge.create(
+        :customer    => customer.id,
+        :amount      => @amount,
+        :capture => false,
+        :description => 'Rails Stripe customer',
+        :currency    => 'usd'
+      )
+      @user_order.charge_token = charge.id
+      @user_order.save
+    end
+  rescue Stripe::CardError => e
+    flash[:error] = e.message
+
   end
 
   # DELETE /user_orders/1
@@ -104,6 +138,11 @@ class UserOrdersController < ApplicationController
       format.html { redirect_to user_path_url(@user), notice: 'User order was successfully destroyed.' }
       format.json { head :no_content }
     end
+    charge = Stripe::Charge.retrieve(@user_order.charge_token)
+    re = Stripe::Refund.create(
+      charge: charge
+    )
+    charge.save
   end
 
   private

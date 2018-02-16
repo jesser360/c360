@@ -56,8 +56,8 @@ class BulkOrdersController < ApplicationController
       @item.save
       @bulk_order.completed = true
       @bulk_order.save
-        NotifMailer.single_order_email(@user,@bulk_order,@user_order).deliver
-        NotifMailer.vendor_email(@bulk_order).deliver
+      NotifMailer.single_order_email(@user,@bulk_order,@user_order).deliver
+      NotifMailer.vendor_email(@bulk_order).deliver
     end
     respond_to do |format|
       if @bulk_order.save
@@ -68,6 +68,34 @@ class BulkOrdersController < ApplicationController
         format.json { render json: @bulk_order.errors, status: :unprocessable_entity }
       end
     end
+
+    @amount = params[:amount]
+    customer = Stripe::Customer.create(
+      :email => params[:stripeEmail],
+      :source  => params[:stripeToken]
+    )
+    if @bulk_order.percent_filled >= @bulk_order.max_amount
+      charge = Stripe::Charge.create(
+        :customer    => customer.id,
+        :amount      => @amount,
+        :description => 'Rails Stripe customer',
+        :currency    => 'usd'
+      )
+    else
+      charge = Stripe::Charge.create(
+        :customer    => customer.id,
+        :amount      => @amount,
+        :capture => false,
+        :description => 'Rails Stripe customer',
+        :currency    => 'usd'
+      )
+      @user_order.charge_token = charge.id
+      @user_order.save
+    end
+  rescue Stripe::CardError => e
+    flash[:error] = e.message
+
+
   end
 
   # PATCH/PUT /bulk_orders/1
@@ -111,6 +139,45 @@ class BulkOrdersController < ApplicationController
         format.json { render json: @bulk_order.errors, status: :unprocessable_entity }
       end
     end
+
+    if @bulk_order.completed == true
+      @bulk_order.user_orders.each do |order|
+        if order.charge_token
+        charge = Stripe::Charge.retrieve(order.charge_token)
+        charge.capture
+        end
+      end
+      @amount = params[:amount]
+      customer = Stripe::Customer.create(
+        :email => params[:stripeEmail],
+        :source  => params[:stripeToken]
+      )
+      charge = Stripe::Charge.create(
+        :customer    => customer.id,
+        :amount      => @amount,
+        :description => 'Rails Stripe customer',
+        :currency    => 'usd'
+      )
+    else
+      @amount = params[:amount]
+      customer = Stripe::Customer.create(
+        :email => params[:stripeEmail],
+        :source  => params[:stripeToken]
+      )
+      charge = Stripe::Charge.create(
+        :customer    => customer.id,
+        :amount      => @amount,
+        :capture => false,
+        :description => 'Rails Stripe customer',
+        :currency    => 'usd'
+      )
+      @user_order.charge_token = charge.id
+      @user_order.save
+    end
+
+  rescue Stripe::CardError => e
+    flash[:error] = e.message
+
   end
 
   # DELETE /bulk_orders/1

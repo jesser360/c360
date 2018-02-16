@@ -19,5 +19,6 @@
 
 /node_modules
 /yarn-error.log
-
+*.yml
+/config/initializers/stripe.rb
 .byebug_history

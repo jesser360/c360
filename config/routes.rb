@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   resources :user_orders
   resources :bulk_orders
   resources :items
+  resources :charges
+
 
   get '/' => 'sessions#new'
   get '/items' => 'items#index'

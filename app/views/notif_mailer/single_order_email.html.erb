@@ -1,3 +1,4 @@
+<% if @user && @item && @user_order%>
 <h1>Hello <%= @user.email %> from <%= @user.company_name %></h1>
 <h4>Your Bulk Order for <%=@user_order.item%> has been completed!</h4>
 <br><br>
@@ -9,3 +10,4 @@
   <h4>You can get in touch with them at <strong><%=@vendor.email%></strong>.</h4>
 
 <span>  There were a total of <%=@bulk_order.users.count%> users who were a part of this order.</span>
+<%end%>
