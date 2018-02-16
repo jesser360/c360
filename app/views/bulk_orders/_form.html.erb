@@ -94,7 +94,7 @@
   });
   $('#payButton').on('click', function(e) {
     e.preventDefault();
-    if(parseInt($('#order_quant').val()) > parseInt($('#max_amount').text()) ){
+    if(parseInt($('#order_quant').val()) > (parseInt($('#max_amount').text()) - parseInt($('#percent_filled').text()) ) ){
       $('#order_quant').css("border","3px solid red");
     }else{
       handler.open({

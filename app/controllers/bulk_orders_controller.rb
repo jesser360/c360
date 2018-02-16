@@ -61,7 +61,7 @@ class BulkOrdersController < ApplicationController
     end
     respond_to do |format|
       if @bulk_order.save
-        format.html { redirect_to user_path_url(@user), notice: 'Bulk order was successfully created.' }
+        format.html { redirect_to user_path_url(@user) }
         format.json { render :show, status: :created, location: @bulk_order }
       else
         format.html { render :new }
@@ -132,7 +132,7 @@ class BulkOrdersController < ApplicationController
     end
     respond_to do |format|
       if @bulk_order.save
-        format.html { redirect_to user_path_url(@user), notice: 'You were added to this BUlk Order.' }
+        format.html { redirect_to user_path_url(@user)}
         format.json { render :show, status: :ok, location: @bulk_order }
       else
         format.html { render :edit }
@@ -185,7 +185,7 @@ class BulkOrdersController < ApplicationController
   def destroy
     @bulk_order.destroy
     respond_to do |format|
-      format.html { redirect_to bulk_orders_url, notice: 'Bulk order was successfully destroyed.' }
+      format.html { redirect_to bulk_orders_url}
       format.json { head :no_content }
     end
   end

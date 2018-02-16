@@ -66,7 +66,7 @@ class UserOrdersController < ApplicationController
     end
     respond_to do |format|
       if @user_order.update(user_order_params)
-        format.html { redirect_to user_path_url(@user), notice: 'User order was successfully updated.' }
+        format.html { redirect_to user_path_url(@user)}
         format.json { render :show, status: :ok, location: @user }
       else
         format.html { render :edit }
@@ -135,7 +135,7 @@ class UserOrdersController < ApplicationController
       @bulk_order.destroy
     end
     respond_to do |format|
-      format.html { redirect_to user_path_url(@user), notice: 'User order was successfully destroyed.' }
+      format.html { redirect_to user_path_url(@user)}
       format.json { head :no_content }
     end
     charge = Stripe::Charge.retrieve(@user_order.charge_token)

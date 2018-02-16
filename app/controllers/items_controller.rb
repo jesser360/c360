@@ -39,7 +39,7 @@ class ItemsController < ApplicationController
     @item.image = 'http://moziru.com/images/drawn-weed-animated-7.gif'
     respond_to do |format|
       if @item.save
-        format.html { redirect_to user_path_url(@user), notice: 'Item was successfully created.' }
+        format.html { redirect_to user_path_url(@user)}
         format.json { render :show, status: :created, location: @item }
       else
         format.html { render :new }
@@ -56,7 +56,7 @@ class ItemsController < ApplicationController
     @item.current_amount = item_params[:max_amount]
     respond_to do |format|
       if @item.update(item_params)
-        format.html { redirect_to user_path_url(@user), notice: 'Item was successfully updated.' }
+        format.html { redirect_to user_path_url(@user)}
         format.json { render :show, status: :ok, location: @item }
       else
         format.html { render :edit }
@@ -70,7 +70,7 @@ class ItemsController < ApplicationController
   def destroy
     @item.destroy
     respond_to do |format|
-      format.html { redirect_to items_url, notice: 'Item was successfully destroyed.' }
+      format.html { redirect_to items_url}
       format.json { head :no_content }
     end
   end

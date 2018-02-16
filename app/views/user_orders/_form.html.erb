@@ -40,6 +40,9 @@
         <label>Price</label>
         <span id='total_price'>$<%=@user_order.total_price%></span>
       </div>
+      <%unless @user_order.new_record?%>
+      Youre previous charge will be deleted<br> A new payment will be created<br>You are not getting charged again<br>
+      <%end%>
       <button type ='submit' id='payButton'>PAY</button>
 
       <%= hidden_field_tag(:user_id, @user.id)%>
@@ -51,7 +54,8 @@
     </div>
   </div>
   <div hidden>
-  <span id='percent_filled'><%=@bulk.percent_filled rescue nil%></span>
+  <span id= 'already_user_order'><%=@user_order.quantity rescue 0%></span>
+  <span id='percent_filled'><%=@bulk.percent_filled rescue 0%></span>
   <span id='max_amount'><%=@bulk.max_amount rescue nil%></span>
   <span id='expire_date'><%=@bulk.expire_date rescue nil%></span>
   <span id='item'><%=@bulk.item rescue nil%></span>
@@ -74,10 +78,14 @@
   });
   $('#payButton').on('click', function(e) {
     e.preventDefault();
-    handler.open({
-      amount: Math.round(amount),
-      description: $('#user_order_quantity').val() + ( $('#user_order_quantity').val() > 1 ? ' grams':' gram')
-    });
+    if(parseInt($('#user_order_quantity').val()) > (parseInt($('#max_amount').text()) - parseInt($('#percent_filled').text()) + parseInt($('#already_user_order').text())) ){
+      $('#user_order_quantity').css("border","3px solid red");
+    }else{
+      handler.open({
+        amount: Math.round(amount),
+        description: $('#user_order_quantity').val() + ( $('#user_order_quantity').val() > 1 ? ' grams':' gram')
+      });
+    }
   });
   var handler = StripeCheckout.configure({
     key: '<%= Rails.configuration.stripe[:publishable_key] %>',
