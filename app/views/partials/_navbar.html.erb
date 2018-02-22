@@ -1,28 +1,48 @@
 
 
-<nav id="mainNav" class=" nav navbar-default navbar-fixed-top topnav" role="navigation">
+<nav id="mainNav" class=" nav navbar-default navbar-fixed-top " role="navigation" style="background-color:#516fbf">
   <div class="row navbar_link" >
     <div class ="col-xs-1">
     <ul class="nav_padding_right">
-      <h5 class ="text-center"><%= link_to '/items' do %>
-      <span class ="glyphicon glyphicon-leaf"></span></h5>
+      <h5 class ="text-center"><%= link_to '/home' do %>
+      <img src ='https://i.imgur.com/V1iLpgs.jpg' alt="Logo" style="width:100px;height:70px;"></h5>
       <%end%>
     </div>
 
-    <div class ="col-xs-5">
+    <div class ="col-xs-4 nav-link">
+    </div>
+    <div class ="col-xs-2 ">
       <% if User.find_by_id(session[:user_id]) %>
-        <h5 class = "pull-right"><%= link_to user_path_url(User.find_by_id(session[:user_id])) do %>
-        <span><%=(User.find_by_id(session[:user_id]).email)%></span><span class="cart glyphicon glyphicon-user"></span></h5>
+        <h4 class = "text-center nav-link"><%= link_to user_path_url(User.find_by_id(session[:user_id])) do %>
+        <img src="https://i.imgur.com/j5v8TRk.jpg" alt="profile pic" style='border-radius:50%;height:40px;width:40px;margin-top:-15px'><span>Profile Page</span></h4>
         <%end%>
         <%end%>
       </div>
-    <div class ="col-xs-6">
+      <div class ="col-xs-1 ">
+        <h4 class = "text-center nav-link"><%= link_to 'About','/about' %></h4>
+      </div>
+      <div class ="col-xs-1 ">
+        <h4 class = "text-center nav-link"><%= link_to 'Services','/services' %></h4>
+      </div>
       <% if User.find_by_id(session[:user_id]) %>
-      <h5 class = "text-center"><%= link_to 'Log Out', logout_path, method: :delete%></h5>
+        <div class ="col-xs-1 ">
+          <h4 class = "text-center nav-link"><%= link_to 'WholeSale','/items' %></h4>
+        </div>
+        <%else%>
+        <div class ="col-xs-1 ">
+          <h4 class = "text-center nav-link"><%= link_to 'WholeSale','/login' %></h4>
+        </div>
+      <%end%>
+      <% if User.find_by_id(session[:user_id]) %>
+    <div class ="col-xs-1">
+      <h4 class = "text-center nav-link"><%= link_to 'Log Out', logout_path, method: :delete%></h4>
+    </div>
       <% else %>
-      <h5 class ="pull-center"><%= link_to 'Log In', login_path %> |
-      <%= link_to 'Sign Up', signup_path %></h5>
+      <div class ="col-xs-2">
+      <h4 class ="text-center nav-link"><%= link_to 'Log In', login_path %> |
+      <%= link_to 'Sign Up', signup_path %></h4>
       <% end %>
     </div>
-</nav>
+  </ul>
 </div>
+</nav>

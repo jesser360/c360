@@ -7,6 +7,9 @@ Rails.application.routes.draw do
 
   get '/' => 'sessions#new'
   get '/items' => 'items#index'
+  get '/home' => 'pages#home'
+  get '/about' => 'pages#about'
+  get '/services' => 'pages#services'
 
   get '/users/:id', to: 'users#show', as: 'user_path'
   get '/signup' => 'users#new'
