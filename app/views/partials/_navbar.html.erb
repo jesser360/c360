@@ -13,34 +13,34 @@
     </div>
     <div class ="col-xs-2 ">
       <% if User.find_by_id(session[:user_id]) %>
-        <h4 class = "text-center nav-link"><%= link_to user_path_url(User.find_by_id(session[:user_id])) do %>
-        <img src="https://i.imgur.com/j5v8TRk.jpg" alt="profile pic" style='border-radius:50%;height:40px;width:40px;margin-top:-15px'><span>Profile Page</span></h4>
+        <li class = "text-center nav-link"><%= link_to user_path_url(User.find_by_id(session[:user_id])) do %>
+        <img src="https://i.imgur.com/j5v8TRk.jpg" alt="profile pic" style='border-radius:50%;height:40px;width:40px;margin-top:-15px'><span>Profile Page</span></li>
         <%end%>
         <%end%>
       </div>
       <div class ="col-xs-1 ">
-        <h4 class = "text-center nav-link"><%= link_to 'About','/about' %></h4>
+        <li class = "text-center nav-link"><%= link_to 'About','/about' %></li>
       </div>
       <div class ="col-xs-1 ">
-        <h4 class = "text-center nav-link"><%= link_to 'Services','/services' %></h4>
+        <li class = "text-center nav-link"><%= link_to 'Services','/services' %></li>
       </div>
       <% if User.find_by_id(session[:user_id]) %>
         <div class ="col-xs-1 ">
-          <h4 class = "text-center nav-link"><%= link_to 'WholeSale','/items' %></h4>
+          <li class = "text-center nav-link"><%= link_to 'WholeSale','/items' %></li>
         </div>
         <%else%>
         <div class ="col-xs-1 ">
-          <h4 class = "text-center nav-link"><%= link_to 'WholeSale','/login' %></h4>
+          <li class = "text-center nav-link"><%= link_to 'WholeSale','/login' %></li>
         </div>
       <%end%>
       <% if User.find_by_id(session[:user_id]) %>
     <div class ="col-xs-1">
-      <h4 class = "text-center nav-link"><%= link_to 'Log Out', logout_path, method: :delete%></h4>
+      <li class = "text-center nav-link"><%= link_to 'Log Out', logout_path, method: :delete%></li>
     </div>
       <% else %>
       <div class ="col-xs-2">
-      <h4 class ="text-center nav-link"><%= link_to 'Log In', login_path %> |
-      <%= link_to 'Sign Up', signup_path %></h4>
+      <li class ="text-center nav-link"><%= link_to 'Log In', login_path %> |
+      <%= link_to 'Sign Up', signup_path %></li>
       <% end %>
     </div>
   </ul>
