@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   resources :charges
 
 
-  get '/' => 'sessions#new'
+  get '/' => 'pages#home'
   get '/items' => 'items#index'
   get '/home' => 'pages#home'
   get '/about' => 'pages#about'
