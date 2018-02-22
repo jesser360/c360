@@ -164,8 +164,7 @@ font-size: 1.3vw;
 
 
 #myCarousel {
-  width: auto;
-  height: 45%;
+  margin:0;
 }
 .item{
   width:100%;
@@ -226,7 +225,7 @@ font-size: 1.3vw;
 .tagline{
   height:60vh;
   background:lightgray;
-  margin-top:-5vh;
+  // margin-top:-5vh;
 }
 #tag_words{
   font-family:"Lato", Arial, Helvetica, Verdana, sans-serif;
