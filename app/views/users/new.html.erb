@@ -14,6 +14,16 @@
         </div>
       </div>
     </div>
+    <div class='row signup-form' id='zipcode'>
+      <div class="form-group">
+        <div class="control-label col-sm-2 text-right">
+          <%= f.label :Zipcode %>
+        </div>
+        <div class="col-sm-8">
+          <%= f.text_field :zipcode, class: "form-control", placeholder: "Enter Zipcode", autofocus: true %>
+        </div>
+      </div>
+    </div>
     <div class='row signup-form'>
       <div class="form-group">
         <div class="control-label col-sm-2 text-right">
@@ -34,7 +44,7 @@
         </div>
       </div>
     </div>
-    <div class='row signup-form' hidden id='upload_image'>
+    <div hidden class='row signup-form' id='upload_image'>
       <div class="form-group">
         <div class="control-label col-sm-2 text-right">
           <%= f.label :Upload_image %>

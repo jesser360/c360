@@ -16,64 +16,67 @@
 
 
     <div class ="row edit-row">
-        <div class="col-md-3">
-        <span class='oil-image'><%= image_tag(@item.image, :size => "250x250") %></span>
-        </div>
-        <div class="col-md-3 edit-card">
-          <h1 id='item_name'><%= @item.item_name %></h1>
-          <h3><%= @item.price %>$ / gram</h3>
-          <h4>Max Order - <%=@item.bulk_order_amount%> g</h4>
-          <span hidden id='item_price'><%= @item.price %></span>
-          <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
-        </div>
-        <div class='col-md-6 '>
-          <div id='pieChart'></div>
-        </div>
+      <div class="col-md-6 edit-card">
+        <span style='float:right' class='oil-image'><%= image_tag(@item.image, :size => "250x250") %></span>
+        <h1 id='item_name'><%= @item.item_name %></h1>
+        <h3><%= @item.price %>$ / gram</h3>
+        <h4>Max Order - <%=@item.bulk_order_amount%> g</h4>
+        <h4><%=@item.current_amount%> grams available</h4>
+        <span hidden id='item_price'><%= @item.price %></span>
+        <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
       </div>
-      <div class='row edit-row'>
-        <div class='col-md-1'>
+      <div class='col-md-3' style='font-size:1.2em;margin-top:-5vh'>
+        <div class='row edit-card' style='margin-top:5vh'>
+          <div id='small-clock'></div>
         </div>
-        <div class='col-md-6' style='font-size:1.2em'>
+      <% if @bulk_order.new_record? || @bulk_order.percent_filled < @bulk_order.max_amount && @item.user != @user%>
         <div class="field" >
-          <label>quantity</label>
-          <input type='number' id='order_quant' min='1' max='<%=@item.bulk_order_amount - (@bulk_order.percent_filled ||0)%>'name='bulk_order[quantity]'>
+          <label>Quantity (g)</label>
+          <input style='width:7vw' type='number' id='order_quant' min='1' max='<%=@item.bulk_order_amount - (@bulk_order.percent_filled ||0)%>'name='bulk_order[quantity]'>
         </div>
         <div class="field">
           <label>Price</label>
           <span id='total_price'>$</span>
         </div>
         <button type="submit" id='payButton'>PAY</button>
-
+      <%end%>
         <%= hidden_field_tag(:user_id, @user.id)%>
         <%= hidden_field_tag(:item,params[:item])%>
         <%= hidden_field_tag(:price,params[:price])%>
-
       </div>
-      <div class='col-md-4 edit-card'>
-        <div id='clock'></div>
-      </div>
+      <%if !@bulk_order.new_record?%>
+        <div class='col-md-3 '>
+          <div class='row'>
+            <div id='pieChart'></div>
+          </div>
+        </div>
+      <%end%>
     </div>
 
 <br>
-  <% if @bulk_order.user_orders.length > 1%>
+  <% if !@bulk_order.new_record? && @seller==@user%>
   <h4>Users part of Bulk Order :</h4>
-  <ul>
-    <% @bulk_order.user_orders.each do |user| %>
-      <li><%=User.find_by_id(user.user_id).email%> bought <%=user.quantity%> <%=user.item%></li>
+    <% @bulk_order.user_orders.each do |user_order| %>
+      <% @user_found = User.find_by_id(user_order.user_id)%>
+      <strong><%=@user_found.email%></strong>
+      <h6> Bought <%=user_order.quantity%> <%=user_order.item%> for $<%=user_order.total_price%></h6>
+      <h6>Lives in <%=@user_found.zipcode%></h6>
     <br>
     <%end%>
-  </ul>
   <%end%>
 
 
   <div hidden>
-  <span id='percent_filled'><%=@bulk.percent_filled rescue 0%></span>
-  <span id='max_amount'><%=@bulk.max_amount rescue @item.bulk_order_amount%></span>
-  <span id='expire_date'><%=@bulk.expire_date rescue nil%></span>
-  <span id='item'><%=@bulk.item rescue nil%></span>
+  <span id='percent_filled'><%=@bulk_order.percent_filled rescue 0%></span>
+  <span id='max_amount'><%=@bulk_order.max_amount rescue @item.bulk_order_amount%></span>
+  <span id='expire_date'><%=@bulk_order.expire_date rescue nil%></span>
+  <span id='item'><%=@bulk_order.item rescue nil%></span>
+  <%@bulk_order.user_orders.each do |order|%>
+  <%if order.user_id == @user.id%>
+  <span id='user_order_quantity'><%=order.quantity%></span>
+  <%end%>
+  <%end%>
   </div>
-  <div>
-</div>
 
   <article>
     <%= hidden_field_tag(:amount) %>
@@ -122,20 +125,15 @@ $(window).on('popstate', function() {
 
 <script>
 var percent_filled = $('#percent_filled').text();
-var user_order_quant = $('#order_quant').val();
+var user_order_quant = $('#user_order_quantity').text();
 var other_order_quant = (percent_filled -user_order_quant)
 var max_amount = $('#max_amount').text();
-
 var expire_date = $('#expire_date').text();
   var item_price = parseInt($('#item_price').text());
   var max_amount = $('#max_amount').text();
   var item = $('#item').val();
-  var stripe_payment = 0;
   $('#order_quant').on('input',function(){
     var order_quant = parseInt($('#order_quant').val());
-     stripe_payment = parseInt(item_price * order_quant)
-     var stripe_amount = stripe_payment * 100
-    $('#stripe_payment').text( '$'+ (item_price * order_quant));
     $('#total_price').text( '$'+ (item_price * order_quant));
   });
 
@@ -144,8 +142,9 @@ var expire_date = $('#expire_date').text();
     bindto: '#pieChart',
       data: {
           columns: [
-              ['Other Orders', percent_filled],
-              ['Remaining',  max_amount-(percent_filled) || 100],
+              ['Your Order', user_order_quant],
+              ['Other', other_order_quant],
+              ['Remaining',  max_amount-(percent_filled)],
           ],
           type : 'donut',
       },
@@ -169,7 +168,7 @@ var expire_date = $('#expire_date').text();
       .attr("x", 0)
       .text(percent_filled+"/"+max_amount+" spots taken");
 
-  var clock_1 = new FlipClock($('#clock'),new Date(expire_date || 0), {
+  var clock_1 = new FlipClock($('#small-clock'),new Date(expire_date || 0), {
   countdown: true,
   clockFace: 'DailyCounter'
   });

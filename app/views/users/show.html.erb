@@ -1,18 +1,14 @@
 <br /><br /><br />
 <div class="container">
-  <%if @user.is_vendor%>
-  <h1 class="text-center">Vendor Profile Page</h1>
-  <%else%>
-  <h1 class="text-center">Buyer Profile Page</h1>
-  <%end%>
-  <div class="row " >
-    <div class="col-md-3 prof-pic" style="background-color:#86A397;border-radius:20px;padding:20px">
+<br>
+  <div class="row" >
+    <div class="col-md-3 prof-pic" style="background-color:#506dc5;border-radius:20px;padding:20px;color:lightgray">
       <img class="profilePic" src="http://i.imgur.com/IulSm39.jpg" alt="profile pic" style ="margin:10px">
-      <h3>Company: <%= @user.company_name%></h3>
-      <h3>Email: <%= @user.email%></h3>
+      <h3><%= @user.company_name%></h3>
+      <h3><%= @user.email%></h3>
     </div>
     <%if @user.is_vendor%>
-    <div class="col-md-9 prof-info navbar_link">
+    <div class="col-md-9 prof-info">
       <h3 style='float:right;margin-right:60px'>Closed Orders:</h3>
       <h3 style='float:right;margin-right:120px'>Open Orders:</h3>
       <h2 >Your Items:<h2>
@@ -43,6 +39,7 @@
                     <%=link_to bulk_order_path(bulk) do %>
                     <li><%=bulk.percent_filled%>/<%=bulk.max_amount%> spots filled<br>
                     <%=bulk.users.count%> Users in order<br>
+                    $<%=bulk.item.price * bulk.percent_filled%> - to be paid
                     <%end%></li>
                     <hr>
                     <%end%>
@@ -52,6 +49,7 @@
                       <%=link_to bulk_order_path(bulk) do %>
                       <li><%=bulk.percent_filled%>/<%=bulk.max_amount%> spots filled<br>
                       <%=bulk.users.count%> Users in order<br>
+                      $<%=bulk.item.price * bulk.percent_filled%> - paid
                       <%end%></li>
                       <hr>
                       <%end%>
@@ -68,9 +66,8 @@
         </ul>
         <hr>
     </div>
-    <%end%>
-    <div class="col-md-9 prof-info navbar_link">
-      <h2 class='text-center'>Your orders as a Buyer</h2>
+    <%else%>
+    <div class="col-md-9 prof-info">
       <h2 style='float:right;margin-right:60px'> Finished Orders:</h2>
       <h2 style='float:right;margin-right:200px'> Open Orders:</h2>
       <div class="row">
@@ -104,7 +101,7 @@
                 <div class='col-md-8'>
               <h3><%=order.item%>-<br>
                 <%=order.quantity rescue nil%> grams for $<%=order.total_price rescue nil%><br>
-                <%=link_to user_order_path(order,:item => order.item, :price => (order.total_price/order.quantity)) do%><i class="glyphicon glyphicon-eye-open"></i><%end%><h3>
+                <%=link_to bulk_order_path(order.bulk_order,:item => order.item) do%><i class="glyphicon glyphicon-eye-open"></i><%end%><h3>
                   <%@bulk_order = order.bulk_order%>
                   <h4><%=@bulk_order.percent_filled%>/<%=@bulk_order.max_amount%> Spots of this Order Filled</h4>
                   <hr>
@@ -115,6 +112,8 @@
       </div>
       </div>
     </div>
+    <%end%>
+    <!-- end if user isnt buyer -->
   </div>
   </div>
 </div>

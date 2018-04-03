@@ -12,6 +12,8 @@ class BulkOrdersController < ApplicationController
   def show
     @bulk_order = BulkOrder.find(params[:id])
     @item = @bulk_order.item
+    @user = User.find_by_id(session[:user_id]) if session[:user_id]
+    @seller = @item.user
   end
 
   # GET /bulk_orders/new
