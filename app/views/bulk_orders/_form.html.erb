@@ -54,13 +54,17 @@
     </div>
 
 <br>
+
   <% if !@bulk_order.new_record? && @seller==@user%>
   <h4>Users part of Bulk Order :</h4>
     <% @bulk_order.user_orders.each do |user_order| %>
       <% @user_found = User.find_by_id(user_order.user_id)%>
       <strong><%=@user_found.email%></strong>
-      <h6> Bought <%=user_order.quantity%> <%=user_order.item%> for $<%=user_order.total_price%></h6>
-      <h6>Lives in <%=@user_found.zipcode%></h6>
+      <ul>
+        <li> Bought <%=user_order.quantity%> <%=user_order.item%> for $<%=user_order.total_price%> on <%=Date.parse(user_order.updated_at.to_date.to_s).strftime('%m/%d/%Y')|| ate.parse(user_order.created_at.to_date.to_s).strftime('%m/%d/%Y')%></li>
+
+        <li>Lives in <%=@user_found.city%>, <%=@user_found.state%></li>
+      </ul>
     <br>
     <%end%>
   <%end%>

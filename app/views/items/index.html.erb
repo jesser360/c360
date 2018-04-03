@@ -45,7 +45,7 @@
                     <div class='col-md-10'>
                       <% if item.user_id == @user.id%>
                         <div class= 'clock' id='clock_<%=i%>'></div>
-                        <h4 class="bulk_order_link" ><%= link_to 'View All Orders', bulk_order_url(@bulk) %></h4>
+                        <h4 class="bulk_order_link" ><%= link_to 'View Orders', bulk_order_url(@bulk) %></h4>
                       <%else%>
                         <%if @bulk.users.where(email: @user.email).length > 0%>
                         <div class= 'clock' id='clock_<%=i%>'></div>
