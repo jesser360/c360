@@ -17,4 +17,8 @@ class NotifMailer < ApplicationMailer
     @item = @bulk_order.item
     mail(to: @user.email, subject: 'Vendor: Bulk Order has Filled!')
   end
+
+  def welcome_email(email)
+    mail(to: email, subject: 'Welcome to C360!')
+  end
 end

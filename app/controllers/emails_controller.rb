@@ -15,6 +15,7 @@ class EmailsController < ApplicationController
     @email.email = params[:email][:email]
     respond_to do |format|
       if @email.save
+        NotifMailer.welcome_email(@email.email).deliver
         format.html { redirect_to '/', notice: "Save process completed!" }
         format.json { render json: @email, status: :created, location: @email }
       else
