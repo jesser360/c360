@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180403232451) do
+ActiveRecord::Schema.define(version: 20180406184612) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,6 +33,12 @@ ActiveRecord::Schema.define(version: 20180403232451) do
     t.bigint "bulk_order_id", null: false
     t.index ["bulk_order_id", "user_id"], name: "index_bulk_orders_users_on_bulk_order_id_and_user_id"
     t.index ["user_id", "bulk_order_id"], name: "index_bulk_orders_users_on_user_id_and_bulk_order_id"
+  end
+
+  create_table "emails", force: :cascade do |t|
+    t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "items", force: :cascade do |t|

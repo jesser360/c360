@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resources :bulk_orders
   resources :items
   resources :charges
+  resources :emails
 
   root 'pages#construction'
   get '/' => 'pages#home'

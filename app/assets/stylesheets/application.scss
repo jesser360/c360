@@ -509,3 +509,13 @@ div.foo{
     rotateZ(0deg)
     skew(0deg,22deg);
 }
+
+#email-btn:active {
+  background-color: #lightgray;
+  box-shadow: 0 5px #666;
+  transform: translateY(1px);
+  outline:0;
+}
+#email-btn {
+  outline:0;
+}

@@ -14,10 +14,32 @@
         <div class="input-group" style='width:50%'>
           <input type="email" id='user-email' type="text" class="form-control" placeholder="Enter email here">
           <span class="input-group-btn">
-            <button class="btn btn-secondary" type="button">Send</button>
+            <button class="btn btn-secondary" id='email-btn' type="button">Send</button>
           </span>
         </div>
+        <span id='thank-you' hidden>Thank you, you will recieve an email shortly</span>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  $('#email-btn').on('click',function(e){
+    e.preventDefault();
+    var email_string = $('#user-email').val()
+      $.ajax({
+          type: "POST",
+          url: "/emails",
+          data: { email: { email: email_string} },
+          success:function(data) {
+            setTimeout(function(){
+              $('#thank-you').show('fast')
+            },400)
+            return false
+          },
+          error:function(error) {
+            return false
+          }
+        })
+      })
+</script>
