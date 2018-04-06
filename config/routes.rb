@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   resources :emails
 
   root 'pages#construction'
-  get '/' => 'pages#home'
+  get '/home' => 'pages#home'
   get '/items' => 'items#index'
   get '/home' => 'pages#home'
   get '/about' => 'pages#about'

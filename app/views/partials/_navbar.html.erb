@@ -1,5 +1,52 @@
 
+        <nav id="sidebar" class='hidden'>
+            <!-- Close Sidebar Button -->
+            <div id="dismiss">
+                <i class="glyphicon glyphicon-arrow-left"></i>
+            </div>
 
+            <!-- Sidebar Header -->
+            <div class="sidebar-header">
+                <img src='https://i.imgur.com/RSxTaJF.png' style='margin:10px'>
+            </div>
+
+            <!-- Sidebar Links -->
+            <ul class="list-unstyled ">
+                <li class=" component active"><a href="/home">Home</a></li>
+                <li class="component"><a href="/about">About</a></li>
+                <li class="component"><a href="/services">Services</a></li>
+                <li class="component">
+                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">WholeSale Store</a>
+                    <ul class="collapse list-unstyled" id="homeSubmenu">
+                        <li class="comp"><a href="/items">Market</a></li>
+                        <li class="comp"><a href="#">Instructions</a></li>
+                        <li class="comp"><a href="#">Reviews</a></li>
+                    </ul>
+                <li class="component"><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+
+        <div id="content">
+            <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
+                <i class="glyphicon glyphicon-menu-hamburger"></i>
+            </button>
+      <!-- DONT CLOSE THIS <DIV TAG> WILL FUCK EVERYTHING UP -->
+
+  <script>
+  $(document).ready(function () {
+      $('#sidebarCollapse').on('click', function () {
+          $('#sidebar').toggleClass("hidden")
+          $('#sidebarCollapse').hide()
+      });
+      $('#dismiss').on('click', function () {
+          $('#sidebar').toggleClass("hidden")
+          $('#sidebarCollapse').show()
+      });
+
+  });
+  </script>
+
+<!--
 <nav id="mainNav" class=" nav navbar-default navbar-fixed-top " role="navigation" style="background-color:#516fbf">
   <div class="row navbar_link" >
     <div class ="col-xs-1">
@@ -50,4 +97,4 @@
     </div>
   </ul>
 </div>
-</nav>
+</nav> -->
