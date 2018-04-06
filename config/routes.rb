@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   resources :items
   resources :charges
 
-
+  root 'pages#construction'
   get '/' => 'pages#home'
   get '/items' => 'items#index'
   get '/home' => 'pages#home'
