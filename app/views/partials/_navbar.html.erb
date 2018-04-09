@@ -7,7 +7,7 @@
 
             <!-- Sidebar Header -->
             <div class="sidebar-header">
-                <img src='https://i.imgur.com/RSxTaJF.png' style='margin:10px'>
+                <a href='/home'><img src='https://i.imgur.com/RSxTaJF.png' style='margin:10px'></a>
             </div>
 
             <!-- Sidebar Links -->
@@ -32,6 +32,19 @@
             </button>
       <!-- DONT CLOSE THIS <DIV TAG> WILL FUCK EVERYTHING UP -->
 
+      <div id='prof-pic'>
+        <img id="nav_prof_pic" src="http://i.imgur.com/IulSm39.jpg" alt="profile pic">
+        <a id='prof-carrot' href="#proflink" data-toggle="collapse" aria-expanded="false"></a>
+        <ul class="collapse list-unstyled" id="proflink">
+          <% if User.find_by_id(session[:user_id]) %>
+            <li class="prof-links"><a><%= link_to('Log Out', logout_path, method: :delete)%></a></li>
+            <li class="prof-links"><a><%= link_to('Profile', user_path_url(User.find_by_id(session[:user_id])))%></a></li>
+          <%else%>
+            <li class="prof-links"><a href="/login">Login</a></li>
+            <li class="prof-links"><a href="/signup">Sign Up</a></li>
+            <%end%>
+        </ul>
+      </div>
   <script>
   $(document).ready(function () {
       $('#sidebarCollapse').on('click', function () {

@@ -28,10 +28,29 @@
      display: flex;
      align-items: stretch;
  }
+ #prof-pic{
+   position: absolute;
+   margin-left:91%;
+   margin-top:-8%;
+   z-index:1000;
+   color:red;
+ }
+ #prof-carrot{
+   font-size: 40px;
+   margin-right:10px;
+ }
+ #nav_prof_pic{
+   border-radius:50%;
+   height:50px;
+   width:50px;
+ }
+ #proflink{
+   margin-top: -50px;
+ }
  #sidebarCollapse{
    position:relative;
    z-index:100 !important;
-   margin:10px;
+   margin:40px;
    background-color: Transparent;
   background-repeat:no-repeat;
   border: none;
@@ -39,7 +58,7 @@
   overflow: hidden;
   outline:none;
   color:red;
-  font-size:4vh;
+  font-size:2.5vw;
  }
  #sidebar {
      min-width: 250px;
