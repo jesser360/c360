@@ -1,5 +1,13 @@
 class ItemsController < ApplicationController
   before_action :set_item, only: [:show, :edit, :update, :destroy]
+  before_action :auth
+  
+  def auth
+    @user = User.find_by_id(session[:user_id]) if session[:user_id]
+    if @user.nil?
+      redirect_to '/login'
+    end
+  end
 
   # GET /items
   # GET /items.json

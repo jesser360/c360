@@ -1,4 +1,14 @@
 Rails.application.routes.draw do
+  namespace :admin do
+    resources :bulk_orders
+    resources :emails
+    resources :items
+    resources :users
+    resources :user_orders
+
+    root to: "bulk_orders#index"
+  end
+
   resources :user_orders
   resources :bulk_orders
   resources :items
