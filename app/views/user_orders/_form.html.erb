@@ -19,7 +19,9 @@
         <span style='float:right' class='oil-image'><%= image_tag(@item.image, :size => "250x250") %></span>
         <h1 id='item_name'><%= @item.item_name %></h1>
         <h3><%= @item.price %>$ / gram</h3>
-        <h4>Max Order - <%=@item.bulk_order_amount%> g</h4>
+        <h4><%=link_to user_path_url(@item.user) do%>
+          <%=@item.user.company_name%></h3>
+        <%end%></h4>
         <h4><%=@item.current_amount%> grams available</h4>
         <span hidden id='item_price'><%= @item.price %></span>
         <span hidden id='item_price'><%= @item.price %></span>

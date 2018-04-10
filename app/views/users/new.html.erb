@@ -40,7 +40,17 @@
           <%= f.label :company_name %>
         </div>
         <div class="col-sm-8">
-          <%= f.text_field :company_name, class: "form-control", placeholder: "Enter name here" %>
+          <%= f.text_field :company_name, class: "form-control", placeholder: "Enter Company name here" %>
+        </div>
+      </div>
+    </div>
+    <div class='row signup-form' hidden id='supplier_code'>
+      <div class="form-group">
+        <div class="control-label col-sm-2 text-right">
+          <%= f.label :supplier_code %>
+        </div>
+        <div class="col-sm-8">
+          <%= f.text_field :supplier_code, class: "form-control", placeholder: "Enter Supplier Code here" %>
         </div>
       </div>
     </div>
@@ -89,9 +99,11 @@
 $('#supplier_checkbox').on('click',function(){
   if(this.checked){
     $('#company_name').show('fast')
+    $('#supplier_code').show('fast')
     $('#upload_image').show('fast')
   }else{
     $('#company_name').hide('fast')
+    $('#supplier_code').hide('fast')
     $('#upload_image').hide('fast')
   }
 })

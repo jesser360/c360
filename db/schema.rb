@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180406184612) do
+ActiveRecord::Schema.define(version: 20180410172206) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,6 +79,7 @@ ActiveRecord::Schema.define(version: 20180406184612) do
     t.integer "zipcode"
     t.string "city"
     t.string "state"
+    t.string "supplier_code"
   end
 
   add_foreign_key "bulk_orders", "items"
