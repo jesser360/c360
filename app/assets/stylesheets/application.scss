@@ -30,8 +30,8 @@
  }
  #prof-pic{
    position: absolute;
-   margin-left:91%;
-   margin-top:-8%;
+   margin-left:90%;
+   margin-top:3%;
    z-index:1000;
    color:red;
  }
@@ -48,7 +48,7 @@
    margin-top: -50px;
  }
  #sidebarCollapse{
-   position:relative;
+   position:fixed;
    z-index:100 !important;
    margin:40px;
    background-color: Transparent;
@@ -110,10 +110,16 @@ a[aria-expanded="true"]::before {
 
  .gray-border{
    background-color:lightgray;
-   // height:100%;
    position: relative;
    display:block;
  }
+ .top-gray-border{
+   background-color:lightgray;
+   position: relative;
+   display:block;
+   height:25vw;
+ }
+
  .card {
   color: black;
   margin: -15px;
@@ -184,6 +190,13 @@ font-size: 1.3vw;
    width: 120%;
    z-index: -99;
    position:fixed;
+}
+#market-logo{
+  display: block;
+  padding-top: 10%;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
 }
 #item_header{
   z-index: -1;
@@ -469,7 +482,6 @@ font-size: 1.3vw;
 }
 
 #service-header{
-  margin-top: 10vh;
   height:10vw;
   background-color:#dadfeb;
 }
@@ -477,7 +489,7 @@ font-size: 1.3vw;
   color:#0b1742;
   font-size: 4vw;
   font-family: 'Merriweather';
-  margin-left: 5vw;
+  margin-left: 10vw;
   margin-top: 2vw;
   float:left
 }

@@ -1,9 +1,19 @@
 <p id="notice"><%= notice %></p>
 <br>
-<div class = 'row'>
-<div class='col-md-2 gray-border'>
-</div>
-  <div class='col-md-8'>
+<!-- <div class='row' style='margin-top:-8%'>
+  <div class='col-xs-2 top-gray-border'>
+  </div>
+  <div class='col-xs-8 '>
+
+  </div>
+  <div class='col-xs-2 top-gray-border'>
+  </div>
+</div> -->
+<div class = 'row' style='margin-top:-8%'>
+  <div class='col-xs-2 gray-border'>
+  </div>
+  <div class='col-xs-8'>
+    <img id='market-logo' alt='c360 logo' src='https://i.imgur.com/gkurRz5.png'>
     <div class='all-items'>
       <br>
       <span hidden id='item_total'><%=@items.count %></span>
@@ -90,7 +100,7 @@
     </div>
   </div>
 <!-- all items -->
-  <div class='col-md-2 gray-border'>
+  <div class='col-xs-2 gray-border'>
   </div>
 </div>
 
@@ -137,99 +147,6 @@ for(i = 0; i<item_total; i++){
   });
 }
 console.log($('.all-items').height())
-$('.gray-border').height($('.all-items').height())
-// var price = $('#item_price_0').text();
-// var percent_filled = $('#percent_filled_0').text();
-// var max =$('#bulk_order_amount_0').text();
-// d3.select(".c3-chart-arcs-title")
-//     .append("tspan")
-//     .attr("dy", 16)
-//     .attr("x", 0)
-//     .text((percent_filled||0)+'/'+max +' spots filled');
-// d3.select(".c3-chart-arcs-title")
-//     .append("tspan")
-//     .attr("dy", 16)
-//     .attr("x", 0)
-//     .text("$"+price +"/g");
-
-// var item_name_second = $('#item_name_1').text();
-// var percent_filled_second = $('#percent_filled_1').text();
-// var max_second =$('#bulk_order_amount_1').text();
-// var price_first = $('#item_price_1').text();
-// var orders_left_second = max_second - percent_filled_second
-// var Apiec3 = c3.generate({
-//   bindto: '#pieChart_1',
-//     data: {
-//         columns: [
-//             ['Filled', percent_filled_second],
-//             ['Remaining', orders_left_second],
-//         ],
-//         type : 'donut',
-//     },
-//     legend: {
-//     position: 'right'
-//     },
-//     donut: {
-//         title: item_name_second,
-//         label: {
-//           show:true
-//         }
-//     },
-//     legend: {
-//       show: false
-//     }
-// });
-// d3.select(".c3-chart-arcs-title")
-//     .append("tspan")
-//     .attr("dy", 16)
-//     .attr("x", 0)
-//     .text((percent_filled_second||0)+'/'+max_second +' spots filled');
-// d3.select(".c3-chart-arcs-title")
-//     .append("tspan")
-//     .attr("dy", 16)
-//     .attr("x", 0)
-//     .text("$"+price_second +"/g");
-
-// var ratio_third = $('#ratio_third').first().text();
-// var item_name_third = $('#item_name_third').first().text();
-// var filled_third = parseInt(ratio_third.split(' ')[0]);
-// var max_third =parseInt(ratio_third.split(' ')[2]);
-// var price_third_string = $('#price_third').text();
-// var price_third = price_third_string.match(/\d+/)[0]
-// var orders_left_third = max_third-filled_third
-// var contentArray_third = []
-// var Apiec3 = c3.generate({
-//   bindto: '#pieChart_third',
-//     data: {
-//         columns: [
-//             ['Filled', filled_third],
-//             ['Remaining', orders_left_third || 100],
-//         ],
-//         type : 'donut',
-//     },
-//     legend: {
-//     position: 'right'
-//     },
-//     donut: {
-//         title: item_name_third,
-//         label: {
-//           show:true
-//         }
-//     },
-//     legend: {
-//       show: false
-//     }
-// });
-// // d3.select(".c3-chart-arcs-title")
-// //     .append("tspan")
-// //     .attr("dy", 16)
-// //     .attr("x", 0)
-// //     .text(ratio_third);
-// // d3.select(".c3-chart-arcs-title")
-// //     .append("tspan")
-// //     .attr("dy", 16)
-// //     .attr("x", 0)
-// //     .text("$"+price_third +"/g");
-//
+$('.gray-border').height($('.all-items').height() +100)
 
 </script>
