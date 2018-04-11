@@ -83,7 +83,7 @@
 #dismiss{
   z-index:1;
   margin:1vw 0vw 0vw 200px;;
-  font-size:3vw;
+  font-size:25px;
   position:fixed;
 }
 a[data-toggle="collapse"] {
@@ -508,101 +508,107 @@ font-size: 1.3vw;
   color:#0b1742;
 }
 #about_para{
-  height:60vh;
-  background-color:#dadfeb;
+  background-image: url('https://i.imgur.com/b6YWzw3.png');
+  background-size: cover;
   font-size:1.5vw;
-  color:#515151;
-  padding:0vw 5vw 0vw 5vw;
-  margin-bottom: -5vw;
+  font-style: 'Lato';
+  color:#111416;
+  padding:1.1vw;
 }
-#about_sentance{
-  margin:5vw;
+.word-box{
+  margin:5vw 15vw 5vw 15vw;
 }
 #team-header{
-  background-color:Transparent;
-  position: relative;
-  top: 80px;
-  left: 35%;
+  font-style: 'Lato';
   font-size: 3.5vw;
   text-shadow: 1px 1px lightgray;
-  font-weight: 900;
-  display:block;
-  color:#0b1742;
+  color:#25274d;
+  padding-top: 0%;
 }
-.team-member1{
-  background-color:Transparent;
-  position: relative;
-  top: 80px;
-  left: 5%;
-  display:block;
-  color:#0b1742;
-  margin-right: 12vw;
-}
-.team-member2{
-  background-color:Transparent;
-  position: relative;
-  top: 280px;
-  left: 0%;
-  display:block;
-  color:#0b1742;
-  margin-bottom:8vh;
+.about-row{
+  margin:0vw 10vw 0vw 10vw;
 }
 .team-pic{
   border-radius:50%;
   height:25vw;
   width:25vw;
-  margin-top:5vh;
+  margin:2vw 0vw 2vw 0vw;
 }
 .about-box{
-  margin-top:10vh;
-  border:1px solid black;
+  margin-top:80px;
+  // border:1px solid black;
   border-radius: 10px;
   background-color: rgba(234,234,234,0.4);
+  box-shadow: 1px 2px 2px #AAABB8;
+}
+.team-header-text{
+  font-size: 2.5vw;
+  font-family: 'Lato';
+  letter-spacing: 0.06em;
+  font-weight: 400;
 }
 .team-text{
-  font-size:1.7vw;
-  font-weight:400;
+  font-size: 1.5vw;
+  font-family: 'Roboto';
+  letter-spacing: 0.06em;
+  font-weight: 300;
 }
-
+#about-team-box{
+  background-image: url('https://i.imgur.com/4BpZ2Hs.png');
+  background-size: cover;
+}
 #service-header{
   height:10vw;
-  background-color:#dadfeb;
+  background-color:#AAABB8;
+  margin: -2vw;
 }
 #service-title{
   color:#0b1742;
   font-size: 4vw;
-  font-family: 'Merriweather';
-  margin-left: 10vw;
+  font-family: 'Lato';
+  letter-spacing: 0.06em;
+  font-weight: 300;
+  margin-left: 15vw;
   margin-top: 2vw;
   float:left
 }
 #service-intro{
-  margin:5vw 25vw 1vw 25vw;
+  margin:10vw 25vw 5vw 25vw;
+  letter-spacing: 0.06em;
+  font-weight: 100;
   color:#515151;
   font-size: 1.7vw;
-  font-family: 'Merriweather';
-}
-.services{
-  margin:5vw;
+  font-family: 'Roboto';
 }
 .service-picto{
   width:4vw;
   height:4vw;
 }
 .service-header{
+  padding-top:5vw;
+  margin:3vw;
   font-size: 2.5vw;
   font-family: "Lato";
   letter-spacing: 1px;
+  font-weight: 300;
 }
 .service-blurb{
+  margin-left: 3vw;
   color:#515151;
   font-size: 1.3vw;
+  letter-spacing: 0.06em;
+  font-weight: 300;
+  font-family: "Roboto";
+
 }
 .service-point{
   color:#515151;
   margin:1vw;
   font-size: 1.3vw;
-  list-style-type: square;
+  font-size: 1.3vw;
+  letter-spacing: 0.06em;
+  font-weight: 300;
+  font-family: "Roboto";
 }
 #construction-background{
   background: url('https://i.imgur.com/h35ZCBo.png') no-repeat center center fixed;
