@@ -7,22 +7,22 @@
 
             <!-- Sidebar Header -->
             <div class="sidebar-header">
-                <a href='/home'><img src='https://i.imgur.com/RSxTaJF.png' style='margin:10px'></a>
+                <a href='/home'><img src='https://i.imgur.com/RSxTaJF.png' style='margin:10px;position:fixed'></a>
             </div>
 
             <!-- Sidebar Links -->
-            <ul class="list-unstyled ">
-                <li class=" component active"><a href="/home">Home</a></li>
-                <li class="component"><a href="/about">About</a></li>
-                <li class="component"><a href="/services">Services</a></li>
+            <ul class="list-unstyled " style='position:fixed;margin-top:8vw'>
+                <li class=" component active"><a class='sidebar-links' href="/home">Home</a></li>
+                <li class="component"><a class='sidebar-links' href="/about">About</a></li>
+                <li class="component"><a class='sidebar-links' href="/services">Services</a></li>
                 <li class="component">
-                    <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">WholeSale Store</a>
+                    <a class='sidebar-links' href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">WholeSale Store</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
-                        <li class="comp"><a href="/items">Market</a></li>
-                        <li class="comp"><a href="#">Instructions</a></li>
-                        <li class="comp"><a href="#">Reviews</a></li>
+                        <li class="comp"><a class='sidebar-links' href="/items">Market</a></li>
+                        <li class="comp"><a class='sidebar-links' href="#">Instructions</a></li>
+                        <li class="comp"><a class='sidebar-links' href="#">Reviews</a></li>
                     </ul>
-                <li class="component"><a href="#">Contact</a></li>
+                <li class="component"><a class='sidebar-links' href="#">Contact</a></li>
             </ul>
         </nav>
 
@@ -35,13 +35,13 @@
       <div id='prof-pic'>
         <img id="nav_prof_pic" src="http://i.imgur.com/IulSm39.jpg" alt="profile pic">
         <a id='prof-carrot' href="#proflink" data-toggle="collapse" aria-expanded="false"></a>
-        <ul class="collapse list-unstyled" id="proflink">
+        <ul  class=" collapse list-unstyled" id="proflink">
           <% if User.find_by_id(session[:user_id]) %>
-            <li class="prof-links"><a><%= link_to('Log Out', logout_path, method: :delete)%></a></li>
-            <li class="prof-links"><a><%= link_to('Profile', user_path_url(User.find_by_id(session[:user_id])))%></a></li>
+            <li><a class='prof-links'><%= link_to('Log Out', logout_path, method: :delete)%></a></li>
+            <li><a class='prof-links'><%= link_to('Profile', user_path_url(User.find_by_id(session[:user_id])))%></a></li>
           <%else%>
-            <li class="prof-links"><a href="/login">Login</a></li>
-            <li class="prof-links"><a href="/signup">Sign Up</a></li>
+            <li><a class='prof-links' href="/login">Login</a></li>
+            <li><a class='prof-links' href="/signup">Sign Up</a></li>
             <%end%>
         </ul>
       </div>
@@ -55,7 +55,13 @@
           $('#sidebar').toggleClass("hidden")
           $('#sidebarCollapse').show()
       });
-
+    $('#nav_prof_pic').on('click',function(){
+      if($('.collapse').is(":visible")){
+        $('.collapse').collapse('hide');
+      }else{
+        $('.collapse').collapse('show');
+      }
+    })
   });
   </script>
 

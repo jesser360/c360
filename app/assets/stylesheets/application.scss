@@ -41,11 +41,23 @@
  }
  #nav_prof_pic{
    border-radius:50%;
-   height:50px;
-   width:50px;
+   height:4vw;
+   width:4vw;
  }
  #proflink{
    margin-top: -50px;
+ }
+ .prof-links{
+   color:#ffffff !important;
+   font-size: 1.5vw !important;
+ }
+ .prof-links:hover{
+   text-decoration: none!important;
+   text-shadow: 2px 1px 1px #2e9cca;
+ }
+ .sidebar-links:hover{
+   text-decoration: none!important;
+   text-shadow: .5px .5px #2e9cca;
  }
  #sidebarCollapse{
    position:fixed;
@@ -69,12 +81,10 @@
     margin-left: -250px;
 }
 #dismiss{
-  float:right;
-  margin:10px;
-  font-size:4vh;
-  // background:lightgray;
-  // border-radius:10px;
-  // padding:5px;
+  z-index:1;
+  margin:1vw 0vw 0vw 200px;;
+  font-size:3vw;
+  position:fixed;
 }
 a[data-toggle="collapse"] {
     position: relative;
@@ -224,11 +234,7 @@ font-size: 1.3vw;
   margin: 12vw;
 }
 
-.text{
-  /* background-image:    url('https://i.imgur.com/8wTAGcx.jpg');
-  border-radius: 10px; */
-  padding:1vw;
-}
+
 .signup-form{
   margin:1vw
 }
@@ -295,16 +301,32 @@ font-size: 1.3vw;
 }
 .carousel-text{
   padding:1vw;
-  background: rgba(51,51,51,.3);
   font-size: 2.5vw;
   padding:1vw;
   position:relative;
+  background: transparent;
+  font-family: 'Lato';
+  letter-spacing: 0.06em;
+  top:-14vw;
 }
 .carousel-text2{
   position:relative;
   padding:1vw;
-  background: rgba(51,51,51,.3);
   font-size: 2.5vw;
+  background: transparent;
+  font-family: 'Lato';
+  letter-spacing: 0.06em;
+  top:-8vw;
+  right:-15vw;
+}
+.carousel-btn{
+  font-family: 'Lato';
+  letter-spacing: 0.06em;
+  color:#111416;
+  background:#ffd333;
+  border:none;
+  padding:1vw;
+  margin:2vw;
 }
 .delay1{
   animation-delay: .5s;
@@ -393,11 +415,11 @@ font-size: 1.3vw;
   height:7vw;
 }
 .text{
+  padding:.2vw;
   color:#ffffff;
   font-family: 'Lato';
   font-size: 1.4vw;
   font-weight: 300;
-  margin:-1.5vw;
   letter-spacing: 0.05em;
 }
 .big-text{
@@ -447,7 +469,6 @@ font-size: 1.3vw;
   text-shadow:   1px 1px #000000;
 }
 .footer{
-  height:20vw;
   background-color: #399bce;
   display:block;
 }
