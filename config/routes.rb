@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   resources :charges
   resources :emails
 
-  root 'pages#construction'
+  root 'pages#home'
   get '/home' => 'pages#home'
   get '/items' => 'items#index'
   get '/home' => 'pages#home'
