@@ -9,7 +9,7 @@ class UsersController < ApplicationController
     @zip = ZipCodes.identify(user_params[:zipcode])
     @user.city = @zip[:city] rescue nil
     @user.state = @zip[:state_name] rescue nil
-    if user_params[:supplier_code].present?
+    if user_params[:supplier_code].present? && user_params[:supplier_code] != '123'
       @code = user_params[:supplier_code]
       if $supplier_hash.has_value?(@code)
         @key =  $supplier_hash.key(@code)
