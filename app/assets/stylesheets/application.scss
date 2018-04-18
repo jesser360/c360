@@ -23,11 +23,21 @@
      margin: 0px;
      padding: 0px;
      overflow-x: hidden;
-
  }
+ .login-section{
+   width:70%;
+   background-image: url('https://i.imgur.com/W4iW8GF.jpg');
+   background-size: contain;
+   background-repeat: no-repeat;
+   background-position: 160% 0%;
+ }
+ .login-div{
+   margin-top:-2vw;
+ }
+
  .wrapper {
-     display: flex;
-     align-items: stretch;
+    display: flex;
+    align-items: stretch;
  }
  #prof-pic{
    position: absolute;
@@ -46,15 +56,18 @@
    width:5vw;
  }
  #proflink{
-   margin-top: -2vw;
+   // margin-top: -4vw;
  }
  .prof-links{
-   color:#ffffff !important;
+   color:#2e9cca !important;
    font-size: 1.5vw !important;
  }
  .prof-links:hover{
    text-decoration: none!important;
-   text-shadow: 2px 1px 1px #2e9cca;
+   text-shadow: 1px 1px #fff;
+ }
+ .prof-links:active{
+   background-color: transparent;
  }
  .sidebar-links:hover{
    text-decoration: none!important;
@@ -71,7 +84,7 @@
   overflow: hidden;
   outline:none;
   color:#2e9cca;
-  font-size:3vw;
+  font-size:4vw;
  }
  #sidebar {
      min-width: 250px;
@@ -91,7 +104,7 @@ a[data-toggle="collapse"] {
     position: relative;
 }
 .component{
-  font-size: 20px;
+  font-size: 25px;
   margin:20px;
 }
 .comp{
@@ -104,7 +117,7 @@ a[aria-expanded="false"]::before, a[aria-expanded="true"]::before {
     float:right;
     font-family: 'Glyphicons Halflings';
     font-size: 0.6em;
-    margin:1vw;
+    margin:.8vw;
 }
 
 a[aria-expanded="true"]::before {
@@ -478,9 +491,13 @@ font-size: 1.3vw;
   text-align:    center;
   text-shadow:   1px 1px #000000;
 }
+.push{
+height:20vw;
+}
 .footer{
   background-color: #399bce;
   display:block;
+  height:20vw;
 }
 .footer-link{
   color:#111416;
@@ -600,7 +617,6 @@ font-size: 1.3vw;
 #service-header{
   height:10vw;
   background-color:#AAABB8;
-  margin: -2vw;
 }
 #service-title{
   color:#0b1742;
