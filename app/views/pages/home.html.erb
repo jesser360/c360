@@ -9,7 +9,7 @@
 
     <div class="carousel-inner" role="listbox">
       <div class="item active">
-        <img src="https://i.imgur.com/tlu1ewe.jpg" alt="Chania" style='width:100%;height:50vw'>
+        <img class='main-carousel-pic' src="https://i.imgur.com/tlu1ewe.jpg" alt="Chania" >
         <div class="carousel-caption  fadeInDown delay1">
           <span class='carousel-text'>Colorados leading CBD Brokerage</span>
         </div>
@@ -21,19 +21,19 @@
         </div>
       </div>
       <div class="item">
-        <img src="https://i.imgur.com/tlu1ewe.jpg" alt="Chania" style='width:100%;height:50vw'>
+        <img class='main-carousel-pic' src="https://i.imgur.com/tlu1ewe.jpg" alt="Chania" >
         <div class="carousel-caption fadeInRight delay1">
           <span class='carousel-text'>Text about how great we are</span>
         </div>
       </div>
       <div class="item">
-        <img src="https://i.imgur.com/tlu1ewe.jpg" alt="Chania" style='width:100%;height:50vw'>
+        <img class='main-carousel-pic' src="https://i.imgur.com/tlu1ewe.jpg" alt="Chania" >
         <div class="carousel-caption fadeInLeft delay1">
           <span class='carousel-text'>Text about how great we are</span>
         </div>
       </div>
       <div class="item">
-        <img src="https://i.imgur.com/tlu1ewe.jpg" alt="Chania" style='width:100%;height:50vw'>
+        <img class='main-carousel-pic' src="https://i.imgur.com/tlu1ewe.jpg" alt="Chania" >
         <div class="carousel-caption bounce delay1">
           <span class='carousel-text'>Text about how great we are</span>
         </div>
@@ -69,7 +69,7 @@
       </div>
     </div>
   </div>
-  <div class='row' style='margin:10vw 3vw 10vw 3vw'>
+  <div class='row' style='margin:10vw 3vw 8vw 3vw'>
     <div class='col-xs-3 text-center'>
       <label class='label'>Total Suppliers</label><br>
       <div class='vl'></div>
@@ -89,6 +89,13 @@
       <label class='label'>Bulk Orders Filled</label><br>
       <div class='vl'></div>
       <span class='stat'>24</span>
+    </div>
+    <div style='float:right'>
+      <%if @user%>
+        <a href='/items'><button id='market_button'>Go To MarketPlace</button></a>
+      <%else%>
+        <a href='/login'><button id='market_button'>Go To MarketPlace</button></a>
+      <%end%>
     </div>
   </div>
 </div>
@@ -116,9 +123,9 @@
     <span class='big-text'>SUPPLIERS</span>
     <br><br><br>
     <ul style="list-style: none;">
-      <li class='text'>Create new items on the profile page</li>
-      <li class='text'>Manage inventory, Orders, & Customers</li>
-      <li class='text'>Recieve Payment when the Orders Fill</li>
+      <li class='text'>Create new items in your profile</li>
+      <li class='text'>Manage inventory and Orders</li>
+      <li class='text'>Recieve Payment when Order Fills</li>
     </ul>
     <br><br>
     <a href='#'>
@@ -132,9 +139,9 @@
     <span class='big-text'>GROUP ORDERS</span>
     <br><br><br>
     <ul style="list-style: none;">
-      <li class='text'>Join a Bulk Order with others customer</li>
+      <li class='text'>Join Bulk Orders with other customers</li>
       <li class='text'>Orders shipped upon completion</li>
-      <li class='text'>Recieve partial discount if Timer expires</li>
+      <li class='text'>Recieve discount if Timer expires</li>
     </ul>
     <br><br>
     <a href='#'>
@@ -146,28 +153,39 @@
 
 <div class='bottom-box'>
   <div class='row'>
-    <div class='col-sm-8'>
-    </div>
-    <div class='col-sm-4'>
-      <%if @user%>
-        <a href='/items'><button id='market_button'>Go To MarketPlace</button></a>
-      <%else%>
-        <a href='/login'><button id='market_button'>Go To MarketPlace</button></a>
-      <%end%>
-      </div>
-    </div>
-
-      <div style='margin:-2vw 0vw 0vw 3vw'>
-        <label for='user-email'>Recieve Email upon launch</label>
-        <div class="input-group" style='width:50%'>
-          <input type="email" id='user-email' type="text" class="form-control" placeholder="Enter email here">
+    <div class='col-sm-9'>
+      <div style='margin-top:-2vw'>
+        <h2 >Contact Us</h2>
+        <br><br>
+        <label for='user-name'>Name</label>
+        <div class="input-group" style='width:80%'>
+          <input type="email" id='user-name' type="text" class="form-control" placeholder="John Smith">
+        </div>
+        <br>
+        <label for='user-company'>Company</label>
+        <div class="input-group" style='width:80%'>
+          <input type="email" id='user-company' type="text" class="form-control" placeholder="CBD supplier Co.">
+        </div>
+        <br>
+        <label for='user-phone'>Phone</label>
+        <div class="input-group" style='width:80%'>
+          <input type="email" id='user-phone' type="text" class="form-control" placeholder="555 123 4567">
+        </div>
+        <br>
+        <label for='user-email'>Email</label>
+        <div class="input-group" style='width:80%'>
+          <input type="email" id='user-email' type="text" class="form-control" placeholder="JohnSmith@gmail.com">
           <span class="input-group-btn">
             <button class="btn btn-secondary" id='email-btn' type="button">Send</button>
           </span>
         </div>
         <span id='thank-you' hidden>Thank you, you will recieve an email shortly</span>
       </div>
+    </div>
+    <div class='col-sm-3'>
+    </div>
   </div>
+</div>
 
   <script>
     $('#email-btn').on('click',function(e){
