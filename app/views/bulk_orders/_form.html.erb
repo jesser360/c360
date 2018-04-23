@@ -19,10 +19,11 @@
       <div class="col-md-6 edit-card">
         <span style='float:right' class='oil-image'><%= image_tag(@item.image, :size => "250x250") %></span>
         <h1 id='item_name'><%= @item.item_name %></h1>
-        <h3><%= @item.price %>$ / gram</h3>
         <h4><%=link_to user_path_url(@item.user) do%>
           <%=@item.user.company_name%></h3>
-        <%end%></h4>
+          <%end%></h4>
+        <h3><%= @item.price %>$ / gram</h3>
+        <h4>Max Order Size - <%= @item.bulk_order_amount %> grams</h4>
         <h4><%=@item.current_amount%> grams available</h4>
         <span hidden id='item_price'><%= @item.price %></span>
         <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
@@ -35,7 +36,7 @@
       <%if @user.is_vendor == false%>
         <div class="field" >
           <label>Quantity (g)</label>
-          <input style='width:7vw' type='number' id='order_quant' min='1' max='<%=@item.bulk_order_amount - (@bulk_order.percent_filled ||0)%>'name='bulk_order[quantity]'>
+          <input style='width:7vw' type='number' id='order_quant' min='1' max="'<%=@item.bulk_order_amount - (@bulk_order.percent_filled ||0)%>'" name='bulk_order[quantity]'>
         </div>
         <div class="field">
           <label>Price</label>
@@ -48,13 +49,13 @@
         <%= hidden_field_tag(:item,params[:item])%>
         <%= hidden_field_tag(:price,params[:price])%>
       </div>
-      <%if !@bulk_order.new_record?%>
+
         <div class='col-md-3 '>
           <div class='row'>
             <div id='pieChart'></div>
           </div>
         </div>
-      <%end%>
+
     </div>
 
 <br>
@@ -76,7 +77,7 @@
 
   <div hidden>
   <span id='percent_filled'><%=@bulk_order.percent_filled rescue 0%></span>
-  <span id='max_amount'><%=@bulk_order.max_amount rescue @item.bulk_order_amount%></span>
+  <span id='max_amount'><%= @item.bulk_order_amount%></span>
   <span id='expire_date'><%=@bulk_order.expire_date rescue nil%></span>
   <span id='item'><%=@bulk_order.item rescue nil%></span>
   <%@bulk_order.user_orders.each do |order|%>
@@ -151,7 +152,7 @@ var expire_date = $('#expire_date').text();
       data: {
           columns: [
               ['Your Order', user_order_quant],
-              ['Other', other_order_quant],
+              ['Other', other_order_quant || 0],
               ['Remaining',  max_amount-(percent_filled)],
           ],
           type : 'donut',
@@ -174,7 +175,7 @@ var expire_date = $('#expire_date').text();
       .append("tspan")
       .attr("dy", 16)
       .attr("x", 0)
-      .text(percent_filled+"/"+max_amount+" spots taken");
+      .text( (percent_filled ||0)+"/"+max_amount+" spots taken");
 
   var clock_1 = new FlipClock($('#small-clock'),new Date(expire_date || 0), {
   countdown: true,

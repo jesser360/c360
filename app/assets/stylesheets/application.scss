@@ -163,9 +163,6 @@ a[aria-expanded="true"]::before {
 }
 .edit-card{
   color: black;
-  // background-image: url('https://i.imgur.com/XnnIvP9.jpg');
-  // background-repeat: no-repeat;
-  // background-size: cover;
   padding:10px;
   border: 2px solid lightgray;
   border-radius: 15px;
@@ -173,11 +170,10 @@ a[aria-expanded="true"]::before {
 .edit-row{
   margin:3vw;
 }
-.all-items{
-
-}
 .edit-order{
   margin:5vw;
+}
+.all-edit{
 }
 .clock{
   zoom:45%;

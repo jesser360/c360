@@ -37,8 +37,8 @@
         <a id='prof-carrot' href="#proflink" data-toggle="collapse" aria-expanded="false"></a>
         <ul  class=" collapse list-unstyled" id="proflink">
           <% if User.find_by_id(session[:user_id]) %>
-            <li><a class='prof-links'><%= link_to('Log Out', logout_path, method: :delete)%></a></li>
-            <li><a class='prof-links'><%= link_to('Profile', user_path_url(User.find_by_id(session[:user_id])))%></a></li>
+            <li><a><%= link_to('Log Out', logout_path, method: :delete, class: 'prof-links')%></a></li>
+            <li><a><%= link_to('Profile', user_path_url(User.find_by_id(session[:user_id])), class: 'prof-links')%></a></li>
           <%else%>
             <li><a class='prof-links' href="/login">Login</a></li>
             <li><a class='prof-links' href="/signup">Sign Up</a></li>
