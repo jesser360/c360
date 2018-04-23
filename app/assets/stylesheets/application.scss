@@ -26,7 +26,7 @@
  }
  .login-section{
    width:70%;
-   background-image: url('https://i.imgur.com/W4iW8GF.jpg');
+   background-image: asset-data-url('pineapple-face.jpg');
    background-size: contain;
    background-repeat: no-repeat;
    background-position: 160% 0%;
@@ -213,17 +213,7 @@ font-size: 1.3vw;
   text-decoration: none;
   color:#4a86c3;
 }
-#oil-pic{
-  background-image: url('https://i.imgur.com/v4KWkqR.jpg');
-  background-size: cover;
-   margin-left: -100px;
-   margin-right: -100px;
-   padding:10px;
-   height: 90vh;
-   width: 120%;
-   z-index: -99;
-   position:fixed;
-}
+
   .center{
   display: block;
   padding-top: 10%;
@@ -430,7 +420,7 @@ font-size: 1.3vw;
   margin-top:1vw;
 }
 .middle-block{
-  background-image: url('https://i.imgur.com/b6YWzw3.png');
+  background-image: asset-data-url('top-left-gray.png');
   background-size: cover;
   padding:3vw
 }
@@ -469,7 +459,7 @@ font-size: 1.3vw;
   margin:3vw;
 }
 .bottom-box{
-  background-image: url('https://i.imgur.com/b6YWzw3.png');
+  background-image: asset-data-url('top-left-gray.png');
   background-size: cover;
   background-position: 30% 30%;
   padding:8vw;
@@ -532,9 +522,8 @@ height:20vw;
 }
 
 .parallax {
-    background-image: url("https://i.imgur.com/RAqrWSz.jpg");
+    background-image:url("blue-mountain.jpg");
     height: 500px;
-    /* Create the parallax scrolling effect */
     background-attachment: fixed;
     background-position: center;
     background-repeat: no-repeat;
@@ -573,7 +562,7 @@ height:20vw;
   color:#0b1742;
 }
 #about_para{
-  background-image: url('https://i.imgur.com/b6YWzw3.png');
+  background-image: url('top-left-gray.png');
   background-size: cover;
   font-size:1.5vw;
   font-style: 'Lato';
@@ -619,7 +608,7 @@ height:20vw;
   font-weight: 300;
 }
 #about-team-box{
-  background-image: url('https://i.imgur.com/4BpZ2Hs.png');
+  background-image: url('bottom-right-gray.png');
   background-size: cover;
 }
 #service-header{
@@ -637,7 +626,7 @@ height:20vw;
   float:left
 }
 #service-intro{
-  background-image: url(https://i.imgur.com/b6YWzw3.png);
+  background-image: url('top-left-gray.png');
   background-size: cover;
   background-position: 0% 50%;
   padding:10vw 25vw 5vw 25vw;

@@ -7,7 +7,9 @@
 
             <!-- Sidebar Header -->
             <div class="sidebar-header">
-                <a href='/home'><img src='https://i.imgur.com/RSxTaJF.png' style='margin:10px;position:fixed'></a>
+                <a href='/home'>
+                  <%=image_tag('C-logo.png', :alt =>'c360 logo', :style =>'margin:10px;position:fixed')%>
+                </a>
             </div>
 
             <!-- Sidebar Links -->
@@ -64,56 +66,3 @@
     })
   });
   </script>
-
-<!--
-<nav id="mainNav" class=" nav navbar-default navbar-fixed-top " role="navigation" style="background-color:#516fbf">
-  <div class="row navbar_link" >
-    <div class ="col-xs-1">
-    <ul class="nav_padding_right">
-      <h5 class ="text-center"><%= link_to '/home' do %>
-      <img src ='https://i.imgur.com/V1iLpgs.jpg' alt="Logo" style="width:100px;height:70px;"></h5>
-      <%end%>
-    </div>
-
-    <div class ="col-xs-4 nav-link">
-    </div>
-    <div class ="col-xs-2 ">
-      <% if User.find_by_id(session[:user_id]) %>
-        <li class = "text-center nav-link"><%= link_to user_path_url(User.find_by_id(session[:user_id])) do %>
-        <img src="https://i.imgur.com/j5v8TRk.jpg" alt="profile pic" style='border-radius:50%;height:40px;width:40px;margin-top:-15px'>
-          <% if User.find_by_id(session[:user_id]).is_vendor%>
-            <span>Supplier Profile</span></li>
-          <%else%>
-            <span>Buyer Profile</span></li>
-          <%end%>
-        <%end%>
-        <%end%>
-      </div>
-      <div class ="col-xs-1 ">
-        <li class = "text-center nav-link"><%= link_to 'About','/about' %></li>
-      </div>
-      <div class ="col-xs-1 ">
-        <li class = "text-center nav-link"><%= link_to 'Services','/services' %></li>
-      </div>
-      <% if User.find_by_id(session[:user_id]) %>
-        <div class ="col-xs-1 ">
-          <li class = "text-center nav-link"><%= link_to 'WholeSale','/items' %></li>
-        </div>
-        <%else%>
-        <div class ="col-xs-1 ">
-          <li class = "text-center nav-link"><%= link_to 'WholeSale','/login' %></li>
-        </div>
-      <%end%>
-      <% if User.find_by_id(session[:user_id]) %>
-    <div class ="col-xs-1">
-      <li class = "text-center nav-link"><%= link_to 'Log Out', logout_path, method: :delete%></li>
-    </div>
-      <% else %>
-      <div class ="col-xs-2">
-      <li class ="text-center nav-link"><%= link_to 'Log In', login_path %> |
-      <%= link_to 'Sign Up', signup_path %></li>
-      <% end %>
-    </div>
-  </ul>
-</div>
-</nav> -->
