@@ -6,7 +6,7 @@ git_source(:github) do |repo_name|
 end
 
 gem "paperclip", "~> 6.0.0"
-gem 'aws-sdk', '~> 2'
+gem 'aws-sdk', '~> 3'
 gem "administrate"
 gem 'zip-codes'
 gem 'flipclockjs-rails', '~> 0.7.7'
@@ -50,8 +50,8 @@ group :development, :test do
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '~> 2.13'
   gem 'selenium-webdriver'
-  gem 'aws-sdk', '~> 2'
-  
+  gem 'aws-sdk', '~> 3'
+
 end
 
 group :production do
