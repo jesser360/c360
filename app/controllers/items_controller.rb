@@ -1,7 +1,7 @@
 class ItemsController < ApplicationController
   before_action :set_item, only: [:show, :edit, :update, :destroy]
   before_action :auth
-  
+
   def auth
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     if @user.nil?
@@ -21,11 +21,6 @@ class ItemsController < ApplicationController
     end
   end
 
-  # GET /items/1
-  # GET /items/1.json
-  def show
-  end
-
   # GET /items/new
   def new
     @item = Item.new
@@ -39,10 +34,9 @@ class ItemsController < ApplicationController
   # POST /items.json
   def create
     @item = Item.new(item_params)
-    @item.current_amount = item_params[:max_amount]
-    puts item_params[:max_amount]
-    puts 'MAX AMOUNTTTTT'
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
+    
+    @item.current_amount = item_params[:max_amount]
     @item.user = @user
     @item.image = 'http://moziru.com/images/drawn-weed-animated-7.gif'
     respond_to do |format|

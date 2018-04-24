@@ -5,7 +5,6 @@
     <% if bulk_order.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(bulk_order.errors.count, "error") %> prohibited this bulk_order from being saved:</h2>
-
       <ul>
       <% bulk_order.errors.full_messages.each do |message| %>
         <li><%= message %></li>
@@ -14,25 +13,24 @@
     </div>
   <% end %>
 
-
-    <div class ="row edit-row">
-      <div class="col-md-6 edit-card">
-        <span style='float:right' class='oil-image'><%= image_tag(@item.image, :size => "250x250") %></span>
-        <h1 id='item_name'><%= @item.item_name %></h1>
-        <h4><%=link_to user_path_url(@item.user) do%>
-          <%=@item.user.company_name%></h3>
-          <%end%></h4>
-        <h3><%= @item.price %>$ / gram</h3>
-        <h4>Max Order Size - <%= @item.bulk_order_amount %> grams</h4>
-        <h4><%=@item.current_amount%> grams available</h4>
-        <span hidden id='item_price'><%= @item.price %></span>
-        <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
+  <div class ="row edit-row">
+    <div class="col-md-6 edit-card">
+      <span style='float:right' class='oil-image'><%= image_tag(@item.image, :size => "250x250") %></span>
+      <h1 id='item_name'><%= @item.item_name %></h1>
+      <h4><%=link_to user_path_url(@item.user) do%>
+        <%=@item.user.company_name%></h3>
+        <%end%>
+      </h4>
+      <h3><%= @item.price %>$ / gram</h3>
+      <h4>Max Order Size - <%= @item.bulk_order_amount %> grams</h4>
+      <h4><%=@item.current_amount%> grams available</h4>
+      <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
+    </div>
+    <div class='col-md-3' style='font-size:1.2em;margin-top:-5vh'>
+      <div class='row edit-card' style='margin-top:5vh'>
+        <div id='small-clock'></div>
       </div>
-      <div class='col-md-3' style='font-size:1.2em;margin-top:-5vh'>
-        <div class='row edit-card' style='margin-top:5vh'>
-          <div id='small-clock'></div>
-        </div>
-      <%if  @bulk_order.new_record? || @bulk_order.percent_filled < @bulk_order.max_amount && @item.user != @user%>
+    <%if  @bulk_order.new_record? || @bulk_order.percent_filled < @bulk_order.max_amount && @item.user != @user%>
       <%if @user.is_vendor == false%>
         <div class="field" >
           <label>Quantity (g)</label>
@@ -44,24 +42,20 @@
         </div>
         <button type="submit" id='payButton'>PAY</button>
       <%end%>
-      <%end%>
-        <%= hidden_field_tag(:user_id, @user.id)%>
-        <%= hidden_field_tag(:item,params[:item])%>
-        <%= hidden_field_tag(:price,params[:price])%>
-      </div>
-
-        <div class='col-md-3 '>
-          <div class='row'>
-            <div id='pieChart'></div>
-          </div>
-        </div>
-
+    <%end%>
+      <%= hidden_field_tag(:user_id, @user.id)%>
+      <%= hidden_field_tag(:item,params[:item])%>
+      <%= hidden_field_tag(:price,params[:price])%>
     </div>
-
-<br>
+    <div class='col-md-3 '>
+      <div class='row'>
+        <div id='pieChart'></div>
+      </div>
+    </div>
+  </div>
 
   <% if !@bulk_order.new_record? && @seller==@user%>
-  <h4>Users part of Bulk Order :</h4>
+  <h4>Users part of Order :</h4>
     <% @bulk_order.user_orders.each do |user_order| %>
       <% @user_found = User.find_by_id(user_order.user_id)%>
       <strong><%=@user_found.email%></strong>
@@ -76,6 +70,7 @@
 
 
   <div hidden>
+  <span id='item_price'><%= @item.price %></span>
   <span id='percent_filled'><%=@bulk_order.percent_filled rescue 0%></span>
   <span id='max_amount'><%= @item.bulk_order_amount%></span>
   <span id='expire_date'><%=@bulk_order.expire_date rescue nil%></span>
@@ -145,7 +140,6 @@ var expire_date = $('#expire_date').text();
     var order_quant = parseInt($('#order_quant').val());
     $('#total_price').text( '$'+ (item_price * order_quant));
   });
-
 
   var Apiec3 = c3.generate({
     bindto: '#pieChart',

@@ -1,12 +1,6 @@
 class BulkOrdersController < ApplicationController
   before_action :set_bulk_order, only: [:show, :edit, :update, :destroy]
 
-  # GET /bulk_orders
-  # GET /bulk_orders.json
-  def index
-    @bulk_orders = BulkOrder.all
-  end
-
   # GET /bulk_orders/1
   # GET /bulk_orders/1.json
   def show
@@ -39,20 +33,25 @@ class BulkOrdersController < ApplicationController
     @bulk_order = BulkOrder.new()
     @user_order = UserOrder.new()
     @date = Date.today
-    @end_date= (@date+(rand(1..10))).to_s
-    @bulk_order.expire_date = @end_date
+
     @user_order.quantity = params[:bulk_order][:quantity]
     @user_order.item = params[:item]
     @user_order.user= @user
     @user_order.total_price = @user_order.quantity * params[:price].to_i
     @user_order.save
+
+    @end_date= (@date+(rand(1..10))).to_s
+    @bulk_order.expire_date = @end_date
     @bulk_order.user_orders.push(@user_order)
     @bulk_order.users.push(@user)
     @bulk_order.item = @item
     @bulk_order.max_amount= @item.bulk_order_amount
     @bulk_order.completed = false
     @bulk_order.percent_filled = (@bulk_order.percent_filled || 0 + @user_order.quantity)
+
+    # If order fills..
     if @bulk_order.percent_filled >= @bulk_order.max_amount
+      # Lowers inventory count for item
       @item = @bulk_order.item
       @item.current_amount = (@item.current_amount - @item.bulk_order_amount)
       @item.save
@@ -102,19 +101,22 @@ class BulkOrdersController < ApplicationController
 
   # PATCH/PUT /bulk_orders/1
   # PATCH/PUT /bulk_orders/1.json
+  # User adding to an exisiting bulk order
   def update
-    @users = @bulk_order.users
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
+    @users = @bulk_order.users
     @user_order = UserOrder.new()
-    @user_order.expiration = 14
+
     @user_order.quantity = params[:bulk_order][:quantity]
     @user_order.item = params[:item]
     @user_order.total_price = @user_order.quantity * params[:price].to_i
     @user_order.user= @user
     @user_order.save
+
     @bulk_order.users.push(@user)
     @bulk_order.user_orders.push(@user_order)
     @bulk_order.percent_filled = (@bulk_order.percent_filled +  params[:bulk_order][:quantity].to_i)
+
     if @bulk_order.percent_filled >= @bulk_order.max_amount
       @item = @bulk_order.item
       @item.current_amount=(@item.current_amount - @item.bulk_order_amount)
@@ -141,7 +143,7 @@ class BulkOrdersController < ApplicationController
         format.json { render json: @bulk_order.errors, status: :unprocessable_entity }
       end
     end
-
+    # Capture payments of all other users in bulk order
     if @bulk_order.completed == true
       @bulk_order.user_orders.each do |order|
         if order.charge_token
@@ -149,6 +151,7 @@ class BulkOrdersController < ApplicationController
         charge.capture
         end
       end
+      # charge this user
       @amount = params[:amount]
       customer = Stripe::Customer.create(
         :email => params[:stripeEmail],
@@ -180,16 +183,6 @@ class BulkOrdersController < ApplicationController
   rescue Stripe::CardError => e
     flash[:error] = e.message
 
-  end
-
-  # DELETE /bulk_orders/1
-  # DELETE /bulk_orders/1.json
-  def destroy
-    @bulk_order.destroy
-    respond_to do |format|
-      format.html { redirect_to bulk_orders_url}
-      format.json { head :no_content }
-    end
   end
 
   private
