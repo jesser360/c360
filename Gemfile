@@ -5,6 +5,8 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
+gem "paperclip", "~> 6.0.0"
+gem 'aws-sdk', '~> 2'
 gem "administrate"
 gem 'zip-codes'
 gem 'flipclockjs-rails', '~> 0.7.7'

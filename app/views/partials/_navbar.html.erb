@@ -35,7 +35,11 @@
       <!-- DONT CLOSE THIS <DIV TAG> WILL FUCK EVERYTHING UP -->
 
       <div id='prof-pic'>
-        <img id="nav_prof_pic" src="http://i.imgur.com/IulSm39.jpg" alt="profile pic">
+        <%if @user%>
+          <%= image_tag(@user.avatar.url(:thumb),:id =>"nav_prof_pic") %>
+        <%else%>
+        <%= image_tag('user-icon.png',:id =>"nav_prof_pic") %>
+        <%end%>
         <a id='prof-carrot' href="#proflink" data-toggle="collapse" aria-expanded="false"></a>
         <ul  class=" collapse list-unstyled" id="proflink">
           <% if User.find_by_id(session[:user_id]) %>

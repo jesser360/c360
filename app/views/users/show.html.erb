@@ -1,8 +1,8 @@
 <!-- <br /><br /><br /> -->
 <div style='margin:10vw 10vw 5vw 10vw'>
   <div class="row" >
-    <div class="col-md-3 prof-pic" style="background-color:#506dc5;border-radius:20px;padding:20px;color:lightgray">
-      <img class="profilePic" src="http://i.imgur.com/IulSm39.jpg" alt="profile pic" style ="margin:10px">
+    <div class="col-md-3 prof-box">
+      <%= image_tag(@user.avatar.url,:style =>"width:15vw;margin:10px") %>
       <h3><%= @user.company_name%></h3>
       <h3><%= @user.email%></h3>
     </div>

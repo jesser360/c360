@@ -55,10 +55,10 @@
     <div hidden class='row signup-form' id='upload_image'>
       <div class="form-group">
         <div class="control-label col-sm-2 text-right">
-          <%= f.label :Upload_image %>
+          <%= f.label :Upload_Picture %>
         </div>
         <div class="col-sm-8">
-          <%= f.button :profile_image, class: "form-control" %>
+          <%= f.file_field :avatar %>
         </div>
       </div>
     </div>
