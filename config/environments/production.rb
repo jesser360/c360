@@ -6,7 +6,8 @@ Rails.application.configure do
       bucket: ENV['AWS_S3_BUCKET'],
       access_key_id: ENV['AWS_ACCESS_KEY_ID'],
       secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
-    }
+    },
+  :s3_region => ENV['AWS_S3_REGION']
   }
   # Settings specified here will take precedence over those in config/application.rb.
 
