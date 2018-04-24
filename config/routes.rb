@@ -1,17 +1,17 @@
 Rails.application.routes.draw do
   namespace :admin do
-    resources :bulk_orders , :except => [:index,:destroy]
+    resources :bulk_orders
     resources :emails
-    resources :items, :except => [:show]
-    resources :users , :except => [:index]
-    resources :user_orders , :except => [:index]
+    resources :items
+    resources :users
+    resources :user_orders
 
     root to: "bulk_orders#index"
   end
 
-  resources :user_orders
-  resources :bulk_orders
-  resources :items
+  resources :user_orders, :except => [:index]
+  resources :bulk_orders, :except => [:index,:destroy]
+  resources :items, :except => [:show]
   resources :charges
   resources :emails
 
