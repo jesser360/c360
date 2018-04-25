@@ -35,7 +35,7 @@
       <!-- DONT CLOSE THIS <DIV TAG> WILL FUCK EVERYTHING UP -->
 
       <div id='prof-pic'>
-        <%if @user%>
+        <%if @user && @user.avatar.present?%>
           <%= image_tag(@user.avatar.url(:thumb),:id =>"nav_prof_pic") %>
         <%else%>
         <%= image_tag('user-icon.png',:id =>"nav_prof_pic") %>

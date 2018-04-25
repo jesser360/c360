@@ -51,8 +51,15 @@
    background-color:#506dc5;
    border-radius:20px;
    padding:20px;
-   color:lightgray;
  }
+#edit-user-pencil{
+  color:lightgray;
+  float:right;
+}
+#edit-user-pencil:active{
+  background-color:transparent;
+  text-shadow: 1px 1px darkgray;
+}
  #prof-carrot{
    font-size: 40px;
    // margin-right:10px;

@@ -21,7 +21,7 @@
           <div class ="row " >
             <div class="col-md-4">
             <!-- <%=link_to item_path(item) do %> -->
-              <span class='oil-image'><%= image_tag(item.image, :size => "250x250") if item.image %></span>
+              <span class='oil-image'><%= image_tag(item.avatar.url, :size => "250x250") if item.image %></span>
             <!-- <%end%> -->
             </div>
             <div class="col-md-4">

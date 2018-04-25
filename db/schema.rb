@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180424201916) do
+ActiveRecord::Schema.define(version: 20180425050637) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,6 +51,10 @@ ActiveRecord::Schema.define(version: 20180424201916) do
     t.integer "max_amount"
     t.integer "bulk_order_amount"
     t.integer "current_amount"
+    t.string "avatar_file_name"
+    t.string "avatar_content_type"
+    t.integer "avatar_file_size"
+    t.datetime "avatar_updated_at"
     t.index ["user_id"], name: "index_items_on_user_id"
   end
 

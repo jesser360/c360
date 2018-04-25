@@ -1,10 +1,15 @@
-<!-- <br /><br /><br /> -->
 <div style='margin:10vw 10vw 5vw 10vw'>
   <div class="row" >
     <div class="col-md-3 prof-box">
+      <%if @user.avatar.present?%>
       <%= image_tag(@user.avatar.url,:style =>"width:15vw;margin:10px") %>
-      <h3><%= @user.company_name%></h3>
-      <h3><%= @user.email%></h3>
+      <%else%>
+      <%= image_tag('user-icon.png',:id =>"nav_prof_pic") %>
+      <%end%>
+      <h4><%=link_to edit_user_path_url(@user), :id=>"edit-user-pencil" do%><i class="glyphicon glyphicon-pencil"></i><%end%></h4>
+      <h3 style ='color:lightgray'><%= @user.company_name if @user.company_name%></h3>
+      <h3 style ='color:lightgray'><%= @user.email%></h3>
+      <h4 style ='color:lightgray'><%= @user.city%>, <%= @user.state%></h4>
     </div>
 
     <%if @user.is_vendor%>
@@ -20,7 +25,8 @@
             <hr>
             <div class="row">
               <div class='col-md-1'>
-                <h3 style='margin-left:-50px'><%=image_tag(item.image, :size => "100x100")%></h3>
+                <h3 style='margin-left:-50px'><%=image_tag(item.avatar.url, :size => "100x100")%></h3>
+                <h4><%=link_to edit_item_path(item), :id=>"edit-user-pencil" do%><i class="glyphicon glyphicon-pencil"></i><%end%></h4>
               </div>
               <div class='col-md-3'>
                 <h3><%=item.item_name%> -</h3>

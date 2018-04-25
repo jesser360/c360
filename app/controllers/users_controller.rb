@@ -53,6 +53,11 @@ class UsersController < ApplicationController
 
   def update
     @user = User.find_by_id(params[:id])
+    @user.update(user_params)
+    @zip = ZipCodes.identify(user_params[:zipcode])
+    @user.city = @zip[:city] rescue nil
+    @user.state = @zip[:state_name] rescue nil
+    @user.save
     redirect_to user_path_url(@user)
   end
 

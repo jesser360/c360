@@ -24,10 +24,12 @@ class ItemsController < ApplicationController
   # GET /items/new
   def new
     @item = Item.new
+    @user = User.find_by_id(session[:user_id]) if session[:user_id]
   end
 
   # GET /items/1/edit
   def edit
+    @user = User.find_by_id(session[:user_id]) if session[:user_id]
   end
 
   # POST /items
@@ -35,7 +37,7 @@ class ItemsController < ApplicationController
   def create
     @item = Item.new(item_params)
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
-    
+
     @item.current_amount = item_params[:max_amount]
     @item.user = @user
     @item.image = 'http://moziru.com/images/drawn-weed-animated-7.gif'
@@ -85,6 +87,6 @@ class ItemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def item_params
-      params.require(:item).permit(:item_name, :price, :image,:max_amount,:bulk_order_amount)
+      params.require(:item).permit(:item_name, :price, :image,:max_amount,:bulk_order_amount,:avatar)
     end
 end
