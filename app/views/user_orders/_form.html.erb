@@ -16,7 +16,7 @@
 
   <div class ="row edit-row">
     <div class="col-md-6 edit-card">
-      <span style='float:right' class='oil-image'><%= image_tag(@order_item.av, :size => "250x250") %></span>
+      <span style='float:right' class='oil-image'><%= image_tag(@order_item.avatar.url, :size => "250x250") %></span>
       <h1 id='item_name'><%= @order_item.name %></h1>
       <h3><%= @order_item.price %>$ / gram</h3>
       <h4><%=link_to user_path_url(@user_order.user) do%>

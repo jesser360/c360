@@ -6,7 +6,9 @@
       <%else%>
       <%= image_tag('user-icon.png',:id =>"nav_prof_pic") %>
       <%end%>
-      <h4><%=link_to edit_user_path_url(@user), :id=>"edit-user-pencil" do%><i class="glyphicon glyphicon-pencil"></i><%end%></h4>
+      <%if @user ==@current_user%>
+        <h4><%=link_to edit_user_path_url(@user), :id=>"edit-user-pencil" do%><i class="glyphicon glyphicon-pencil"></i><%end%></h4>
+      <%end%>
       <h3 style ='color:lightgray'><%= @user.company_name if @user.company_name%></h3>
       <h3 style ='color:lightgray'><%= @user.email%></h3>
       <h4 style ='color:lightgray'><%= @user.city%>, <%= @user.state%></h4>
@@ -26,7 +28,9 @@
             <div class="row">
               <div class='col-md-1'>
                 <h3 style='margin-left:-50px'><%=image_tag(item.avatar.url, :size => "120x120")%></h3>
+                <%if @user ==@current_user%>
                 <h4><%=link_to edit_item_path(item), :id=>"edit-user-pencil" do%><i class="glyphicon glyphicon-pencil"></i><%end%></h4>
+                <%end%>
               </div>
               <div class='col-md-3'>
                 <h3><%=item.item_name%> -</h3>
@@ -103,7 +107,7 @@
             <%if order.bulk_order.completed == false%>
               <div class="row">
                 <div class='col-md-4'>
-                  <%=image_tag(order.order_item.av, :size => "120x120")%>
+                  <%=image_tag(order.order_item.avatar.url, :size => "120x120")%>
                 </div>
                 <div class='col-md-8'>
                   <h3><%=order.order_item.name%>-<br>
@@ -123,7 +127,7 @@
           <%if order.bulk_order.completed == true%>
             <div class="row">
               <div class='col-md-4'>
-                <%=image_tag(order.order_item.av, :size => "120x120")%>
+                <%=image_tag(order.order_item.avatar.url, :size => "120x120")%>
               </div>
               <div class='col-md-8'>
             <h3><%=order.order_item.name%>-<br>

@@ -20,8 +20,8 @@
         <div class="card">
           <div class ="row " >
             <div class="col-md-4">
-            <%if item.order_items.present? && !item.order_items[item.order_items.length-1].closed%>
-              <span class='oil-image'><%= image_tag(item.order_items[item.order_items.length-1].av, :size => "250x250") %></span>
+            <%if item.order_items.present?%>
+              <span class='oil-image'><%= image_tag(item.order_items[item.order_items.length-1].avatar.url, :size => "250x250") %></span>
             <%else%>
             <!-- <%=link_to item_path(item) do %> -->
               <span class='oil-image'><%= image_tag(item.avatar.url, :size => "250x250") %></span>
