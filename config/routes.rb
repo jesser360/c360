@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     resources :items
     resources :users
     resources :user_orders
+    resources :order_items
 
     root to: "bulk_orders#index"
   end
