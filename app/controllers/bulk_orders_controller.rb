@@ -72,9 +72,10 @@ class BulkOrdersController < ApplicationController
     # If order fills..
     if @bulk_order.percent_filled >= @bulk_order.max_amount
       # Lowers inventory count for item
-      @item = @bulk_order.item
       @item.current_amount = (@item.current_amount - @item.bulk_order_amount)
       @item.save
+
+      @order_item.current_amount = @item.current_amount
       @order_item.closed = true
       @order_item.save
       @bulk_order.completed = true
@@ -129,6 +130,7 @@ class BulkOrdersController < ApplicationController
     @users = @bulk_order.users
     @user_order = UserOrder.new()
     @order_item = @bulk_order.order_item
+    @item = @bulk_order.item
 
     @user_order.order_item = @order_item
     @user_order.quantity = params[:bulk_order][:quantity]
@@ -141,9 +143,10 @@ class BulkOrdersController < ApplicationController
     @bulk_order.percent_filled = (@bulk_order.percent_filled +  params[:bulk_order][:quantity].to_i)
 
     if @bulk_order.percent_filled >= @bulk_order.max_amount
-      @item = @bulk_order.item
       @item.current_amount=(@item.current_amount - @item.bulk_order_amount)
       @item.save
+
+      @order_item.current_amount = @item.current_amount
       @order_item.closed = true
       @order_item.save
       @bulk_order.completed = true

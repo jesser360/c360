@@ -68,8 +68,8 @@
                           <%end%>
                         <%end%>
                         <hr>
-                      </div>
                     <%end%>
+                  </div>
                   <div class="col-md-5">
                     <%item.bulk_orders.where(completed: true).each do |bulk|%>
                       <%=link_to bulk_order_path(bulk) do %>

@@ -38,6 +38,7 @@ class UserOrdersController < ApplicationController
     @bulk_order = @user_order.bulk_order
     @users = @bulk_order.users
     @order_item = @bulk_order.order_item
+    @item = @bulk_order.item
 
     @bulk_order.percent_filled = @bulk_order.percent_filled - (@bulk_order.user_orders.where(id:@user_order.id)[0].quantity)
 
@@ -50,9 +51,10 @@ class UserOrdersController < ApplicationController
 
 
     if @bulk_order.percent_filled >= @bulk_order.max_amount
-      @item = @bulk_order.item
       @item.current_amount=@item.current_amount- @item.bulk_order_amount
       @item.save
+  
+      @order_item.current_amount = @item.current_amount
       @order_item.closed = true
       @order_item.save
       @bulk_order.completed = true
