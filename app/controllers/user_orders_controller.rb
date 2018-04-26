@@ -18,36 +18,43 @@ class UserOrdersController < ApplicationController
 
   # GET /user_orders/1/edit
   def edit
+    @user_order =  UserOrder.find_by_id(params[:id])
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
-    @item = Item.where(item_name: params[:item])[0]
-    @bulk = @item.bulk_orders.where(completed: false)[0]
+    @order_item = @user_order.order_item
+    @bulk = @user_order.bulk_order
   end
 
   # POST /user_orders
   # POST /user_orders.json
   def create
-    # EDIT BULK ORDER INSTEAD
+    # CREATE BULK ORDER INSTEAD
   end
 
   # PATCH/PUT /user_orders/1
   # PATCH/PUT /user_orders/1.json
   def update
+
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @bulk_order = @user_order.bulk_order
     @users = @bulk_order.users
+    @order_item = @bulk_order.order_item
 
     @bulk_order.percent_filled = @bulk_order.percent_filled - (@bulk_order.user_orders.where(id:@user_order.id)[0].quantity)
+
+    @user_order.quantity = params[:user_order][:quantity]
+    @user_order.total_price = @user_order.quantity * @order_item.price
+    @user_order.save
+
     @bulk_order.percent_filled = @bulk_order.percent_filled + @user_order.quantity
     @bulk_order.save
 
-    @user_order.quantity = params[:user_order][:quantity]
-    @user_order.total_price = @user_order.quantity * params[:price].to_i
-    @user_order.save
-    
+
     if @bulk_order.percent_filled >= @bulk_order.max_amount
       @item = @bulk_order.item
       @item.current_amount=@item.current_amount- @item.bulk_order_amount
       @item.save
+      @order_item.closed = true
+      @order_item.save
       @bulk_order.completed = true
       @bulk_order.save
       if @bulk_order.users.count > 1
@@ -131,6 +138,8 @@ class UserOrdersController < ApplicationController
     @user_order.destroy
     if @bulk_order.percent_filled < 1
       @bulk_order.destroy
+      @order_item = @bulk_order.order_item
+      @order_item.destroy
     else
       @bulk_order.save
     end
@@ -153,6 +162,6 @@ class UserOrdersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_order_params
-      params.permit(:item, :user_id, :bulk_order_id, :quantity)
+      params.permit( :user_id, :bulk_order_id, :quantity)
     end
 end

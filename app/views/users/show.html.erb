@@ -25,7 +25,7 @@
             <hr>
             <div class="row">
               <div class='col-md-1'>
-                <h3 style='margin-left:-50px'><%=image_tag(item.avatar.url, :size => "100x100")%></h3>
+                <h3 style='margin-left:-50px'><%=image_tag(item.avatar.url, :size => "120x120")%></h3>
                 <h4><%=link_to edit_item_path(item), :id=>"edit-user-pencil" do%><i class="glyphicon glyphicon-pencil"></i><%end%></h4>
               </div>
               <div class='col-md-3'>
@@ -53,7 +53,7 @@
                           <%end%>
                         <%end%>
                         <%if @contains_current_user%>
-                          <%=link_to edit_user_order_path(@contains_current_user,item:bulk.item.item_name,price:bulk.item.price) do %>
+                          <%=link_to edit_user_order_path(@contains_current_user,item:bulk.item.id) do %>
                             <h5><li><%=bulk.percent_filled%>/<%=bulk.max_amount%> spots filled
                               <br>
                               <%=bulk.users.count%> Users in order<br>
@@ -103,12 +103,12 @@
             <%if order.bulk_order.completed == false%>
               <div class="row">
                 <div class='col-md-4'>
-                  <%=image_tag(Item.where(item_name: order.item)[0].image, :size => "150x150")%>
+                  <%=image_tag(order.order_item.av, :size => "120x120")%>
                 </div>
                 <div class='col-md-8'>
-                  <h3><%=order.item%>-<br>
+                  <h3><%=order.order_item.name%>-<br>
                   <%=order.quantity rescue nil%> grams for $<%=order.total_price rescue nil%><br>
-                  <%=link_to edit_user_order_path(order,:item => order.item, :price => (order.total_price/order.quantity)) do%><i class="glyphicon glyphicon-pencil"></i><%end%>
+                  <%=link_to edit_user_order_path(order,:order_item => order.order_item.id, :price => (order.total_price/order.quantity)) do%><i class="glyphicon glyphicon-pencil"></i><%end%>
                   <%=link_to user_order_path(order), :method => :delete do %><i class="glyphicon glyphicon-trash"></i><%end%></h3>
                   <%@bulk_order = order.bulk_order%>
                   <h4><%=@bulk_order.percent_filled%>/<%=@bulk_order.max_amount%> Spots of this Order Filled</h4>
@@ -123,12 +123,12 @@
           <%if order.bulk_order.completed == true%>
             <div class="row">
               <div class='col-md-4'>
-                <%=image_tag(Item.where(item_name: order.item)[0].image, :size => "150x150")%>
+                <%=image_tag(order.order_item.av, :size => "120x120")%>
               </div>
               <div class='col-md-8'>
-            <h3><%=order.item%>-<br>
+            <h3><%=order.order_item.name%>-<br>
               <%=order.quantity rescue nil%> grams for $<%=order.total_price rescue nil%><br>
-              <%=link_to bulk_order_path(order.bulk_order,:item => order.item) do%><i class="glyphicon glyphicon-eye-open"></i><%end%><h3>
+              <%=link_to bulk_order_path(order.bulk_order) do%><i class="glyphicon glyphicon-eye-open"></i><%end%></h3>
                 <!-- <%@bulk_order = order.bulk_order%> -->
                 <!-- <h4><%=@bulk_order.percent_filled%>/<%=@bulk_order.max_amount%> Spots of this Order Filled</h4> -->
                 <hr>

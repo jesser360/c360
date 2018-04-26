@@ -39,8 +39,7 @@ class ItemsController < ApplicationController
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
 
     @item.current_amount = item_params[:max_amount]
-    @item.user = @user
-    @item.image = 'http://moziru.com/images/drawn-weed-animated-7.gif'
+    @item.user = @user #This is the owner of the item
     respond_to do |format|
       if @item.save
         format.html { redirect_to user_path_url(@user)}

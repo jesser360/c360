@@ -16,13 +16,13 @@
 
   <div class ="row edit-row">
     <div class="col-md-6 edit-card">
-      <span style='float:right' class='oil-image'><%= image_tag(@item.image, :size => "250x250") %></span>
-      <h1 id='item_name'><%= @item.item_name %></h1>
-      <h3><%= @item.price %>$ / gram</h3>
-      <h4><%=link_to user_path_url(@item.user) do%>
-        <%=@item.user.company_name%></h3>
+      <span style='float:right' class='oil-image'><%= image_tag(@order_item.av, :size => "250x250") %></span>
+      <h1 id='item_name'><%= @order_item.name %></h1>
+      <h3><%= @order_item.price %>$ / gram</h3>
+      <h4><%=link_to user_path_url(@user_order.user) do%>
+        <%=@user_order.user.company_name%></h3>
       <%end%></h4>
-      <h4><%=@item.current_amount%> grams available</h4>
+      <h4><%=@order_item.current_amount%> grams available</h4>
       <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
     </div>
     <div class='col-md-3' style='font-size:1.2em;margin-top:-5vh'>
@@ -32,7 +32,7 @@
       <div class='row' style='padding-left:10px;margin-top:5vh'>
         <div class="field" id='quant_input'>
           <label>Quantity (g)</label>
-          <input style='width:7vw' id ='user_order_quantity' value='<%=@user_order.quantity%>' type='number' min='1' max='<%=@item.bulk_order_amount-(@bulk.percent_filled rescue 0)+(@user_order.quantity rescue 0)%>'name='user_order[quantity]'>
+          <input style='width:7vw' id ='user_order_quantity' value='<%=@user_order.quantity%>' type='number' min='1' max='<%=@order_item.bulk_order_amount-(@bulk.percent_filled rescue 0)+(@user_order.quantity rescue 0)%>'name='user_order[quantity]'>
         </div>
         <div class="field">
           <label>Price</label>
@@ -59,7 +59,7 @@
   </div>
 
   <div hidden>
-  <span id='item_price'><%= @item.price %></span>
+  <span id='item_price'><%= @order_item.price %></span>
   <span id= 'already_user_order'><%=@user_order.quantity rescue 0%></span>
   <span id='percent_filled'><%=@bulk.percent_filled rescue 0%></span>
   <span id='max_amount'><%=@bulk.max_amount rescue nil%></span>
@@ -73,7 +73,7 @@
   <article>
     <%= hidden_field_tag(:stripeToken) %>
   </article>
-  
+
 </form>
   <script src="https://checkout.stripe.com/checkout.js"></script>
   <script>
@@ -136,7 +136,7 @@ var Apiec3 = c3.generate({
     position: 'right'
     },
     donut: {
-        title: item,
+        title: (percent_filled+"/"+max_amount+" spots taken"),
         label: {
           show:true
         }
@@ -146,11 +146,11 @@ var Apiec3 = c3.generate({
     }
 });
 
-d3.select(".c3-chart-arcs-title")
-    .append("tspan")
-    .attr("dy", 16)
-    .attr("x", 0)
-    .text(percent_filled+"/"+max_amount+" spots taken");
+// d3.select(".c3-chart-arcs-title")
+//     .append("tspan")
+//     .attr("dy", 16)
+//     .attr("x", 0)
+//     .text(percent_filled+"/"+max_amount+" spots taken");
 
 
     var clock_1 = new FlipClock($('#small-clock'),new Date(expire_date), {

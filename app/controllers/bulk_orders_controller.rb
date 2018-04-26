@@ -5,14 +5,15 @@ class BulkOrdersController < ApplicationController
   # GET /bulk_orders/1.json
   def show
     @bulk_order = BulkOrder.find(params[:id])
+    @order_item = @bulk_order.order_item
     @item = @bulk_order.item
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
-    @seller = @item.user
+    @seller = @order_item.user
   end
 
   # GET /bulk_orders/new
   def new
-    @item = Item.where(item_name: params[:item])[0]
+    @item = Item.find_by_id(params[:item].to_i) rescue nil
     @bulk_order = BulkOrder.new
     @user_order = UserOrder.new
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
@@ -21,7 +22,8 @@ class BulkOrdersController < ApplicationController
   # GET /bulk_orders/1/edit
   def edit
     @bulk = BulkOrder.find_by_id(params[:id])
-    @item = Item.where(item_name: params[:item])[0]
+    @order_item = @bulk.order_item
+    @item = Item.find_by_id(params[:item])
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
   end
 
@@ -29,22 +31,40 @@ class BulkOrdersController < ApplicationController
   # POST /bulk_orders.json
   def create
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
-    @item = Item.where(item_name: params[:item])[0]
+    @item = Item.find_by_id(params[:item])
     @bulk_order = BulkOrder.new()
     @user_order = UserOrder.new()
+    @order_item = OrderItem.new()
     @date = Date.today
 
+    @order_item.av = @item.avatar
+    @order_item.closed = false
+    @order_item.user = @item.user
+    @order_item.name = @item.item_name
+    @order_item.price = @item.price
+    @order_item.max_amount = @item.max_amount
+    @order_item.bulk_order_amount = @item.bulk_order_amount
+    @order_item.current_amount = @item.current_amount
+    @order_item.avatar_file_name = @item.avatar_file_name
+    @order_item.avatar_content_type = @item.avatar_content_type
+    @order_item.avatar_file_size = @item.avatar_file_size
+    @order_item.avatar_updated_at = @item.avatar_updated_at
+    @order_item.save
+
+    @item.order_items.push(@order_item)
+
     @user_order.quantity = params[:bulk_order][:quantity]
-    @user_order.item = params[:item]
     @user_order.user= @user
-    @user_order.total_price = @user_order.quantity * params[:price].to_i
+    @user_order.total_price = @user_order.quantity * @order_item.price
+    @user_order.order_item = @order_item
     @user_order.save
 
+    @bulk_order.item = @item
+    @bulk_order.order_item = @order_item
     @end_date= (@date+(rand(1..10))).to_s
     @bulk_order.expire_date = @end_date
     @bulk_order.user_orders.push(@user_order)
     @bulk_order.users.push(@user)
-    @bulk_order.item = @item
     @bulk_order.max_amount= @item.bulk_order_amount
     @bulk_order.completed = false
     @bulk_order.percent_filled = (@bulk_order.percent_filled || 0 + @user_order.quantity)
@@ -55,6 +75,8 @@ class BulkOrdersController < ApplicationController
       @item = @bulk_order.item
       @item.current_amount = (@item.current_amount - @item.bulk_order_amount)
       @item.save
+      @order_item.closed = true
+      @order_item.save
       @bulk_order.completed = true
       @bulk_order.save
       NotifMailer.single_order_email(@user,@bulk_order,@user_order).deliver
@@ -106,10 +128,11 @@ class BulkOrdersController < ApplicationController
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @users = @bulk_order.users
     @user_order = UserOrder.new()
+    @order_item = @bulk_order.order_item
 
+    @user_order.order_item = @order_item
     @user_order.quantity = params[:bulk_order][:quantity]
-    @user_order.item = params[:item]
-    @user_order.total_price = @user_order.quantity * params[:price].to_i
+    @user_order.total_price = @user_order.quantity * @order_item.price
     @user_order.user= @user
     @user_order.save
 
@@ -121,6 +144,8 @@ class BulkOrdersController < ApplicationController
       @item = @bulk_order.item
       @item.current_amount=(@item.current_amount - @item.bulk_order_amount)
       @item.save
+      @order_item.closed = true
+      @order_item.save
       @bulk_order.completed = true
       @bulk_order.save
       if @bulk_order.users.count > 1

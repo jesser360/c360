@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180425050637) do
+ActiveRecord::Schema.define(version: 20180426154629) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,7 +25,9 @@ ActiveRecord::Schema.define(version: 20180425050637) do
     t.datetime "expire_date"
     t.boolean "completed"
     t.bigint "item_id"
+    t.bigint "order_item_id"
     t.index ["item_id"], name: "index_bulk_orders_on_item_id"
+    t.index ["order_item_id"], name: "index_bulk_orders_on_order_item_id"
   end
 
   create_table "bulk_orders_users", id: false, force: :cascade do |t|
@@ -58,8 +60,27 @@ ActiveRecord::Schema.define(version: 20180425050637) do
     t.index ["user_id"], name: "index_items_on_user_id"
   end
 
+  create_table "order_items", force: :cascade do |t|
+    t.string "name"
+    t.integer "price"
+    t.integer "max_amount"
+    t.integer "bulk_order_amount"
+    t.integer "current_amount"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "avatar_file_name"
+    t.string "avatar_content_type"
+    t.integer "avatar_file_size"
+    t.datetime "avatar_updated_at"
+    t.bigint "user_id"
+    t.boolean "closed"
+    t.bigint "item_id"
+    t.string "av"
+    t.index ["item_id"], name: "index_order_items_on_item_id"
+    t.index ["user_id"], name: "index_order_items_on_user_id"
+  end
+
   create_table "user_orders", force: :cascade do |t|
-    t.string "item"
     t.bigint "user_id"
     t.bigint "bulk_order_id"
     t.datetime "created_at", null: false
@@ -68,7 +89,9 @@ ActiveRecord::Schema.define(version: 20180425050637) do
     t.integer "expiration"
     t.integer "total_price"
     t.string "charge_token"
+    t.bigint "order_item_id"
     t.index ["bulk_order_id"], name: "index_user_orders_on_bulk_order_id"
+    t.index ["order_item_id"], name: "index_user_orders_on_order_item_id"
     t.index ["user_id"], name: "index_user_orders_on_user_id"
   end
 
@@ -90,7 +113,11 @@ ActiveRecord::Schema.define(version: 20180425050637) do
   end
 
   add_foreign_key "bulk_orders", "items"
+  add_foreign_key "bulk_orders", "order_items"
   add_foreign_key "items", "users"
+  add_foreign_key "order_items", "items"
+  add_foreign_key "order_items", "users"
   add_foreign_key "user_orders", "bulk_orders"
+  add_foreign_key "user_orders", "order_items"
   add_foreign_key "user_orders", "users"
 end
