@@ -13,7 +13,7 @@
       </ul>
     </div>
   <% end %>
-
+<div class='spin'>
 <%if !@user_order.new_record?%>
 <span hidden id='item_price'><%= @order_item.price%></span>
   <div class ="row edit-row">
@@ -106,7 +106,7 @@
     </div>
   </div>
 <%end%>
-
+</div>
   <div hidden>
   <span id= 'already_user_order'><%=@user_order.quantity rescue 0%></span>
   <span id='percent_filled'><%=@bulk.percent_filled rescue 0%></span>
@@ -154,6 +154,18 @@
     token: function(token) {
       $('input#stripeToken').val(token.id);
       $('input#amount').val(amount)
+
+      $(".spin").spin({
+        lines: 12, // The number of lines to draw
+        length: 15, // The length of each line
+        width: 9, // The line thickness
+        radius: 30, // The radius of the inner circle
+        color: '#000', // #rgb or #rrggbb
+        speed: 1, // Rounds per second
+        trail: 60, // Afterglow percentage
+        shadow: false // Whether to render a shadow
+      });
+
       $('form').submit()
     }
   });
@@ -209,9 +221,9 @@ var Apiec3 = c3.generate({
 //     .text(percent_filled+"/"+max_amount+" spots taken");
 
 
-    var clock_1 = new FlipClock($('#small-clock'),new Date(expire_date), {
-    countdown: true,
-    clockFace: 'DailyCounter'
-    });
+  var clock_1 = new FlipClock($('#small-clock'),new Date(expire_date), {
+  countdown: true,
+  clockFace: 'DailyCounter'
+  });
 
 </script>

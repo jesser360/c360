@@ -7,6 +7,7 @@ end
 
 
 gem 'pry'
+gem 'spinjs-rails'
 gem "paperclip", "~> 6.0.0"
 gem 'aws-sdk', '~> 3'
 gem "administrate"

@@ -1,4 +1,4 @@
-<div style='margin:10vw 10vw 5vw 10vw'>
+<div class='spin'style='margin:10vw 10vw 5vw 10vw'>
   <%= form_for @user,  :url => update_user_path_url(@user), html: {method: :patch} do |form| %>
     <% if @user.errors.any? %>
       <div id="error_explanation">
@@ -13,19 +13,19 @@
     <div class="row" >
       <div class="col-md-9 prof-box">
         <%if @user.is_vendor?%>
-          <%if @user.avatar.present?%>
-          <%= image_tag(@user.avatar.url,:style =>"width:15vw;margin:10px") %>
-          <%else%>
-          <%= image_tag('user-icon.png',:id =>"nav_prof_pic") %>
-          <%end%>
-          <div class="form-group">
-              <%= form.label :Upload_Picture, :style =>'color:lightgray' %>
-              <%= form.file_field :avatar %>
+          <div class='form-group'>
+            <%=form.label :company_name, :style =>'color:lightgray' %>
+            <%=form.text_field :company_name%>
           </div>
         <%end%>
-        <div class='form-group'>
-          <%=form.label :company_name, :style =>'color:lightgray' %>
-          <%=form.text_field :company_name%>
+        <%if @user.avatar.present?%>
+        <%= image_tag(@user.avatar.url,:style =>"width:15vw;margin:10px") %>
+        <%else%>
+        <%= image_tag('user-icon.png',:id =>"nav_prof_pic") %>
+        <%end%>
+        <div class="form-group">
+          <%= form.label :Upload_Picture, :style =>'color:lightgray' %>
+          <%= form.file_field :avatar %>
         </div>
         <div class='form-group'>
           <%=form.label :zipcode, :style =>'color:lightgray' %>
@@ -33,10 +33,26 @@
         </div>
         <div class="form-group">
           <div class="sign-btn signup-form ">
-            <%= form.submit "Save Changes", class: 'btn btn-primary btn-lg' %>
+            <%= form.submit "Save Changes", class: 'btn btn-primary btn-lg submit-btn' %>
           </div>
         </div>
       </div>
     </div>
   <%end%>
 </div>
+
+<script>
+
+$('.submit-btn').on('click',function(){
+  $(".spin").spin({
+    lines: 12, // The number of lines to draw
+    length: 15, // The length of each line
+    width: 9, // The line thickness
+    radius: 30, // The radius of the inner circle
+    color: '#000', // #rgb or #rrggbb
+    speed: 1, // Rounds per second
+    trail: 60, // Afterglow percentage
+    shadow: true // Whether to render a shadow
+  });
+})
+</script>
