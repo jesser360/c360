@@ -1,17 +1,13 @@
-<% if @user && @item && @user_order && @bulk_order%>
-<h1>Hello <%= @user.email %> from <%= @user.company_name %></h1>
-<h4>Your Bulk Order for <%=@bulk_order.item.item_name%> has been completed!</h4>
-<br><br>
-<h3>Order details</h3>
-<h5>Total Quantity: <%=@bulk_order.max_amount%> grams</h5>
-<h5>Total Price: $<%=@item.price * @item.bulk_order_amount%></h5>
-<br>
-<h3>Buy Details</h3>
-<ol>
-<%@bulk_order.user_orders.each do |user_order|%>
-<li><%=User.find_by_id(user_order.user_id).email%> bought <%=user_order.quantity%> grams for  $<%=user_order.total_price%></li>
-<%end%>
-<ol>
+<% if @bulk_order%>
+  <h3>Hello from C360,</h3><br>
 
-<span>  There were a total of <%=@bulk_order.users.count%> users who were a part of this order.</span>
+  <h4>You have a Bulk order for <%=@bulk_order.order_item.name%>.<br>
+
+  The order in total was for <%=@bulk_order.max_amount%> grams<br><br>
+  Total Price: <%=@bulk_order.max_amount * @item.price%></h4>
+
+  <%@bulk_order.user_orders.each do |user_order|%>
+    <h5><%= user_order.user.email%> in <%= user_order.user.city%>,<%= user_order.user.state%>.<br>
+    They bought <%= user_order.quantity%> for $<%=user_order.quantity * @item.price%>.<hr></h5>
+  <%end%>
 <%end%>

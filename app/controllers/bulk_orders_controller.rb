@@ -37,11 +37,13 @@ class BulkOrdersController < ApplicationController
     @order_item = OrderItem.new()
     @date = Date.today
 
+    # MAKE INTO METHOD HERE AND IN USER ORDERS
     @order_item.avatar= @item.avatar
     @order_item.closed = false
     @order_item.name = @item.item_name
     @order_item.user = @item.user
     @order_item.price = @item.price
+    @order_item.market_price = @item.market_price
     @order_item.max_amount = @item.max_amount
     @order_item.bulk_order_amount = @item.bulk_order_amount
     @order_item.current_amount = @item.current_amount

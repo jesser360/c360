@@ -1,23 +1,19 @@
 
-  <div class ="row edit-row">
-    <h1>REMOVE ITEM FROM THIS PAGE</h1>
-      <div class="col-md-3">
-      <span class='oil-image'><%= image_tag(@item.image, :size => "250x250") %></span>
+  <div class ="row edit-row" style='margin-top:10vw'>
+      <div class="col-md-4">
+      <span class='oil-image'><%= image_tag(@order_item.avatar.url, :size => "250x250") %></span>
       </div>
-      <div class="col-md-3 edit-card">
-        <h1><%= @item.item_name %></h1>
-        <h3><%= @item.price %>$ / gram</h3>
-        <span hidden id='item_price'><%= @item.price %></span>
+      <div class="col-md-4 edit-card">
+        <h1><%= @order_item.name %></h1>
+        <h3><%= @order_item.price %>$ / gram</h3>
+        <span hidden id='item_price'><%= @order_item.price %></span>
         <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
       </div>
-      <div class="col-md-3 edit-card">
+      <div class="col-md-4 edit-card">
         <h4>Order Amount:</h4>
         <span id ='user_order_quantity'><%=@user_order.quantity%></span> grams<br>
         <h4>Order Price:</h4>
         <span id ='user_order_quantity'>$<%=@user_order.total_price%></span>
-      </div>
-      <div class='col-md-6 '>
-        <div id='pieChart'></div>
       </div>
     </div>
     <div class='row edit-row'>
@@ -25,9 +21,6 @@
       </div>
       <div class='col-md-6' style='font-size:1.2em'>
 
-    </div>
-    <div class='col-md-4 edit-card'>
-      <div id='clock'></div>
     </div>
   </div>
 
@@ -45,7 +38,6 @@
   var other_order_quant = (percent_filled -user_order_quant)
   var max_amount = $('#max_amount').text();
   var item = $('#item').val();
-  console.log(user_order_quant)
   $('#quant_input').on('input',function(){
     var order_quant = $('#user_order_quantity').val();
     $('#total_price').text( '$'+order_quant * item_price);

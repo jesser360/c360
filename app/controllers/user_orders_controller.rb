@@ -8,12 +8,14 @@ class UserOrdersController < ApplicationController
     @item = Item.where(item_name: params[:item])[0]
     @user_order =  UserOrder.find_by_id(params[:id])
     @bulk = @user_order.bulk_order
+    @order_item = @user_order.order_item
   end
 
   # GET /user_orders/new
   def new
     @user_order = UserOrder.new
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
+    @item = Item.find_by_id(params[:item])
   end
 
   # GET /user_orders/1/edit
@@ -27,7 +29,75 @@ class UserOrdersController < ApplicationController
   # POST /user_orders
   # POST /user_orders.json
   def create
-    # CREATE BULK ORDER INSTEAD
+    # BUY NOW OPTION
+    @user = User.find_by_id(session[:user_id]) if session[:user_id]
+    @item = Item.find_by_id(params[:item])
+    @user_order = UserOrder.new()
+    @order_item = OrderItem.new()
+    @bulk_order = nil
+
+    @order_item.avatar= @item.avatar if @item.avatar
+    @order_item.closed = false
+    @order_item.name = @item.item_name
+    @order_item.user = @item.user
+    @order_item.price = @item.price
+    @order_item.market_price = @item.market_price
+    @order_item.max_amount = @item.max_amount
+    @order_item.bulk_order_amount = @item.bulk_order_amount
+    @order_item.current_amount = @item.current_amount
+    @order_item.avatar_file_name = @item.avatar_file_name
+    @order_item.avatar_content_type = @item.avatar_content_type
+    @order_item.avatar_file_size = @item.avatar_file_size
+    @order_item.avatar_updated_at = @item.avatar_updated_at
+    @order_item.save
+
+    @item.order_items.push(@order_item)
+
+    @user_order.quantity = params[:user_order][:quantity]
+    @user_order.user= @user
+    @user_order.buy_now = true
+    @user_order.total_price = @user_order.quantity * @order_item.market_price
+    @user_order.order_item = @order_item
+    @user_order.save
+
+    @item.current_amount = (@item.current_amount - @item.bulk_order_amount)
+    @item.save
+
+    @order_item.current_amount = @item.current_amount
+    @order_item.closed = true
+    @order_item.save
+
+    NotifMailer.single_order_email(@user,@bulk_order,@user_order).deliver
+    NotifMailer.vendor_buy_now_email(@user_order).deliver
+
+    respond_to do |format|
+      if @user_order.save
+        format.html { redirect_to user_path_url(@user) }
+        format.json { render :show, status: :created, location: @user_order }
+      else
+        format.html { render :new }
+        format.json { render json: @user_order.errors, status: :unprocessable_entity }
+      end
+    end
+
+    @amount = params[:amount]
+    customer = Stripe::Customer.create(
+      :email => params[:stripeEmail],
+      :source  => params[:stripeToken]
+    )
+    charge = Stripe::Charge.create(
+      :customer    => customer.id,
+      :amount      => @amount,
+      :description => 'Rails Stripe customer',
+      :currency    => 'usd'
+    )
+
+      @user_order.charge_token = charge.id
+      @user_order.save
+
+    rescue Stripe::CardError => e
+      flash[:error] = e.message
+
   end
 
   # PATCH/PUT /user_orders/1
@@ -53,7 +123,7 @@ class UserOrdersController < ApplicationController
     if @bulk_order.percent_filled >= @bulk_order.max_amount
       @item.current_amount=@item.current_amount- @item.bulk_order_amount
       @item.save
-  
+
       @order_item.current_amount = @item.current_amount
       @order_item.closed = true
       @order_item.save

@@ -14,6 +14,8 @@
     </div>
   <% end %>
 
+<%if !@user_order.new_record?%>
+<span hidden id='item_price'><%= @order_item.price%></span>
   <div class ="row edit-row">
     <div class="col-md-6 edit-card">
       <span style='float:right' class='oil-image'><%= image_tag(@order_item.avatar.url, :size => "250x250") %></span>
@@ -57,9 +59,55 @@
       </div>
     </div>
   </div>
+<%else%>
+<span hidden id='item_market_price'><%= @item.market_price rescue nil%></span>
+  <div class ="row edit-row">
+    <div class="col-md-6 edit-card">
+      <span style='float:right' class='oil-image'><%= image_tag(@item.avatar.url, :size => "250x250") %></span>
+      <h1 id='item_name'><%= @item.item_name %></h1>
+      <h3><%= @item.market_price %>$ / gram</h3>
+      <h4><%=link_to user_path_url(@item.user) do%>
+        <%=@item.user.company_name%></h3>
+      <%end%></h4>
+      <h4><%=@item.current_amount%> grams available</h4>
+      <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
+    </div>
+    <div class='col-md-3' style='font-size:1.2em;margin-top:5vh'>
+      <!-- <div class='row edit-card' style='margin-top:5vh'>
+        <div id='small-clock'></div>
+      </div> -->
+      <div class='row' style='padding-left:10px;margin-top:5vh'>
+        <div class="field" id='quant_input'>
+          <label>Quantity (g)</label>
+          <input style='width:7vw' id ='user_order_quantity' value=0 type='number' min='1' max='<%=@item.bulk_order_amount%>'name='user_order[quantity]'>
+        </div>
+        <div class="field">
+          <label>Price</label>
+          <span id='total_price'>$<%=@user_order.total_price%></span>
+        </div>
+        <%unless @user_order.new_record?%>
+          <ul>
+            <li>Previous charge is deleted</li>
+            <li>New payment is created</li>
+            <li>NOT a double charge</li>
+          </ul>
+        <%end%>
+        <button type ='submit' id='payButton'>PAY</button>
+        <%= hidden_field_tag(:user_id, @user.id)%>
+        <%= hidden_field_tag(:item,params[:item])%>
+        <%= hidden_field_tag(:price,params[:price])%>
+      </div>
+    </div>
+    <div class='col-md-3 '>
+      EMPTY
+      <!-- <div class='row'>
+        <div id='pieChart'></div>
+      </div> -->
+    </div>
+  </div>
+<%end%>
 
   <div hidden>
-  <span id='item_price'><%= @order_item.price %></span>
   <span id= 'already_user_order'><%=@user_order.quantity rescue 0%></span>
   <span id='percent_filled'><%=@bulk.percent_filled rescue 0%></span>
   <span id='max_amount'><%=@bulk.max_amount rescue nil%></span>
@@ -78,11 +126,15 @@
   <script src="https://checkout.stripe.com/checkout.js"></script>
   <script>
   var amount=0;
-  $('#user_order_quantity').on('input',function(){
-    var order_quant = parseInt($('#user_order_quantity').val());
-    amount = parseInt(item_price * order_quant)
-    amount = amount * 100; // Needs to be an integer!
-  });
+    $('#user_order_quantity').on('input',function(){
+      var order_quant = parseInt($('#user_order_quantity').val());
+      if($('#item_market_price').text() =='') {
+        amount = parseInt(item_price * order_quant)
+      }else{
+        amount = parseInt(item_market_price * order_quant)
+      }
+      amount = amount * 100; // Needs to be an integer!
+    });
   $('#payButton').on('click', function(e) {
     e.preventDefault();
     if(parseInt($('#user_order_quantity').val()) > (parseInt($('#max_amount').text()) - parseInt($('#percent_filled').text()) + parseInt($('#already_user_order').text())) ){
@@ -111,6 +163,7 @@
   </script>
 <script>
   var item_price = $('#item_price').text();
+  var item_market_price = $('#item_market_price').text();
   var percent_filled = $('#percent_filled').text();
   var expire_date = $('#expire_date').text();
   var user_order_quant = $('#user_order_quantity').val();
@@ -119,8 +172,11 @@
   var item = $('#item').val();
   $('#quant_input').on('input',function(){
     var order_quant = $('#user_order_quantity').val();
-    $('#total_price').text( '$'+order_quant * item_price);
-    percent_filled = 23;
+    if($('#item_market_price').text() ==''){
+      $('#total_price').text( '$'+order_quant * item_price);
+    }else{
+      $('#total_price').text( '$'+order_quant * item_market_price);
+    }
   });
 var Apiec3 = c3.generate({
   bindto: '#pieChart',

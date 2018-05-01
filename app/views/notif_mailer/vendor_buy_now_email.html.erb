@@ -1,0 +1,7 @@
+<% if @user_order%>
+  <h3>Hello from C360,</h3><br>
+
+  <h4>You have a Buy Now order from <%=@user_order.user.email%>.<br>
+  They have ordered <%=@user_order.quantity%> grams of <%=@item.name%>.<br><br>
+  Total Price: <%=@user_order.total_price%></h4>
+<%end%>

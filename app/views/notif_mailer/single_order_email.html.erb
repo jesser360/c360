@@ -1,13 +1,21 @@
 <% if @user && @item && @user_order%>
-<h1>Hello <%= @user.email %> from <%= @user.company_name %></h1>
-<h4>Your Bulk Order for <%=@bulk_order.item.item_name%> has been completed!</h4>
-<br><br>
-<h3>Order details</h3>
-<h5>Total Quantity: <%=@user_order.quantity%> grams</h5>
-<h5>Total Price: $<%=@user_order.total_price%></h5>
-<br>
-  <h4>You Bought this order from <strong><%=@vendor.company_name%></strong>.</h4>
-  <h4>You can get in touch with them at <strong><%=@vendor.email%></strong>.</h4>
+  <h1>Hello <%= @user.email %></h1>
+  <%if @bulk_order != nil%>
+    <h4>Your Bulk Order for <%=@bulk_order.item.item_name%> has been completed!</h4>
+  <%else%>
+    <h4>Your Buy Now Order for <%=@item.name%> has been completed!</h4>
+  <%end%>
+  <br><br>
+  <h3>Order details</h3>
+  <h5>Total Quantity: <%=@user_order.quantity%> grams</h5>
+  <h5>Total Price: $<%=@user_order.total_price%></h5>
+  <br>
+    <h4>You Bought this order from <strong><%=@vendor.company_name%></strong>.</h4>
+    <h4>You can get in touch with them at <strong><%=@vendor.email%></strong>.</h4>
 
-<span>  There were a total of <%=@bulk_order.users.count%> users who were a part of this order.</span>
+  <%if @bulk_order%>
+    <span>  There were a total of <%=@bulk_order.users.count%> users who were a part of this order.</span>
+  <%else%>
+    <span> Since you are the only buyer in this Buy Now Order, it will be shipped ASAP, thank you!</span>
+  <%end%>
 <%end%>

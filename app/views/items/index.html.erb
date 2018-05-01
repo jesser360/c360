@@ -65,12 +65,15 @@
                       <span hidden id='user_order_quantity'><%= @bulk.user_orders.where(user_id: @user.id)[0].quantity%></span>
                         <%unless @user.is_vendor?%>
                           <h4 class="bulk_order_link" ><%= link_to 'View Your Order', edit_user_order_url(@bulk.user_orders.where(user_id: @user.id)[0], :item => item.id) %></h4>
+                          <h4 class="bulk_order_link" ><i class="glyphicon glyphicon-flash "></i>
+                            <%= link_to 'Buy Now', new_user_order_url(:item => item.id)%><h4>
                         <%end%>
                       <%else%>
                       <div class= 'clock' id='clock_<%=i%>'></div>
                         <%unless @user.is_vendor?%>
                           <h4 class="bulk_order_link" ><%= link_to 'Join Order', edit_bulk_order_url(@bulk, :item => item.id) %></h4>
-                          <h6>*Details about joining a bulk order</h6>
+                          <h4 class="bulk_order_link" ><i class="glyphicon glyphicon-flash "></i>
+                            <%= link_to 'Buy Now', new_user_order_url(:item => item.id)%><h4>
                         <%end%>
                       <%end%>
                     <%end%>
@@ -88,7 +91,8 @@
                 <%else%>
                   <%unless @user.is_vendor?%>
                     <h4 class="bulk_order_link"><%= link_to 'Start New Order', new_bulk_order_url(:item => item.id)%></h4>
-                    <h6>*Details about joining a bulk order</h6>
+                    <h4 class="bulk_order_link" ><i class="glyphicon glyphicon-flash "></i>
+                      <%= link_to 'Buy Now', new_user_order_url(:item => item.id)%><h4>
                   <%end%>
                 <%end%>
               </div>

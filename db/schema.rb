@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180426154629) do
+ActiveRecord::Schema.define(version: 20180501050822) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 20180426154629) do
     t.string "avatar_content_type"
     t.integer "avatar_file_size"
     t.datetime "avatar_updated_at"
+    t.integer "market_price"
     t.index ["user_id"], name: "index_items_on_user_id"
   end
 
@@ -76,6 +77,7 @@ ActiveRecord::Schema.define(version: 20180426154629) do
     t.boolean "closed"
     t.bigint "item_id"
     t.string "av"
+    t.integer "market_price"
     t.index ["item_id"], name: "index_order_items_on_item_id"
     t.index ["user_id"], name: "index_order_items_on_user_id"
   end
@@ -90,6 +92,7 @@ ActiveRecord::Schema.define(version: 20180426154629) do
     t.integer "total_price"
     t.string "charge_token"
     t.bigint "order_item_id"
+    t.boolean "buy_now"
     t.index ["bulk_order_id"], name: "index_user_orders_on_bulk_order_id"
     t.index ["order_item_id"], name: "index_user_orders_on_order_item_id"
     t.index ["user_id"], name: "index_user_orders_on_user_id"
