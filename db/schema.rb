@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180501050822) do
+ActiveRecord::Schema.define(version: 20180502172231) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -76,7 +76,6 @@ ActiveRecord::Schema.define(version: 20180501050822) do
     t.bigint "user_id"
     t.boolean "closed"
     t.bigint "item_id"
-    t.string "av"
     t.integer "market_price"
     t.index ["item_id"], name: "index_order_items_on_item_id"
     t.index ["user_id"], name: "index_order_items_on_user_id"

@@ -13,7 +13,7 @@
     </div>
   <% end %>
 
-  <div class ="row edit-row">
+  <div class ="row edit-row spin">
     <%if !@bulk_order.new_record? %>
       <div class="col-md-6 edit-card">
         <span style='float:right' class='oil-image'><%= image_tag(@order_item.avatar.url, :size => "250x250") %></span>
@@ -169,7 +169,7 @@
         trail: 60, // Afterglow percentage
         shadow: false // Whether to render a shadow
       });
-      
+
       $('form').submit()
     }
   });
