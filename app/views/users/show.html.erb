@@ -1,11 +1,7 @@
-<div style='margin:10vw 10vw 5vw 10vw'>
+<div class='spin' style='margin:10vw 10vw 5vw 10vw'>
   <div class="row" >
     <div class="col-md-3 prof-box">
-      <%if @user.avatar.present?%>
       <%= image_tag(@user.avatar.url,:style =>"width:15vw;margin:10px") %>
-      <%else%>
-      <%= image_tag('user-icon.png',:id =>"nav_prof_pic") %>
-      <%end%>
       <%if @user ==@current_user%>
         <h4><%=link_to edit_user_path_url(@user), :id=>"edit-user-pencil" do%><i class="glyphicon glyphicon-pencil"></i><%end%></h4>
       <%end%>
@@ -96,13 +92,46 @@
         </ul>
         <hr>
     </div>
-    <%else%>
-
+  </div>
+  <%if @current_user == @user%>
+    <div class='row'>
+      <div class='col-md-3'>
+        <br>
+        <h4>Keep an Eye out for open bids!</h4>
+      </div>
+      <div class='col-md-9'>
+        <div class='col-md-6'>
+          <h2 class='text-center'> Open Bids:</h2>
+          <%@user_bids_open.each do |bid|%>
+            <h4>Title: <%=bid.title%><h4>
+            <h4>Amount: <%=bid.amount%> grams<h4>
+            <h4>Price range: $<%=bid.price_min%> - $<%=bid.price_max%><h4>
+              <%if @user.bid_offers.where(bid: bid).exists?%>
+                <%=link_to 'View Your Offer',bid_offer_path(@user.bid_offers.where(bid: bid)[0])%>
+              <%else%>
+                <%=link_to 'Make an Offer',new_bid_offer_path(:bid_id => bid.id)%>
+              <%end%>
+              <hr>
+          <%end%>
+        </div>
+        <div class='col-md-6'>
+          <h2 class='text-center'> Closed Bids:</h2>
+          <%@user_bids_supplier.each do |bid|%>
+            <h4>Title: <%=bid.title%><h4>
+            <h4>Amount: <%=bid.amount%> grams<h4>
+            <h4>Final Price: $<%=bid.bid_offers[0].price%><h4>
+            <h4>Buyer: <%=bid.buyer.email%><h4>
+              <hr>
+          <%end%>
+        </div>
+      </div>
+    </div>
+  <%end%>
+  <%else%>
     <div class="col-md-9 prof-info">
-      <h2 style='float:right;margin-right:60px'> Finished Orders:</h2>
-      <h2 style='float:right;margin-right:200px'> Open Orders:</h2>
       <div class="row">
         <div class='col-md-6'>
+          <h2 class='text-center'> Open Orders:</h2>
           <%@user.user_orders.each do |order|%>
             <%if order.bulk_order && order.bulk_order.completed == false%>
               <div class="row">
@@ -123,6 +152,7 @@
           <%end%>
         </div>
           <div class='col-md-6'>
+          <h2 class='text-center'> Finished Orders:</h2>
           <%@user.user_orders.each do |order|%>
           <%if (order.bulk_order && order.bulk_order.completed == true) || order.buy_now ==true%>
             <div class="row">
@@ -149,12 +179,94 @@
         </div>
       </div>
     </div>
-    <%end%>
-    <!-- end if user isnt buyer -->
   </div>
+  <div class='row'>
+    <div class='col-md-3'>
+      <br>
+      <h4>Cant find the right order for you? Create your own here!</h4>
+      <h4><%=link_to new_bid_path do%><i class="glyphicon glyphicon-pencil"></i> Create Bid<%end%></h4>
+    </div>
+    <div class='col-md-9'>
+      <div class='col-md-6'>
+        <h2 class='text-center'> Open Bids:</h2>
+        <%@user_bids_buyer_open.each do |bid|%>
+          <h4>Title: <%=bid.title%><h4>
+          <h4>Amount: <%=bid.amount%> grams<h4>
+          <h4>Price range: $<%=bid.price_min%> - $<%=bid.price_max%><h4>
+          <%if bid.bid_offers.present?%>
+            <%=link_to 'View All Bids',bid_offers_path(:bid_id => bid.id)%>
+          <%else%>
+            <h4>**No Bids Yet</h4>
+          <%end%>
+          <hr>
+        <%end%>
+      </div>
+      <div class='col-md-6'>
+        <h2 class='text-center'> Closed Bids:</h2>
+        <%@user_bids_buyer_closed.each do |bid|%>
+          <h4>Title: <%=bid.title%><h4>
+          <h4>Amount: <%=bid.amount%> grams<h4>
+          <h4>Final Price: $<span class='bid_price'><%=bid.bid_offers[0].price %></span><h4>
+          <h4>Supplier: <%=bid.supplier.email%><h4>
+          <h4>Delivery Date:<%=bid.bid_offers[0].delivery_date%></h4>
+          <%if bid.paid%>
+            <h4>Order is being Proccesed</h4>
+          <%else%>
+            <button type="submit" id = 'payButton' class='payBidButton' onclick="payStripe('<%=bid.bid_offers[0].price%>')">PAY</button>
+          <%end%>
+            <hr>
+        <%end%>
+      </div>
+    </div>
+  </div>
+  <%end%>
 </div>
+  <div hidden id='user_email'><%=@user.email%></div>
+  <article>
+    <%= hidden_field_tag(:amount) %>
+  </article>
+  <article>
+    <%= hidden_field_tag(:stripeToken) %>
+  </article>
+</form>
+  <script src="https://checkout.stripe.com/checkout.js"></script>
+  <script>
 
-<script>
+  function payStripe(amount){
+    var user_email = $('#user_email').text()
+    handler.open({
+      amount: amount * 100,
+      description:'Bid Payment',
+      email:user_email
+    });
+  }
+  var handler = StripeCheckout.configure({
+    key: '<%= Rails.configuration.stripe[:publishable_key] %>',
+    image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+    locale: 'auto',
+    name: $('#item_name').text(),
+    token: function(token) {
+      $('input#stripeToken').val(token.id);
+      $('input#amount').val(amount)
+
+      $(".spin").spin({
+        lines: 12, // The number of lines to draw
+        length: 15, // The length of each line
+        width: 9, // The line thickness
+        radius: 30, // The radius of the inner circle
+        color: '#000', // #rgb or #rrggbb
+        speed: 1, // Rounds per second
+        trail: 60, // Afterglow percentage
+        shadow: false // Whether to render a shadow
+      });
+      // MAKE AJAX CALL TO SAY BID HAS BEEN PAID
+      $('form').submit()
+    }
+  });
+$(window).on('popstate', function() {
+  handler.close();
+});
+
   $('.show-btn').on('click',function(){
     var text = $(this).html()
     $('#'+this.id+'_orders').toggle('fast');

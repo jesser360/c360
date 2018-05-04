@@ -1,0 +1,52 @@
+<div>
+  <h1 align="center">Create a new bid to Send out to Suppliers</h1>
+  <%= form_with(model: @bid, local: true) do |f| %>
+    <div class='row signup-form'>
+      <div class="form-group">
+        <div class="control-label col-sm-2 text-right">
+          <%= f.label :title %>
+        </div>
+        <div class="col-xs-8">
+          <%= f.text_field :title, class: "form-control", placeholder: "Enter Title", autofocus: true %>
+        </div>
+      </div>
+    </div>
+    <div class='row signup-form'>
+      <div class="form-group">
+        <div class="control-label col-sm-2 text-right">
+          <%= f.label :how_many_grams %>
+        </div>
+        <div class="col-sm-8">
+          <%= f.number_field :amount, class: "form-control", placeholder: "Enter Amount", autofocus: true %>
+        </div>
+      </div>
+    </div>
+    <div class='row signup-form'>
+      <div class="form-group">
+        <div class="control-label col-sm-2 text-right">
+          <%= f.label :price_min %>
+        </div>
+        <div class="col-sm-8">
+          <%= f.number_field :price_min, class: "form-control", placeholder: "Price Minimum", autofocus: true %>
+        </div>
+      </div>
+    </div>
+    <div class='row signup-form'>
+      <div class="form-group">
+        <div class="control-label col-sm-2 text-right">
+          <%= f.label :price_max %>
+        </div>
+        <div class="col-sm-8">
+          <%= f.number_field :price_max, class: "form-control", placeholder: "Price Maximum", autofocus: true %>
+        </div>
+      </div>
+    </div>
+    <div class='row signup-form'>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10 sign-btn signup-form ">
+          <%= f.submit "Send out Bid", class: 'btn btn-primary btn-lg' %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

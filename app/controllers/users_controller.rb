@@ -40,6 +40,12 @@ class UsersController < ApplicationController
     @user = User.find_by_id(params[:id])
     @current_user = User.find_by_id(session[:user_id]) if session[:user_id]
     @bulk = @user.bulk_orders
+
+    @user_bids_buyer_open = Bid.where(buyer_id:@user.id).where(supplier_id:nil)
+    @user_bids_buyer_closed = Bid.where(buyer_id:@user.id).where.not(supplier_id:nil)
+    @user_bids_open = Bid.where(supplier_id:nil)
+    @user_bids_supplier = Bid.where(supplier_id:@user.id)
+
     @user_orders = []
     @current_user.user_orders.each do |order|
       @user_orders.push(order.id)

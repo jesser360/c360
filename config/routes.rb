@@ -15,6 +15,8 @@ Rails.application.routes.draw do
   resources :items, :except => [:show]
   resources :charges
   resources :emails
+  resources :bids
+  resources :bid_offers
 
   root 'pages#home'
   get '/home' => 'pages#home'

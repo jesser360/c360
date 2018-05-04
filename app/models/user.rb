@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  has_attached_file :avatar, :styles => { :medium => "300x300>", :thumb => "100x100>" }
+  has_attached_file :avatar, :styles => { :medium => "300x300>", :thumb => "100x100>" },:default_url => 'user-icon.png'
   validates_attachment_content_type :avatar, :content_type => /\Aimage\/.*\Z/
 
   has_many :user_orders
@@ -7,4 +7,6 @@ class User < ApplicationRecord
   has_secure_password
   has_many :items
   has_many :order_items
+  belongs_to :bid, optional: true
+  has_many :bid_offers
 end

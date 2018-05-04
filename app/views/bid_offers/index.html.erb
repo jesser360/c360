@@ -1,0 +1,36 @@
+<!-- For Buyer to view all the bid offers on their bid -->
+<div class='container' style='margin:10vw'>
+  <div class='row'>
+    <div class='col-md-3'>
+      <h2>This is your Bid!</h2>
+      <h4>Title: <%=@bid.title%><h4>
+      <h4>Amount: <%=@bid.amount%> grams<h4>
+      <h4>Price range: $<%=@bid.price_min%> - $<%=@bid.price_max%><h4>
+      <h4>Buyer: <%=@bid.buyer.email%><h4>
+    </div>
+    <div class='col-md-9'>
+      <%@bid_offers.each do |offer|%>
+        <form class="form-horizontal bordered-row" action="/bids<%= "/#{@bid.id}" %>" method="POST"  enctype="multipart/form-data">
+          <%= "<input type=\"hidden\" name=\"_method\" value=\"PATCH\">".html_safe %>
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <div class='row'>
+            <div class='col-md-4'>
+              <input type="radio" name="supplier_id" value='<%=offer.user.id%>'>
+              <%=link_to user_path_url(offer.user) do%>
+                <%= image_tag(offer.user.avatar.url)%>
+              <%end%>
+            </div>
+            <div class='col-md-8'>
+              <h3><%=offer.user.email%><h3>
+              <h4>Price: $<%=offer.price%><h4>
+              <h4>Delivery Date: <%=offer.delivery_date%><h4>
+              <h4>Notes: <%=offer.notes%><h4>
+            </div>
+          </div>
+          <hr>
+        <%end%>
+        <button type='submit'>Select Offer</button>
+      </form>
+    </div>
+  </div>
+</div>

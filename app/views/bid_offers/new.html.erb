@@ -1,0 +1,50 @@
+<div>
+  <h1 align="center">Create a new bid to Send out to Suppliers</h1>
+  <h3 align="center">Place your Estimated price for this Bid</h3>
+  <h3 align="center">you will be contacted if you are chosen for this Bid</h3>
+  <%= form_with(model: @bid_offer, local: true) do |f| %>
+    <div class='row signup-form'>
+      <h4>Title: <%=@bid.title%><h4>
+      <h4>Amount: <%=@bid.amount%> grams<h4>
+      <h4>Price range: $<%=@bid.price_min%> - $<%=@bid.price_max%><h4>
+    </div>
+    <div class='row signup-form'>
+      <div class="form-group">
+        <div class="control-label col-sm-2 text-right">
+          <%= f.label :price %>
+        </div>
+        <div class="col-sm-8">
+          <%= f.number_field :price, class: "form-control", placeholder: "Enter Price", autofocus: true %>
+        </div>
+      </div>
+    </div>
+    <div class='row signup-form'>
+      <div class="form-group">
+        <div class="control-label col-sm-2 text-right">
+          <%= f.label :Date_to_be_delivered %>
+        </div>
+        <div class="col-sm-8">
+          <%= f.date_field :delivery_date, class: "form-control", autofocus: true %>
+        </div>
+      </div>
+    </div>
+    <div class='row signup-form'>
+      <div class="form-group">
+        <div class="control-label col-sm-2 text-right">
+          <%= f.label :_any_side_notes? %>
+        </div>
+        <div class="col-sm-8">
+          <%= f.text_field :notes, class: "form-control", placeholder: "Additional Info", autofocus: true %>
+        </div>
+      </div>
+    </div>
+    <%= hidden_field_tag(:bid_id, @bid.id)%>
+    <div class='row signup-form'>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10 sign-btn signup-form ">
+          <%= f.submit "Submit Bid Offer", class: 'btn btn-primary btn-lg' %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
