@@ -44,7 +44,11 @@
         <ul  class=" collapse list-unstyled" id="proflink">
           <% if User.find_by_id(session[:user_id]) %>
             <li><a><%= link_to('Log Out', logout_path, method: :delete, class: 'prof-links')%></a></li>
-            <li><a><%= link_to('Profile', user_path_url(User.find_by_id(session[:user_id])), class: 'prof-links')%></a></li>
+            <%if @user.is_vendor%>
+              <li><a><%= link_to('Profile', user_supplier_path_url(@user), class: 'prof-links')%></a></li>
+            <%else%>
+              <li><a><%= link_to('Profile', user_path_url(@user), class: 'prof-links')%></a></li>
+            <%end%>
           <%else%>
             <li><a class='prof-links' href="/login">Login</a></li>
             <li><a class='prof-links' href="/signup">Sign Up</a></li>

@@ -22,3 +22,5 @@
 .byebug_history
 .env
 public/system/order_items/avatars/
+public/system/users/avatars/
+public/system/items/avatars/

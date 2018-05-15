@@ -21,7 +21,7 @@
       <span style='float:right' class='oil-image'><%= image_tag(@order_item.avatar.url, :size => "250x250") %></span>
       <h1 id='item_name'><%= @order_item.name %></h1>
       <h3><%= @order_item.price %>$ / gram</h3>
-      <h4><%=link_to user_path_url(@user_order.user) do%>
+      <h4><%=link_to user_supplier_path_url(@user_order.user) do%>
         <%=@user_order.user.company_name%></h3>
       <%end%></h4>
       <h4><%=@order_item.current_amount%> grams available</h4>
@@ -66,7 +66,7 @@
       <span style='float:right' class='oil-image'><%= image_tag(@item.avatar.url, :size => "250x250") %></span>
       <h1 id='item_name'><%= @item.item_name %></h1>
       <h3><%= @item.market_price %>$ / gram</h3>
-      <h4><%=link_to user_path_url(@item.user) do%>
+      <h4><%=link_to user_supplier_path_url(@item.user) do%>
         <%=@item.user.company_name%></h3>
       <%end%></h4>
       <h4><%=@item.current_amount%> grams available</h4>

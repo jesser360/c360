@@ -50,11 +50,21 @@ class UsersController < ApplicationController
     @current_user.user_orders.each do |order|
       @user_orders.push(order.id)
     end
+  end
 
+  def show_supplier
+    @items = Item.all
+    @user = User.find_by_id(params[:id])
+    @current_user = User.find_by_id(session[:user_id]) if session[:user_id]
+
+    @user_bids_buyer_open = Bid.where(buyer_id:@user.id).where(supplier_id:nil)
+    @user_bids_buyer_closed = Bid.where(buyer_id:@user.id).where.not(supplier_id:nil)
+    @user_bids_open = Bid.where(supplier_id:nil)
+    @user_bids_supplier = Bid.where(supplier_id:@user.id)
   end
 
   def edit
-  @user = User.find_by_id(params[:id])
+    @user = User.find_by_id(params[:id])
   end
 
   def update
@@ -64,7 +74,11 @@ class UsersController < ApplicationController
     @user.city = @zip[:city] rescue nil
     @user.state = @zip[:state_name] rescue nil
     @user.save
-    redirect_to user_path_url(@user)
+    if @user.is_vendor
+      redirect_to user_supplier_path_url(@user)
+    else
+      redirect_to user_path_url(@user)
+    end
   end
 
 

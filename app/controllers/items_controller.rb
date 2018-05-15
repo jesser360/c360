@@ -42,7 +42,7 @@ class ItemsController < ApplicationController
     @item.user = @user #This is the owner of the item
     respond_to do |format|
       if @item.save
-        format.html { redirect_to user_path_url(@user)}
+        format.html { redirect_to user_supplier_path_url(@user)}
         format.json { render :show, status: :created, location: @item }
       else
         format.html { render :new }
@@ -59,7 +59,7 @@ class ItemsController < ApplicationController
     @item.current_amount = item_params[:max_amount]
     respond_to do |format|
       if @item.update(item_params)
-        format.html { redirect_to user_path_url(@user)}
+        format.html { redirect_to user_supplier_path_url(@user)}
         format.json { render :show, status: :ok, location: @item }
       else
         format.html { render :edit }

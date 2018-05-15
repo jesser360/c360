@@ -1,0 +1,137 @@
+<div class='spin' style='margin:10vw 10vw 5vw 10vw'>
+  <div class="row" >
+    <div class="col-md-3 prof-box">
+      <%= image_tag(@user.avatar.url,:style =>"width:15vw;margin:10px") %>
+      <%if @user ==@current_user%>
+        <h4><%=link_to edit_user_path_url(@user), :id=>"edit-user-pencil" do%><i class="glyphicon glyphicon-pencil"></i><%end%></h4>
+      <%end%>
+      <h3 style ='color:lightgray'><%= @user.company_name if @user.company_name%></h3>
+      <h3 style ='color:lightgray'><%= @user.email%></h3>
+      <h4 style ='color:lightgray'><%= @user.city%>, <%= @user.state%></h4>
+    </div>
+
+    <div class="col-md-9 prof-info">
+      <h3 style='float:right;margin-right:60px'>Closed Orders:</h3>
+      <h3 style='float:right;margin-right:120px'>Open Orders:</h3>
+      <h2 > Items:<h2>
+        <%if @user == @current_user%>
+          <h4 style='width:20%;margin:-10px'class="bulk_order_link"><%=link_to 'Add Item',new_item_path%></h4>
+        <%end%>
+        <ul>
+          <%@user.items.each_with_index do |item,i|%>
+            <hr>
+            <div class="row">
+              <div class='col-md-1'>
+                <h3 style='margin-left:-50px'><%=image_tag(item.avatar.url, :size => "120x120")%></h3>
+                <%if @user ==@current_user%>
+                <h4><%=link_to edit_item_path(item), :id=>"edit-user-pencil" do%><i class="glyphicon glyphicon-pencil"></i><%end%></h4>
+                <%end%>
+              </div>
+              <div class='col-md-3'>
+                <h3><%=item.item_name%> -</h3>
+                <h4>$<%=item.price%>/g</h4>
+                <h4><%=item.current_amount%> / <%=item.max_amount%> grams left</h4>
+                <h4><button class='show-btn'id='<%=i%>'>Show Orders</button></h4>
+                <%if item.current_amount == 0%>
+                  <span class="bulk_order_link"><%=link_to 'Re Up Item', edit_item_path(item)%></span>
+                <%end%>
+              </div>
+              <div class='col-md-7'>
+                <br>
+                <div class="row" class='orders' hidden id='<%=i%>_orders'>
+                  <ul>
+                    <%if item.bulk_orders.count > 0%>
+                    <div class="col-md-7">
+                      <%item.bulk_orders.where(completed: false).each do |bulk|%>
+                        <%bulk.user_orders.each do |order|%>
+                          <%if order.user == @current_user%>
+                            <%@contains_current_user = order.id%>
+                            <%break%>
+                          <%else%>
+                            <%@contains_current_user = false%>
+                          <%end%>
+                        <%end%>
+                        <%if @contains_current_user%>
+                          <%=link_to edit_user_order_path(@contains_current_user,item:bulk.item.id) do %>
+                            <h5><li><%=bulk.percent_filled%>/<%=bulk.max_amount%> spots filled
+                              <br>
+                              <%=bulk.users.count%> Users in order<br>
+                              $<%=bulk.item.price * bulk.percent_filled%> - to be paid
+                            </li></h5>
+                          <%end%>
+                        <%else%>
+                          <%=link_to bulk_order_path(bulk) do %>
+                            <h5><li><%=bulk.percent_filled%>/<%=bulk.max_amount%> spots filled<br>
+                            <%=bulk.users.count%> Users in order<br>
+                            $<%=bulk.item.price * bulk.percent_filled%> - to be paid</li></h5>
+                          <%end%>
+                        <%end%>
+                        <hr>
+                    <%end%>
+                  </div>
+                  <div class="col-md-5">
+                    <%item.bulk_orders.where(completed: true).each do |bulk|%>
+                      <%=link_to bulk_order_path(bulk) do %>
+                      <h5><li><%=bulk.percent_filled%>/<%=bulk.max_amount%> spots filled<br>
+                      <%=bulk.users.count%> Users in order<br>
+                      $<%=bulk.item.price * bulk.percent_filled%> - paid
+                      <%end%></li></h5>
+                      <hr>
+                    <%end%>
+                  </div>
+                  <br>
+                <%else%>
+                NO ORDERS YET
+                <%end%>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          <%end%>
+        </ul>
+        <hr>
+    </div>
+  </div>
+    <%if @current_user == @user%>
+      <div class='row'>
+        <div class='col-md-3'>
+          <br>
+          <h4>Keep an Eye out for open bids!</h4>
+        </div>
+        <div class='col-md-9'>
+          <div class='col-md-6'>
+            <h2 class='text-center'> Open Bids:</h2>
+            <%@user_bids_open.each do |bid|%>
+              <h4>Title: <%=bid.title%><h4>
+              <h4>Amount: <%=bid.amount%> grams<h4>
+              <h4>Price range: $<%=bid.price_min%> - $<%=bid.price_max%><h4>
+                <%if @user.bid_offers.where(bid: bid).exists?%>
+                  <%=link_to 'View Your Offer',bid_offer_path(@user.bid_offers.where(bid: bid)[0])%><br>
+                <%else%>
+                  <%=link_to 'Make an Offer',new_bid_offer_path(:bid_id => bid.id)%>
+                <%end%>
+                <hr>
+            <%end%>
+          </div>
+          <div class='col-md-6'>
+            <h2 class='text-center'> Closed Bids:</h2>
+            <%@user_bids_supplier.each do |bid|%>
+              <h4>Title: <%=bid.title%><h4>
+              <h4>Amount: <%=bid.amount%> grams<h4>
+              <h4>Final Price: $<%=bid.bid_offers[0].price%><h4>
+              <h4>Buyer: <%=bid.buyer.email%><h4>
+                <hr>
+            <%end%>
+          </div>
+        </div>
+      </div>
+    <%end%>
+  </div>
+  
+  <script>
+  $('.show-btn').on('click',function(){
+    var text = $(this).html()
+    $('#'+this.id+'_orders').toggle('fast');
+    $(this).html(text == 'Show Orders' ? 'Hide Orders' : 'Show Orders')
+  })
+  </script>

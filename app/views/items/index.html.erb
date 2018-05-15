@@ -33,13 +33,13 @@
                 <%if item.order_items.present? && !item.order_items[item.order_items.length-1].closed%>
                   <h1 style="margin-bottom:-15px"><%= item.order_items[item.order_items.length-1].name %></h1>
                   <h3>$<%= item.order_items[item.order_items.length-1].price %>/g --
-                  <%=link_to user_path_url(item.order_items[item.order_items.length-1].user) do%>
+                  <%=link_to user_supplier_path_url(item.order_items[item.order_items.length-1].user) do%>
                   <%=item.order_items[item.order_items.length-1].user.company_name%></h3>
                   <%end%>
                 <%else%>
                   <h1 style="margin-bottom:-15px"><%= item.item_name %></h1>
                   <h3>$<%= item.price %>/g --
-                  <%=link_to user_path_url(item.user) do%>
+                  <%=link_to user_supplier_path_url(item.user) do%>
                   <%=item.user.company_name%></h3>
                   <%end%>
                 <%end%>

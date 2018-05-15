@@ -25,6 +25,8 @@ Rails.application.routes.draw do
   get '/about' => 'pages#about'
   get '/services' => 'pages#services'
 
+  get '/users_supplier/:id' => 'users#show_supplier', as: 'user_supplier_path'
+
   get '/users/:id', to: 'users#show', as: 'user_path'
   get '/signup' => 'users#new'
   get '/users/edit/:id', to: 'users#edit', as: 'edit_user_path'
