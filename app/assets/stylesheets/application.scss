@@ -12,6 +12,7 @@
 
  *= require c3
  *= require flipclock
+ *= require bootstrap-tabs-x.min
  *= require animate
 
  */
@@ -25,6 +26,7 @@
      padding: 0px;
      overflow-x: hidden;
  }
+
  .login-section{
    width:70%;
    background-image: asset-data-url('pineapple-face.jpg');
@@ -40,6 +42,7 @@
     display: flex;
     align-items: stretch;
  }
+
  #prof-pic{
    position: absolute;
    margin-left:90%;

@@ -35,19 +35,19 @@
       <!-- DONT CLOSE THIS <DIV TAG> WILL FUCK EVERYTHING UP -->
 
       <div id='prof-pic'>
-        <%if @user && @user.avatar.present?%>
-          <%= image_tag(@user.avatar.url(:thumb),:id =>"nav_prof_pic") %>
+        <%if current_user && current_user.avatar.present?%>
+          <%= image_tag(current_user.avatar.url(:thumb),:id =>"nav_prof_pic") %>
         <%else%>
         <%= image_tag('user-icon.png',:id =>"nav_prof_pic") %>
         <%end%>
         <a id='prof-carrot' href="#proflink" data-toggle="collapse" aria-expanded="false"></a>
         <ul  class=" collapse list-unstyled" id="proflink">
-          <% if User.find_by_id(session[:user_id]) %>
+          <% if current_user %>
             <li><a><%= link_to('Log Out', logout_path, method: :delete, class: 'prof-links')%></a></li>
-            <%if @user.is_vendor%>
-              <li><a><%= link_to('Profile', user_supplier_path_url(@user), class: 'prof-links')%></a></li>
+            <%if current_user.is_vendor%>
+              <li><a><%= link_to('Profile', user_supplier_path_url(current_user), class: 'prof-links')%></a></li>
             <%else%>
-              <li><a><%= link_to('Profile', user_path_url(@user), class: 'prof-links')%></a></li>
+              <li><a><%= link_to('Profile', user_path_url(current_user), class: 'prof-links')%></a></li>
             <%end%>
           <%else%>
             <li><a class='prof-links' href="/login">Login</a></li>

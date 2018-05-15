@@ -17,6 +17,7 @@
 //= require c3
 //= require d3.min
 //= require d3pie.min
+//= require bootstrap-tabs-x.min
 //= require flipclock.min
 //= require rails-ujs
 //= require turbolinks

@@ -1,3 +1,12 @@
+<%if @user ==@current_user%>
+  <div class=" tabs-right tab-sideways tabs-krajee">
+    <ul id="myTab" style='position:absolute;margin-top:10vw'class="nav nav-tabs" role="tablist">
+      <li class="active"><a href="#id01" role="tab" data-toggle="tab" >Market Place</a></li>
+      <li><a href="#id02" role="tab" data-toggle="tab">Brokerage</a></li>
+      <li><a href="#id03" role="tab" data-toggle="tab">Distribution</a></li>
+    </ul>
+  </div>
+<%end%>
 <div class='spin' style='margin:10vw 10vw 5vw 10vw'>
   <div class="row" >
     <div class="col-md-3 prof-box">
@@ -9,96 +18,109 @@
       <h3 style ='color:lightgray'><%= @user.email%></h3>
       <h4 style ='color:lightgray'><%= @user.city%>, <%= @user.state%></h4>
     </div>
-
-    <div class="col-md-9 prof-info">
-      <div class="row">
-        <div class='col-md-6'>
-          <h2 class='text-center'> Open Orders:</h2>
-          <%@user.user_orders.each do |order|%>
-            <%if order.bulk_order && order.bulk_order.completed == false%>
-              <div class="row">
-                <div class='col-md-4'>
-                  <%=image_tag(order.order_item.avatar.url, :size => "120x120")%>
+    <div id="myTabContent" class="tab-content">
+      <div class="tab-pane fade in active" id="id01">
+        <div class="col-md-9 prof-info">
+          <div class="row">
+            <div class='col-md-6'>
+              <h2 class='text-center'> Open Orders:</h2>
+              <%@user.user_orders.each do |order|%>
+                <%if order.bulk_order && order.bulk_order.completed == false%>
+                  <div class="row">
+                    <div class='col-md-4'>
+                      <%=image_tag(order.order_item.avatar.url, :size => "120x120")%>
+                    </div>
+                    <div class='col-md-8'>
+                      <h3><%=order.order_item.name%>-<br>
+                      <%=order.quantity rescue nil%> grams for $<%=order.total_price rescue nil%><br>
+                      <%=link_to edit_user_order_path(order,:order_item => order.order_item.id, :price => (order.total_price/order.quantity)) do%><i class="glyphicon glyphicon-pencil"></i><%end%>
+                      <%=link_to user_order_path(order), :method => :delete do %><i class="glyphicon glyphicon-trash"></i><%end%></h3>
+                      <%@bulk_order = order.bulk_order%>
+                      <h4><%=@bulk_order.percent_filled%>/<%=@bulk_order.max_amount%> Spots of this Order Filled</h4>
+                      <hr>
+                    </div>
+                  </div>
+                <%end%>
+              <%end%>
+            </div>
+              <div class='col-md-6'>
+              <h2 class='text-center'> Finished Orders:</h2>
+              <%@user.user_orders.each do |order|%>
+              <%if (order.bulk_order && order.bulk_order.completed == true) || order.buy_now ==true%>
+                <div class="row">
+                  <div class='col-md-4'>
+                    <%=image_tag(order.order_item.avatar.url, :size => "120x120")%>
+                  </div>
+                  <div class='col-md-8'>
+                <h3><%=order.order_item.name%>-<br>
+                  <%=order.quantity rescue nil%> grams for $<%=order.total_price rescue nil%><br></h3>
+                  <%if order.bulk_order ==nil%>
+                    <h5>*Buy Now Order</h5>
+                    <h3><%=link_to user_order_path(order) do%><i class="glyphicon glyphicon-eye-open"></i><%end%></h3>
+                  <%else%>
+                    <h5>*Part of Bulk Order</h5>
+                    <h3><%=link_to bulk_order_path(order.bulk_order) do%><i class="glyphicon glyphicon-eye-open"></i><%end%></h3>
+                    <!-- <%@bulk_order = order.bulk_order%> -->
+                    <!-- <h4><%=@bulk_order.percent_filled%>/<%=@bulk_order.max_amount%> Spots of this Order Filled</h4> -->
+                  <%end%>
+                    <hr>
+                  </div>
                 </div>
-                <div class='col-md-8'>
-                  <h3><%=order.order_item.name%>-<br>
-                  <%=order.quantity rescue nil%> grams for $<%=order.total_price rescue nil%><br>
-                  <%=link_to edit_user_order_path(order,:order_item => order.order_item.id, :price => (order.total_price/order.quantity)) do%><i class="glyphicon glyphicon-pencil"></i><%end%>
-                  <%=link_to user_order_path(order), :method => :delete do %><i class="glyphicon glyphicon-trash"></i><%end%></h3>
-                  <%@bulk_order = order.bulk_order%>
-                  <h4><%=@bulk_order.percent_filled%>/<%=@bulk_order.max_amount%> Spots of this Order Filled</h4>
-                  <hr>
-                </div>
-              </div>
-            <%end%>
-          <%end%>
+                <%end%>
+              <%end%>
+            </div>
+          </div>
         </div>
+      </div>
+    <div class="tab-pane fade" id="id02">
+      <div class="col-md-9 prof-info">
+      <div class='row'>
+        <div class='col-md-3'>
+          <br>
+          <h4>Cant find the right order for you? Create your own here!</h4>
+          <h4><%=link_to new_bid_path do%><i class="glyphicon glyphicon-pencil"></i> Create Bid<%end%></h4>
+        </div>
+        <div class='col-md-9'>
           <div class='col-md-6'>
-          <h2 class='text-center'> Finished Orders:</h2>
-          <%@user.user_orders.each do |order|%>
-          <%if (order.bulk_order && order.bulk_order.completed == true) || order.buy_now ==true%>
-            <div class="row">
-              <div class='col-md-4'>
-                <%=image_tag(order.order_item.avatar.url, :size => "120x120")%>
-              </div>
-              <div class='col-md-8'>
-            <h3><%=order.order_item.name%>-<br>
-              <%=order.quantity rescue nil%> grams for $<%=order.total_price rescue nil%><br></h3>
-              <%if order.bulk_order ==nil%>
-                <h5>*Buy Now Order</h5>
-                <h3><%=link_to user_order_path(order) do%><i class="glyphicon glyphicon-eye-open"></i><%end%></h3>
+            <h2 class='text-center'> Open Bids:</h2>
+            <%@user_bids_buyer_open.each do |bid|%>
+              <h4>Title: <%=bid.title%><h4>
+              <h4>Amount: <%=bid.amount%> grams<h4>
+              <h4>Price range: $<%=bid.price_min%> - $<%=bid.price_max%><h4>
+              <%if bid.bid_offers.present?%>
+                <%=link_to 'View All Bids',bid_offers_path(:bid_id => bid.id)%>
               <%else%>
-                <h5>*Part of Bulk Order</h5>
-                <h3><%=link_to bulk_order_path(order.bulk_order) do%><i class="glyphicon glyphicon-eye-open"></i><%end%></h3>
-                <!-- <%@bulk_order = order.bulk_order%> -->
-                <!-- <h4><%=@bulk_order.percent_filled%>/<%=@bulk_order.max_amount%> Spots of this Order Filled</h4> -->
+                <h4>**No Bids Yet</h4>
+              <%end%>
+              <hr>
+            <%end%>
+          </div>
+          <div class='col-md-6'>
+            <h2 class='text-center'> Closed Bids:</h2>
+            <%@user_bids_buyer_closed.each do |bid|%>
+              <h4>Title: <%=bid.title%><h4>
+              <h4>Amount: <%=bid.amount%> grams<h4>
+              <h4>Final Price: $<span class='bid_price'><%=bid.bid_offers[0].price %></span><h4>
+              <h4>Supplier: <%=bid.supplier.email%><h4>
+              <h4>Delivery Date:<%=bid.bid_offers[0].delivery_date%></h4>
+              <%if bid.paid%>
+                <h4>Order is being Proccesed</h4>
+              <%else%>
+                <button type="submit" id = 'payButton' class='payBidButton' onclick="payStripe('<%=bid.bid_offers[0].price%>')">PAY</button>
               <%end%>
                 <hr>
-              </div>
-            </div>
             <%end%>
-          <%end%>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class='row'>
-    <div class='col-md-3'>
-      <br>
-      <h4>Cant find the right order for you? Create your own here!</h4>
-      <h4><%=link_to new_bid_path do%><i class="glyphicon glyphicon-pencil"></i> Create Bid<%end%></h4>
     </div>
-    <div class='col-md-9'>
-      <div class='col-md-6'>
-        <h2 class='text-center'> Open Bids:</h2>
-        <%@user_bids_buyer_open.each do |bid|%>
-          <h4>Title: <%=bid.title%><h4>
-          <h4>Amount: <%=bid.amount%> grams<h4>
-          <h4>Price range: $<%=bid.price_min%> - $<%=bid.price_max%><h4>
-          <%if bid.bid_offers.present?%>
-            <%=link_to 'View All Bids',bid_offers_path(:bid_id => bid.id)%>
-          <%else%>
-            <h4>**No Bids Yet</h4>
-          <%end%>
-          <hr>
-        <%end%>
+    <div class="tab-pane fade" id="id03">
+      <div class="col-md-9 prof-info">
+        <h3>RETAIL DISTRIBUTION IS UNDER CONSTRUCTION</h3>
+        <h4>Please Contact Us</h4>
       </div>
-      <div class='col-md-6'>
-        <h2 class='text-center'> Closed Bids:</h2>
-        <%@user_bids_buyer_closed.each do |bid|%>
-          <h4>Title: <%=bid.title%><h4>
-          <h4>Amount: <%=bid.amount%> grams<h4>
-          <h4>Final Price: $<span class='bid_price'><%=bid.bid_offers[0].price %></span><h4>
-          <h4>Supplier: <%=bid.supplier.email%><h4>
-          <h4>Delivery Date:<%=bid.bid_offers[0].delivery_date%></h4>
-          <%if bid.paid%>
-            <h4>Order is being Proccesed</h4>
-          <%else%>
-            <button type="submit" id = 'payButton' class='payBidButton' onclick="payStripe('<%=bid.bid_offers[0].price%>')">PAY</button>
-          <%end%>
-            <hr>
-        <%end%>
-      </div>
+    </div>
     </div>
   </div>
 </div>

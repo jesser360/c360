@@ -1,3 +1,12 @@
+<%if @user ==@current_user%>
+  <div class=" tabs-right tab-sideways tabs-krajee">
+    <ul id="myTab" style='position:absolute;margin-top:10vw'class="nav nav-tabs" role="tablist">
+      <li class="active tab-sideways"><a href="#id01" role="tab" data-toggle="tab" >Market Place</a></li>
+      <li><a href="#id02" role="tab" data-toggle="tab">Brokerage</a></li>
+      <li><a href="#id03" role="tab" data-toggle="tab">Distribution</a></li>
+    </ul>
+  </div>
+<%end%>
 <div class='spin' style='margin:10vw 10vw 5vw 10vw'>
   <div class="row" >
     <div class="col-md-3 prof-box">
@@ -9,7 +18,8 @@
       <h3 style ='color:lightgray'><%= @user.email%></h3>
       <h4 style ='color:lightgray'><%= @user.city%>, <%= @user.state%></h4>
     </div>
-
+<div id="myTabContent" class="tab-content">
+  <div class="tab-pane fade in active" id="id01">
     <div class="col-md-9 prof-info">
       <h3 style='float:right;margin-right:60px'>Closed Orders:</h3>
       <h3 style='float:right;margin-right:120px'>Open Orders:</h3>
@@ -92,13 +102,9 @@
         <hr>
     </div>
   </div>
-    <%if @current_user == @user%>
+<div class="tab-pane fade" id="id02">
+    <div class="col-md-9 prof-info">
       <div class='row'>
-        <div class='col-md-3'>
-          <br>
-          <h4>Keep an Eye out for open bids!</h4>
-        </div>
-        <div class='col-md-9'>
           <div class='col-md-6'>
             <h2 class='text-center'> Open Bids:</h2>
             <%@user_bids_open.each do |bid|%>
@@ -125,13 +131,23 @@
           </div>
         </div>
       </div>
+    </div>
+    <%if @user ==@current_user%>
+      <div class="tab-pane fade" id="id03">
+        <div class="col-md-9 prof-info">
+          <h3>RETAIL DISTRIBUTION IS UNDER CONSTRUCTION</h3>
+          <h4>Please Contact Us</h4>
+        </div>
+      </div>
     <%end%>
   </div>
-  
+</div>
+</div>
   <script>
   $('.show-btn').on('click',function(){
     var text = $(this).html()
     $('#'+this.id+'_orders').toggle('fast');
     $(this).html(text == 'Show Orders' ? 'Hide Orders' : 'Show Orders')
   })
+
   </script>

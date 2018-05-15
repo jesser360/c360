@@ -50,6 +50,7 @@ class UsersController < ApplicationController
     @current_user.user_orders.each do |order|
       @user_orders.push(order.id)
     end
+
   end
 
   def show_supplier
