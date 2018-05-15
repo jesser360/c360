@@ -17,7 +17,7 @@
             <div class='col-md-4'>
               <input type="radio" name="supplier_id" value='<%=offer.user.id%>'>
               <%=link_to user_path_url(offer.user) do%>
-                <%= image_tag(offer.user.avatar.url)%>
+                <%= image_tag(offer.user.avatar.url, :style =>"width:15vw;margin:10px")%>
               <%end%>
             </div>
             <div class='col-md-8'>

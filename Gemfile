@@ -6,6 +6,10 @@ git_source(:github) do |repo_name|
 end
 
 
+
+gem 'httparty'
+gem 'wicked_pdf'
+gem 'wkhtmltopdf-binary'
 gem 'pry'
 gem 'spinjs-rails'
 gem "paperclip", "~> 6.0.0"

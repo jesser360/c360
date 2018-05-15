@@ -28,6 +28,13 @@ class BidOffersController < ApplicationController
     @bid_offer = BidOffer.find_by_id(params[:id])
     @bid = @bid_offer.bid
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
+
+    respond_to do |format|
+     format.html
+     format.pdf {
+       generate_pdf("show")
+     }
+    end
   end
 
   def index
@@ -38,6 +45,17 @@ class BidOffersController < ApplicationController
 
 
   private
+
+  def generate_pdf(view_page)
+    html = render_to_string(:action => "#{view_page}", :formats => [:html], :layout => false, :locals => {:pdf => true})
+    pdf = HtmlToPdfService.convert(html, :static_url => "http://localhost:3000")
+    options = {
+      :disposition => "attachment",
+      :filename => "#{view_page}-#{Time.now.strftime('%m%d%Y')}.pdf",
+      :type => "application/pdf"
+    }
+    send_data(pdf, options)
+  end
     # Use callbacks to share common setup or constraints between actions.
     def set_item
       @bid_offer = BidOffer.find(params[:id])

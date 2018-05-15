@@ -107,7 +107,7 @@
             <h4>Amount: <%=bid.amount%> grams<h4>
             <h4>Price range: $<%=bid.price_min%> - $<%=bid.price_max%><h4>
               <%if @user.bid_offers.where(bid: bid).exists?%>
-                <%=link_to 'View Your Offer',bid_offer_path(@user.bid_offers.where(bid: bid)[0])%>
+                <%=link_to 'View Your Offer',bid_offer_path(@user.bid_offers.where(bid: bid)[0])%><br>
               <%else%>
                 <%=link_to 'Make an Offer',new_bid_offer_path(:bid_id => bid.id)%>
               <%end%>

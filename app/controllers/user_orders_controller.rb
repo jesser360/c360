@@ -1,4 +1,7 @@
 class UserOrdersController < ApplicationController
+  require 'httparty'
+  include HTTParty
+  # basic_auth 'username', 'password'
   before_action :set_user_order, only: [:show, :edit, :update, :destroy]
 
   # GET /user_orders/1
@@ -16,6 +19,7 @@ class UserOrdersController < ApplicationController
     @user_order = UserOrder.new
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @item = Item.find_by_id(params[:item])
+
   end
 
   # GET /user_orders/1/edit
@@ -42,6 +46,7 @@ class UserOrdersController < ApplicationController
 
     respond_to do |format|
       if @user_order.save
+
         format.html { redirect_to user_path_url(@user) }
         format.json { render :show, status: :created, location: @user_order }
       else
@@ -123,7 +128,7 @@ class UserOrdersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+
     def set_user_order
       @user_order = UserOrder.find(params[:id])
     end

@@ -1,4 +1,9 @@
-<!-- For Supplier to view their bid offer and bid -->
+<% pdf ||= false %>
+<% if pdf %>
+  <%= wicked_pdf_stylesheet_link_tag "bootstrap" %>
+  <%= wicked_pdf_stylesheet_link_tag "application" %>
+<% end %>
+
 <div class='container' style='margin:10vw'>
   <div class='row'>
     <div class='col-md-6'>
@@ -15,4 +20,5 @@
       <h4>Notes: <%=@bid_offer.notes%><h4>
     </div>
   </div>
+  <%= link_to 'Create PDF document', bid_offer_path(@bid_offer, :format => :pdf) %>
 </div>
