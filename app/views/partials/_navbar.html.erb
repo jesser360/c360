@@ -20,7 +20,7 @@
                 <li class="component">
                     <a class='sidebar-links' href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">WholeSale Store</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
-                        <li class="comp"><a class='sidebar-links' href="/items">Market</a></li>
+                        <li class="comp"><a class='sidebar-links' href="/store">Market</a></li>
                         <li class="comp"><a class='sidebar-links' href="#">Instructions</a></li>
                         <li class="comp"><a class='sidebar-links' href="#">Reviews</a></li>
                     </ul>
@@ -33,7 +33,9 @@
           </button>
         <!-- </div> -->
       <!-- DONT CLOSE THIS <DIV TAG> WILL FUCK EVERYTHING UP -->
-
+      <div style='position: absolute'>
+        <a href ='/store'>MarketPlace</a>
+      </div>
       <div id='prof-pic'>
         <%if current_user && current_user.avatar.present?%>
           <%= image_tag(current_user.avatar.url(:thumb),:id =>"nav_prof_pic") %>

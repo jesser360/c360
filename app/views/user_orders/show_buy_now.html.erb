@@ -5,13 +5,7 @@
       </div>
       <div class="col-md-4 edit-card">
         <h1><%= @bulk.item_name %></h1>
-        <%if @user_order.buy_now%>
           <h3><%= @bulk.market_price %>$ / gram</h3>
-          <span hidden id='item_price'><%= @bulk.market_price %></span>
-        <%else%>
-          <h3><%= @bulk.wholesale_price %>$ / gram</h3>
-          <span hidden id='item_price'><%= @bulk.wholesale_price %></span>
-        <%end%>
         <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
       </div>
       <div class="col-md-4 edit-card">
@@ -19,7 +13,6 @@
         <span id ='user_order_quantity'><%=@user_order.quantity%></span> grams<br>
         <h4>Order Price:</h4>
         <span id ='user_order_quantity'>$<%=@user_order.total_price%></span>
-        <div id='pieChart'></div>
       </div>
     </div>
 
@@ -43,40 +36,6 @@
     $('#total_price').text( '$'+order_quant * item_price);
     percent_filled = 23;
   });
-var Apiec3 = c3.generate({
-  bindto: '#pieChart',
-    data: {
-        columns: [
-            ['Other Orders', other_order_quant],
-            ['Your Order', user_order_quant],
-            ['Remaining',  max_amount-(percent_filled)],
-        ],
-        type : 'donut',
-    },
-    legend: {
-    position: 'right'
-    },
-    donut: {
-        title: item,
-        label: {
-          show:true
-        }
-    },
-    legend: {
-      show: false
-    }
-});
 
-d3.select(".c3-chart-arcs-title")
-    .append("tspan")
-    .attr("dy", 16)
-    .attr("x", 0)
-    .text(percent_filled+"/"+max_amount+" spots taken");
-
-
-    var clock_1 = new FlipClock($('#clock'),new Date(expire_date), {
-    countdown: true,
-    clockFace: 'DailyCounter'
-    });
 
 </script>

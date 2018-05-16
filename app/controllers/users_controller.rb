@@ -16,7 +16,11 @@ class UsersController < ApplicationController
         $supplier_hash.delete(@key)
         if @user.save
           session[:user_id] = @user.id
-          redirect_to '/items'
+          if @user.is_vendor
+            redirect_to user_supplier_path_url(@user)
+          else
+            redirect_to user_path_url(@user)
+          end
         else
           flash[:error] = @user.errors.full_messages
         end
@@ -27,7 +31,11 @@ class UsersController < ApplicationController
     else
       if @user.save
         session[:user_id] = @user.id
-        redirect_to '/items'
+        if @user.is_vendor
+          redirect_to user_supplier_path_url(@user)
+        else
+          redirect_to user_path_url(@user)
+        end
       else
         flash[:error] = @user.errors.full_messages
       end
@@ -43,23 +51,34 @@ class UsersController < ApplicationController
 
     @user_bids_buyer_open = Bid.where(buyer_id:@user.id).where(supplier_id:nil)
     @user_bids_buyer_closed = Bid.where(buyer_id:@user.id).where.not(supplier_id:nil)
-    @user_bids_open = Bid.where(supplier_id:nil)
-    @user_bids_supplier = Bid.where(supplier_id:@user.id)
 
-    @user_orders = []
+    @open_orders = []
+    @closed_orders = []
     @current_user.user_orders.each do |order|
-      @user_orders.push(order.id)
+      if order.bulk_order.completed || order.buy_now
+        @closed_orders.push(order)
+      else
+        @open_orders.push(order)
+      end
     end
 
   end
 
   def show_supplier
-    @items = Item.all
     @user = User.find_by_id(params[:id])
     @current_user = User.find_by_id(session[:user_id]) if session[:user_id]
 
-    @user_bids_buyer_open = Bid.where(buyer_id:@user.id).where(supplier_id:nil)
-    @user_bids_buyer_closed = Bid.where(buyer_id:@user.id).where.not(supplier_id:nil)
+    @open_orders = []
+    @closed_orders = []
+    @user.items.each do |item|
+      item.bulk_orders.each do |bulk_order|
+        if bulk_order.completed == false
+          @open_orders.push(bulk_order)
+        else
+          @closed_orders.push(bulk_order)
+        end
+      end
+    end
     @user_bids_open = Bid.where(supplier_id:nil)
     @user_bids_supplier = Bid.where(supplier_id:@user.id)
   end

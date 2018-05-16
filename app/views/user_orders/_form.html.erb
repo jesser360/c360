@@ -14,17 +14,18 @@
     </div>
   <% end %>
 <div class='spin'>
+  <!-- IF USER IS EDITING AN ORDER -->
 <%if !@user_order.new_record?%>
-<span hidden id='item_price'><%= @order_item.price%></span>
+<span hidden id='item_price'><%= @bulk.wholesale_price%></span>
   <div class ="row edit-row">
     <div class="col-md-6 edit-card">
-      <span style='float:right' class='oil-image'><%= image_tag(@order_item.avatar.url, :size => "250x250") %></span>
-      <h1 id='item_name'><%= @order_item.name %></h1>
-      <h3><%= @order_item.price %>$ / gram</h3>
-      <h4><%=link_to user_supplier_path_url(@order_item.user) do%>
-        <%=@order_item.user.company_name%></h3>
+      <span style='float:right' class='oil-image'><%= image_tag(@item.avatar.url, :size => "250x250") %></span>
+      <h1 id='item_name'><%=@bulk.item_name %></h1>
+      <h3><%= @bulk.wholesale_price %>$ / gram</h3>
+      <h4><%=link_to user_supplier_path_url(@seller) do%>
+        <%=@seller.company_name%></h3>
       <%end%></h4>
-      <h4><%=@order_item.current_amount%> grams available</h4>
+      <h4><%=@bulk.max_amount-@bulk.percent_filled%> grams available</h4>
       <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
     </div>
     <div class='col-md-3' style='font-size:1.2em;margin-top:-5vh'>
@@ -34,7 +35,7 @@
       <div class='row' style='padding-left:10px;margin-top:5vh'>
         <div class="field" id='quant_input'>
           <label>Quantity (g)</label>
-          <input style='width:7vw' id ='user_order_quantity' value='<%=@user_order.quantity%>' type='number' min='1' max='<%=@order_item.bulk_order_amount-(@bulk.percent_filled rescue 0)+(@user_order.quantity rescue 0)%>'name='user_order[quantity]'>
+          <input style='width:7vw' id ='user_order_quantity' value='<%=@user_order.quantity%>' type='number' min='1' max='<%=@bulk.max_amount-(@bulk.percent_filled rescue 0)+(@user_order.quantity rescue 0)%>'name='user_order[quantity]'>
         </div>
         <div class="field">
           <label>Price</label>
@@ -59,17 +60,17 @@
       </div>
     </div>
   </div>
+  <!-- BUY NOW ORDER -->
 <%else%>
-<span hidden id='item_market_price'><%= @item.market_price rescue nil%></span>
+<span hidden id='item_market_price'><%= @bulk_order.market_price rescue nil%></span>
   <div class ="row edit-row">
     <div class="col-md-6 edit-card">
       <span style='float:right' class='oil-image'><%= image_tag(@item.avatar.url, :size => "250x250") %></span>
-      <h1 id='item_name'><%= @item.item_name %></h1>
-      <h3><%= @item.market_price %>$ / gram</h3>
+      <h1 id='item_name'><%= @bulk_order.item_name %></h1>
+      <h3><%= @bulk_order.market_price %>$ / gram</h3>
       <h4><%=link_to user_supplier_path_url(@item.user) do%>
         <%=@item.user.company_name%></h3>
       <%end%></h4>
-      <h4><%=@item.current_amount%> grams available</h4>
       <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
     </div>
     <div class='col-md-3' style='font-size:1.2em;margin-top:5vh'>
@@ -79,7 +80,7 @@
       <div class='row' style='padding-left:10px;margin-top:5vh'>
         <div class="field" id='quant_input'>
           <label>Quantity (g)</label>
-          <input style='width:7vw' id ='user_order_quantity' value=0 type='number' min='1' max='<%=@item.bulk_order_amount%>'name='user_order[quantity]'>
+          <input style='width:7vw' id ='user_order_quantity' value=0 type='number' min='1' max='<%=@bulk_order.max_amount%>'name='user_order[quantity]'>
         </div>
         <div class="field">
           <label>Price</label>
@@ -92,9 +93,9 @@
             <li>NOT a double charge</li>
           </ul>
         <%end%>
-        <button type ='submit' id='payButton'>PAY With Credit Card</button>
+        <button type ='submit' id='payButton'>PAY </button>
         <%= hidden_field_tag(:user_id, @user.id)%>
-        <%= hidden_field_tag(:item,params[:item])%>
+        <%= hidden_field_tag(:bulk_order,params[:bulk_order])%>
         <%= hidden_field_tag(:price,params[:price])%>
       </div>
     </div>

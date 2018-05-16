@@ -8,17 +8,24 @@ class UserOrdersController < ApplicationController
   # GET /user_orders/1.json
   def show
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
-    @item = Item.where(item_name: params[:item])[0]
-    @user_order =  UserOrder.find_by_id(params[:id])
     @bulk = @user_order.bulk_order
-    @order_item = @user_order.order_item
+    @item = @bulk.item
+    @user_order =  UserOrder.find_by_id(params[:id])
+  end
+
+  def show_buy_now
+    @user_order =  UserOrder.find_by_id(params[:id])
+    @user = User.find_by_id(session[:user_id]) if session[:user_id]
+    @bulk = @user_order.bulk_order
+    @item = @bulk.item
   end
 
   # GET /user_orders/new
   def new
     @user_order = UserOrder.new
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
-    @item = Item.find_by_id(params[:item])
+    @bulk_order = BulkOrder.find_by_id(params[:bulk_order])
+    @item = @bulk_order.item
 
   end
 
@@ -26,8 +33,9 @@ class UserOrdersController < ApplicationController
   def edit
     @user_order =  UserOrder.find_by_id(params[:id])
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
-    @order_item = @user_order.order_item
     @bulk = @user_order.bulk_order
+    @item = @bulk.item
+    @seller = @item.user
   end
 
   # POST /user_orders
@@ -35,14 +43,13 @@ class UserOrdersController < ApplicationController
   def create
     # BUY NOW OPTION
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
-    @item = Item.find_by_id(params[:item])
-    @bulk_order = nil
+    @bulk_order = BulkOrder.find_by_id(params[:bulk_order])
+    @item = @bulk_order.item
 
-    @order_item = OrderItem.create_order_item_from_item(@item)
-    @user_order = UserOrder.create_buy_now_user_order(params[:user_order],@user,@order_item,@item)
+    @user_order = UserOrder.create_buy_now_user_order(params[:user_order],@user,@item,@bulk_order)
 
     NotifMailer.single_order_email(@user,@bulk_order,@user_order).deliver
-    NotifMailer.vendor_buy_now_email(@user_order).deliver
+    NotifMailer.vendor_buy_now_email(@user,@user_order,@item).deliver
 
     respond_to do |format|
       if @user_order.save
@@ -66,14 +73,13 @@ class UserOrdersController < ApplicationController
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @bulk_order = @user_order.bulk_order
     @users = @bulk_order.users
-    @order_item = @bulk_order.order_item
     @item = @bulk_order.item
 
     # Remove previous order amount from bulk_order
     @bulk_order.percent_filled = @bulk_order.percent_filled - (@bulk_order.user_orders.where(id:@user_order.id)[0].quantity)
 
     @user_order.quantity = params[:user_order][:quantity]
-    @user_order.total_price = @user_order.quantity * @order_item.price
+    @user_order.total_price = @user_order.quantity * @bulk_order.wholesale_price
     @user_order.save
 
     # Add new amount to bulk order
@@ -82,8 +88,9 @@ class UserOrdersController < ApplicationController
 
 
     if @bulk_order.percent_filled >= @bulk_order.max_amount
-      BulkOrder.bulk_order_fills(@bulk_order,@item,@order_item,@user,@user_order)
+      @bulk_order.completed = true
       BulkOrder.email_bulk_order_users(@bulk_order,@user,@user_order)
+      @bulk_order.save!
     end
     respond_to do |format|
       if @user_order.save
@@ -111,8 +118,6 @@ class UserOrdersController < ApplicationController
     @user_order.destroy
     if @bulk_order.percent_filled < 1
       @bulk_order.destroy
-      @order_item = @bulk_order.order_item
-      @order_item.destroy
     else
       @bulk_order.save
     end

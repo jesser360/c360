@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   end
 
   resources :user_orders, :except => [:index]
-  resources :bulk_orders, :except => [:index,:destroy]
+  resources :bulk_orders, :except => [:destroy]
   resources :items, :except => [:show]
   resources :charges
   resources :emails
@@ -20,11 +20,11 @@ Rails.application.routes.draw do
 
   root 'pages#home'
   get '/home' => 'pages#home'
-  get '/items' => 'items#index'
-  get '/home' => 'pages#home'
+  get '/store' => 'bulk_orders#index'
   get '/about' => 'pages#about'
   get '/services' => 'pages#services'
 
+  get '/user_order/show_buy_now/:id' => 'user_orders#show_buy_now', as: 'user_order_buy_now_path'
   get '/users_supplier/:id' => 'users#show_supplier', as: 'user_supplier_path'
 
   get '/users/:id', to: 'users#show', as: 'user_path'

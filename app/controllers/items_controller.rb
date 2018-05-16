@@ -15,10 +15,10 @@ class ItemsController < ApplicationController
     @items = Item.all
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @bulk_orders = BulkOrder.all
-    @bulk_order_items = []
-    @bulk_orders.each do |bulk|
-      @bulk_order_items.push(bulk.item)
-    end
+    # @bulk_order_items = []
+    # @bulk_orders.each do |bulk|
+    #   @bulk_order_items.push(bulk.item)
+    # end
   end
 
   # GET /items/new
@@ -86,6 +86,6 @@ class ItemsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def item_params
-      params.require(:item).permit(:item_name, :price,:market_price, :image,:max_amount,:bulk_order_amount,:avatar)
+      params.require(:item).permit(:item_name, :image,:avatar,:description)
     end
 end

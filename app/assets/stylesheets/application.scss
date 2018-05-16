@@ -26,7 +26,10 @@
      padding: 0px;
      overflow-x: hidden;
  }
-
+ .col-centered{
+ float: none;
+ margin: 0 auto;
+ }
  .login-section{
    width:70%;
    background-image: asset-data-url('pineapple-face.jpg');
@@ -42,7 +45,10 @@
     display: flex;
     align-items: stretch;
  }
-
+ // .item-box{
+ //   border-radius:10px;
+ //   border:1px solid lightgray;
+ // }
  #prof-pic{
    position: absolute;
    margin-left:90%;

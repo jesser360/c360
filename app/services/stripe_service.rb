@@ -51,7 +51,7 @@ class StripeService
   def self.update_bulk_order_payment(params,user_order,bulk_order)
     if bulk_order.completed == true
       bulk_order.user_orders.each do |order|
-        if order.charge_token
+        if order.charge_token && order.buy_now != true
         charge = Stripe::Charge.retrieve(order.charge_token)
         charge.capture
         end
@@ -109,7 +109,7 @@ class StripeService
 
     if bulk_order.completed == true
       bulk_order.user_orders.each do |order|
-        unless order.charge_token.nil?
+        if order.charge_token && order.buy_now != true
           charge = Stripe::Charge.retrieve(UserOrder.find_by_id(order.id).charge_token)
           charge.capture
           end

@@ -1,6 +1,74 @@
-<div class='edit-order'>
-  <br><br>
-<h1 class='text-center'>Start this Bulk Order!</h1>
+<div style='margin:10vw 10vw 5vw 10vw' class="container card">
+<%= form_with(model: @bulk_order, local: true) do |form| %>
+  <% if @bulk_order.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@bulk_order.errors.count, "error") %> prohibited this item from being saved:</h2>
+      <ul>
+      <% @bulk_order.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+    <div class="row" >
+      <div class="col-sm-3 prof-box">
+        <%if @user.avatar.present?%>
+        <%= image_tag(@user.avatar.url,:style =>"width:15vw;margin:10px") %>
+        <%else%>
+        <%= image_tag('user-icon.png',:id =>"nav_prof_pic") %>
+        <%end%>
+        <h4><%=link_to edit_user_path_url(@user), :id=>"edit-user-pencil" do%><i class="glyphicon glyphicon-pencil"></i><%end%></h4>
+        <h3 style ='color:lightgray'><%= @user.company_name if @user.company_name%></h3>
+        <h3 style ='color:lightgray'><%= @user.email%></h3>
+        <h4 style ='color:lightgray'><%= @user.city%>, <%= @user.state%></h4>
+      </div>
+      <div class='col-sm-1'>
+      </div>
+      <div class='col-sm-8'>
+        <div class='row'>
+          <div class='col-md-5'>
+            <div class="form-group">
+              <label for="sel1">Select Product:</label>
+              <%=form.select "item", options_from_collection_for_select(@user.items, "id", "item_name")%>
 
-<%= render 'form', bulk_order: @bulk_order %>
+            </div>
+          </div>
+          <div class='col-md-7'>
+            <div class="form-group">
+              <%= form.label :market_price_per_gram %>
+              <%= form.number_field :market_price, id: :market_price %>
+            </div>
+            <div class="form-group">
+              <%= form.label :wholesale_price_per_gram %>
+              <%= form.number_field :wholesale_price, id: :wholesale_price %>
+            </div>
+            <div class="form-group">
+              <%= form.label :total_amount_of_grams %>
+              <%= form.text_field :max_amount, id: :max_amount %>
+            </div>
+            <div class="form-group">
+              <div class="sign-btn signup-form ">
+                <%= form.submit "Start Batch", class: 'btn btn-primary btn-lg submit-btn' %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  <% end %>
+  </div>
 </div>
+
+<script>
+$('.submit-btn').on('click',function(){
+  $(".spin").spin({
+    lines: 12, // The number of lines to draw
+    length: 15, // The length of each line
+    width: 9, // The line thickness
+    radius: 30, // The radius of the inner circle
+    color: '#000', // #rgb or #rrggbb
+    speed: 1, // Rounds per second
+    trail: 60, // Afterglow percentage
+    shadow: false // Whether to render a shadow
+  });
+})
+</script>
