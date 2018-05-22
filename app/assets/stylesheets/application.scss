@@ -12,6 +12,7 @@
 
  *= require c3
  *= require flipclock
+ *= require slick
  *= require bootstrap-tabs-x.min
  *= require animate
 
@@ -26,9 +27,13 @@
      padding: 0px;
      overflow-x: hidden;
  }
+
+ .tabs-krajee{
+   margin-top:20vh;
+ }
  .col-centered{
- float: none;
- margin: 0 auto;
+   float: none;
+   margin: 0 auto;
  }
  .login-section{
    width:70%;
@@ -56,10 +61,23 @@
    z-index:1000;
    color:red;
  }
+ .prof-box-slim{
+   background-color:#506dc5;
+   border-radius:20px;
+   height:12vw;
+   margin-top:-8vh;
+ }
  .prof-box{
    background-color:#506dc5;
    border-radius:20px;
    padding:20px;
+ }
+ .product-items{
+   display:inline-block;
+   width:33%;
+   border:1px solid lightgray;
+   padding:20px;
+  border-radius:20px;
  }
 #edit-user-pencil{
   color:lightgray;

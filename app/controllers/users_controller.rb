@@ -70,9 +70,12 @@ class UsersController < ApplicationController
 
     @open_orders = []
     @closed_orders = []
+    @queued_orders = []
     @user.items.each do |item|
       item.bulk_orders.each do |bulk_order|
-        if bulk_order.completed == false
+        if bulk_order.published != true
+          @queued_orders.push(bulk_order)
+        elsif bulk_order.completed == false
           @open_orders.push(bulk_order)
         else
           @closed_orders.push(bulk_order)
@@ -100,6 +103,8 @@ class UsersController < ApplicationController
       redirect_to user_path_url(@user)
     end
   end
+
+
 
 
   private

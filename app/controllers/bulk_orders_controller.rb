@@ -15,19 +15,16 @@ class BulkOrdersController < ApplicationController
     @bulk_orders = BulkOrder.all
     @open_bulk_orders = BulkOrder.where(completed: false)
   end
+
   # GET /bulk_orders/new
   def new
     @item = Item.find_by_id(params[:item].to_i) rescue nil
-    @bulk_order = BulkOrder.new
-    # @user_order = UserOrder.new
-    @user = User.find_by_id(session[:user_id]) if session[:user_id]
-  end
+    @bulk_order = BulkOrder.new()
+    @bulk_order.market_price = params[:market_pr]
+    @bulk_order.wholesale_price = params[:whole_pr]
+    @bulk_order.max_amount = params[:amount]
+    @bulk_order.item = Item.find_by_id(params[:item])
 
-  # GET /bulk_orders/1/edit
-  def edit
-    @bulk = BulkOrder.find_by_id(params[:id])
-    @item = Item.find_by_id(params[:item])
-    @seller = @item.user
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
   end
 
@@ -35,7 +32,7 @@ class BulkOrdersController < ApplicationController
   # SUPPLIER STARTING NEW BATCH
   def create
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
-    @item = Item.find_by_id(params[:bulk_order][:item])
+    @item = Item.find_by_id(params[:item])
     @bulk_order = BulkOrder.create_bulk_order(@item,params[:bulk_order])
 
     respond_to do |format|
@@ -49,6 +46,20 @@ class BulkOrdersController < ApplicationController
     end
   end
 
+  # GET /bulk_orders/1/edit
+  def edit
+    @bulk = BulkOrder.find_by_id(params[:id])
+    @item = Item.find_by_id(params[:item])
+    @seller = @item.user
+    @user = User.find_by_id(session[:user_id]) if session[:user_id]
+  end
+
+  def seller_edit
+    @bulk_order = BulkOrder.find_by_id(params[:id])
+    @item = Item.find_by_id(params[:item])
+    @user = User.find_by_id(session[:user_id]) if session[:user_id]
+  end
+
   # PATCH/PUT /bulk_orders/1
   # PATCH/PUT /bulk_orders/1.json
   # User adding to an exisiting bulk order for their first time
@@ -56,19 +67,21 @@ class BulkOrdersController < ApplicationController
     @bulk_order = BulkOrder.find_by_id(params[:id])
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @users = @bulk_order.users
-    @user_order = UserOrder.new()
     @item = @bulk_order.item
 
-    @user_order = UserOrder.create_user_order(params[:bulk_order],@user,@bulk_order)
+    if params[:bulk_order][:quantity]
+      @user_order = UserOrder.new()
+      @user_order = UserOrder.create_user_order(params[:bulk_order],@user,@bulk_order)
 
-    @bulk_order.users.push(@user)
-    @bulk_order.user_orders.push(@user_order)
-    @bulk_order.percent_filled = (@bulk_order.percent_filled +  params[:bulk_order][:quantity].to_i)
+      @bulk_order.users.push(@user)
+      @bulk_order.user_orders.push(@user_order)
+      @bulk_order.percent_filled = (@bulk_order.percent_filled +  params[:bulk_order][:quantity].to_i)
 
-    if @bulk_order.percent_filled >= @bulk_order.max_amount
-      @bulk_order.completed = true
-      BulkOrder.email_bulk_order_users(@bulk_order,@user,@user_order)
-    end
+      if @bulk_order.percent_filled >= @bulk_order.max_amount
+        @bulk_order.completed = true
+        BulkOrder.email_bulk_order_users(@bulk_order,@user,@user_order)
+      end
+
     respond_to do |format|
       if @bulk_order.save
         format.html { redirect_to user_path_url(@user)}
@@ -79,8 +92,25 @@ class BulkOrdersController < ApplicationController
       end
     end
 
-      StripeService::update_bulk_order_payment(params,@user_order,@bulk_order)
+    StripeService::update_bulk_order_payment(params,@user_order,@bulk_order)
+
+    else #IF USER IS EDITING BATCH BEFORE PUBLISH
+      @bulk_order.update(bulk_order_params)
+      @bulk_order.save
+      redirect_to user_supplier_path_url(@user)
+
+    end
   end
+
+
+  def publish
+    @current_user = User.find_by_id(session[:user_id]) if session[:user_id]
+    @bulk_order = BulkOrder.find_by_id(params[:id])
+    @bulk_order.published = true
+    @bulk_order.save
+    redirect_to user_supplier_path_url(@current_user)
+  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -90,6 +120,6 @@ class BulkOrdersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def bulk_order_params
-      params.require(:bulk_order).permit(:percent_filled, :expiration, :item,:quantity, :market_price,:wholesale_price)
+      params.require(:bulk_order).permit(:max_amount, :percent_filled, :expiration, :item,:quantity, :market_price,:wholesale_price)
     end
 end

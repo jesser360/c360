@@ -1,6 +1,7 @@
+<div id='prof-pg'>
 <%if @user == @current_user%>
   <div class="tabs-right tab-sideways tabs-krajee">
-    <ul id="myTab" style='position:absolute;margin-top:10vw'class="nav nav-tabs" role="tablist">
+    <ul id="myTab"class="nav nav-tabs" role="tablist">
       <li class="active"><a href="#id01" role="tab" data-toggle="tab" >Market Place</a></li>
       <li><a href="#id02" role="tab" data-toggle="tab">Brokerage</a></li>
       <li><a href="#id03" role="tab" data-toggle="tab">Distribution</a></li>
@@ -9,73 +10,88 @@
 <%end%>
 
 <div class='spin' style='margin:10vw 10vw 5vw 10vw'>
-  <div class="row" >
-    <div class="col-md-3 prof-box">
-      <%= image_tag(@user.avatar.url,:style =>"width:15vw;margin:10px") %>
-      <%if @user ==@current_user%>
-        <h4><%=link_to edit_user_path_url(@user), :id=>"edit-user-pencil" do%><i class="glyphicon glyphicon-pencil"></i><%end%></h4>
-      <%end%>
+  <div class="row prof-box-slim" >
+    <div class='col-sm-1'>
+    </div>
+    <div class="col-sm-3">
+      <%= image_tag(@user.avatar.url,:size => "120x120") %>
+    </div>
+    <div class="col-sm-3">
       <h3 style ='color:lightgray'><%= @user.company_name if @user.company_name%></h3>
       <h3 style ='color:lightgray'><%= @user.email%></h3>
-      <h4 style ='color:lightgray'><%= @user.city%>, <%= @user.state%></h4>
+      <h4 style ='color:lightgray'><%= @user.city%>, <%= @user.state%>
     </div>
+    <div class='col-sm-3'>
+      <h3></h3>
+      <h4 style ='color:lightgray'>Buyer Profile</h4>
+      <h4 style ='color:lightgray'>501-555-2099</h4>
+      <%if @user ==@current_user%>
+      <h4><%=link_to edit_user_path_url(@user), :id=>"edit-user-pencil" do%><i class="glyphicon glyphicon-cog"></i><%end%></h4>
+      <%end%></h4>
+    </div>
+  </div>
     <div id="myTabContent" class="tab-content">
       <div class="tab-pane fade in active" id="id01">
-        <div class='col-md-1'>
-        </div>
-        <div class="col-md-8 prof-info">
-          <h2 style='margin-left:-4vw'> Orders</h2>
-          <div class='row'>
-            <h2 class="text-center"> Open Orders:</h2>
-            <%@open_orders.each do |order|%>
-            <div class='col-md-6'>
-              <div class='row'>
-                <div class='col-md-6'>
-                  <h4><%=order.bulk_order.item_name%></h4>
-                  <h3 ><%=image_tag(order.bulk_order.item.avatar.url, :size => "120x120")%></h3>
-                </div>
-                <div class='col-md-6'>
-                  <h4><%=order.bulk_order.percent_filled%> / <%=order.bulk_order.max_amount%> g reserved</h4>
-                  <h4><%=order.quantity%>grams</h4>
-                  <h4>Spent: $<%=order.total_price%></h4>
-                  <h3><%=link_to edit_user_order_path(order) do%><i class="glyphicon glyphicon-pencil"></i><%end%>
-                  <%=link_to user_order_path(order), :method => :delete do %><i class="glyphicon glyphicon-trash"></i><%end%></h3>
-                </div>
+        <div class='row'>
+          <div class="col-md-12 prof-info">
+          <h2 style='margin-left:-4vw'> Orders
+            <div class='row'>
+              <h4 id='open-arrow' style='margin: 2vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='open-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
+              <h2 class="text-left"> Open Orders:</h2>
+              <div id='open-orders'>
+                <%@open_orders.each do |order|%>
+                  <div class='col-md-6'>
+                    <div class='row'>
+                      <div class='col-md-6'>
+                        <h4><%=order.bulk_order.item_name%></h4>
+                        <h3 ><%=image_tag(order.bulk_order.item.avatar.url, :size => "120x120")%></h3>
+                      </div>
+                      <div class='col-md-6'>
+                        <h4><%=order.bulk_order.percent_filled%> / <%=order.bulk_order.max_amount%> g reserved</h4>
+                        <h4><%=order.quantity%>grams</h4>
+                        <h4>Spent: $<%=order.total_price%></h4>
+                        <h3><%=link_to edit_user_order_path(order) do%><i class="glyphicon glyphicon-pencil"></i><%end%>
+                        <%=link_to user_order_path(order), :method => :delete do %><i class="glyphicon glyphicon-trash"></i><%end%></h3>
+                      </div>
+                    </div>
+                    <hr>
+                  </div>
+                <%end%>
               </div>
-              <hr>
             </div>
-            <%end%>
-          </div>
-          <div class='row'>
-            <h2 class="text-center"> Closed Orders:</h2>
-            <%@closed_orders.each do |order|%>
-            <div class='col-md-6'>
-              <div class='row'>
-                <div class='col-md-6'>
-                  <h4><%=order.bulk_order.item_name%></h4>
-                  <h3 ><%=image_tag(order.bulk_order.item.avatar.url, :size => "120x120")%></h3>
-                  <%if order.buy_now%>
-
-                  <%end%>
+            <div class='row'>
+              <h4 id='closed-arrow' style='margin: 2vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='closed-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
+              <h2 class="text-left"> Closed Orders:</h2>
+              <div id='closed-orders'>
+                <%@closed_orders.each do |order|%>
+                  <div class='col-md-6'>
+                    <div class='row'>
+                      <div class='col-md-6'>
+                        <h4><%=order.bulk_order.item_name%></h4>
+                        <h3 ><%=image_tag(order.bulk_order.item.avatar.url, :size => "120x120")%></h3>
+                        <%if order.buy_now%>
+                      <%end%>
+                    </div>
+                    <div class='col-md-6'>
+                      <h4><%=order.quantity%>grams</h4>
+                      <h4>Spent: $<%=order.total_price%></h4>
+                      <%if order.buy_now%>
+                      <h5>** Buy Now Order</h5>
+                        <h3><%=link_to user_order_buy_now_path_url(order) do%><i class="glyphicon glyphicon-eye-open"></i><%end%></h3>
+                      <%else%>
+                      <h4><%=order.bulk_order.percent_filled%> / <%=order.bulk_order.max_amount%> g</h4>
+                        <h3><%=link_to user_order_path(order) do%><i class="glyphicon glyphicon-eye-open"></i><%end%></h3>
+                      <%end%>
+                    </div>
+                  </div>
+                  <hr>
                 </div>
-                <div class='col-md-6'>
-                  <h4><%=order.quantity%>grams</h4>
-                  <h4>Spent: $<%=order.total_price%></h4>
-                  <%if order.buy_now%>
-                  <h5>** Buy Now Order</h5>
-                    <h3><%=link_to user_order_buy_now_path_url(order) do%><i class="glyphicon glyphicon-eye-open"></i><%end%></h3>
-                  <%else%>
-                  <h4><%=order.bulk_order.percent_filled%> / <%=order.bulk_order.max_amount%> g</h4>
-                    <h3><%=link_to user_order_path(order) do%><i class="glyphicon glyphicon-eye-open"></i><%end%></h3>
-                  <%end%>
-                </div>
-              </div>
-              <hr>
+              <%end%>
             </div>
-            <%end%>
           </div>
         </div>
       </div>
+    </div>
     <div class="tab-pane fade" id="id02">
       <div class="col-md-9 prof-info">
       <div class='row'>
@@ -127,8 +143,8 @@
     </div>
     </div>
   </div>
-</div>
   <div hidden id='user_email'><%=@user.email%></div>
+</div>
   <article>
     <%= hidden_field_tag(:amount) %>
   </article>
@@ -174,9 +190,15 @@ $(window).on('popstate', function() {
   handler.close();
 });
 
-  $('.show-btn').on('click',function(){
-    var text = $(this).html()
-    $('#'+this.id+'_orders').toggle('fast');
-    $(this).html(text == 'Show Orders' ? 'Hide Orders' : 'Show Orders')
+ToggleArrow('#open-arrow','#open-orders','#open-icon')
+ToggleArrow('#closed-arrow','#closed-orders','#closed-icon')
+
+function ToggleArrow(btn,area,icon){
+  $(btn).on('click',function(){
+    $(icon).hasClass('glyphicon-arrow-up') ?
+    $(icon).removeClass('glyphicon-arrow-up').addClass('glyphicon-arrow-down')
+    : $(icon).removeClass('glyphicon-arrow-down').addClass('glyphicon-arrow-up')
+    $(area).toggle('medium');
   })
+}
 </script>

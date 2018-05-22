@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180516211136) do
+ActiveRecord::Schema.define(version: 20180522162232) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 20180516211136) do
     t.integer "wholesale_price"
     t.string "item_name"
     t.string "description"
+    t.boolean "published"
     t.index ["item_id"], name: "index_bulk_orders_on_item_id"
   end
 

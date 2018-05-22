@@ -22,7 +22,7 @@
           <%end%>
         </h4>
         <h4><%= @bulk_order.wholesale_price %>$ / gram</h4>
-        <h4>Max Order Size - <%= @bulk_order.max_amount %> grams</h4>
+        <h4> Order Size - <%= @bulk_order.max_amount %> grams</h4>
         <h4><%=@bulk_order.max_amount - @bulk_order.percent_filled%> grams available</h4>
         <h4><%=@bulk_order.description rescue nil%></h4>
       </div>
@@ -41,12 +41,12 @@
           </div>
           <button type="submit" id='payButton'>PAY</button>
         <%elsif @seller==@user%>
-        <h4>Users part of Order :</h4>
+        <h4>Buyers:</h4>
           <% @bulk_order.user_orders.each do |user_order| %>
             <% @user_found = User.find_by_id(user_order.user_id)%>
             <strong><%=@user_found.email%></strong>
             <ul>
-              <li> Bought <%=user_order.quantity%> <%=@@bulk_order.item_name%> for $<%=user_order.total_price%> on <%=Date.parse(user_order.updated_at.to_date.to_s).strftime('%m/%d/%Y')|| ate.parse(user_order.created_at.to_date.to_s).strftime('%m/%d/%Y')%></li>
+              <li> Bought <%=user_order.quantity%> <%=@bulk_order.item_name%> for $<%=user_order.total_price%> on <%=Date.parse(user_order.updated_at.to_date.to_s).strftime('%m/%d/%Y')|| ate.parse(user_order.created_at.to_date.to_s).strftime('%m/%d/%Y')%></li>
               <li>Lives in <%=@user_found.city%>, <%=@user_found.state%></li>
             </ul>
           <br>

@@ -24,6 +24,9 @@ Rails.application.routes.draw do
   get '/about' => 'pages#about'
   get '/services' => 'pages#services'
 
+  post '/bulk_order/publish/:id' => 'bulk_orders#publish', as: 'publish_bulk_order_path'
+  get '/bulk_order/seller/edit/:id' => 'bulk_orders#seller_edit', as: 'seller_edit_bulk_order_path'
+
   get '/user_order/show_buy_now/:id' => 'user_orders#show_buy_now', as: 'user_order_buy_now_path'
   get '/users_supplier/:id' => 'users#show_supplier', as: 'user_supplier_path'
 
