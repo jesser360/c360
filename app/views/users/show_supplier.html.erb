@@ -76,7 +76,7 @@
                         <h4>Whole Sale Price : $<%=order.wholesale_price%></h4>
                         <h4>Order Size : <%=order.max_amount%> grams</h4>
                         <h3><%=link_to seller_edit_bulk_order_path_url(order) do %><i class="glyphicon glyphicon-pencil"></i><%end%>
-                        <%=link_to link_to 'Publish',publish_bulk_order_path_url(order), :method=> :post do %><i class="glyphicon glyphicon-share-alt"></i><%end%></h3>
+                        <%=link_to publish_bulk_order_path_url(order), :method=> :post do %><i class="glyphicon glyphicon-share-alt"></i><%end%></h3>
                       </div>
                     </div>
                     <hr>
