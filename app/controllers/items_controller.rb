@@ -9,6 +9,12 @@ class ItemsController < ApplicationController
     end
   end
 
+  def show
+    @item = Item.find_by_id(params[:id])
+    @reviews = Review.where(item: @item)
+    @open_orders=BulkOrder.where(item: @item).where(completed: false)
+  end
+
   # GET /items
   # GET /items.json
   def index

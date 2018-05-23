@@ -12,7 +12,7 @@ Rails.application.routes.draw do
 
   resources :user_orders, :except => [:index]
   resources :bulk_orders, :except => [:destroy]
-  resources :items, :except => [:show]
+  resources :items
   resources :charges
   resources :emails
   resources :bids

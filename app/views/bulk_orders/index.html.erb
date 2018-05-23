@@ -16,30 +16,53 @@
       <span hidden id='item_total'><%=@open_bulk_orders.count %></span>
       <%@open_bulk_orders.each_with_index do|bulk_order,i|%>
       <hr>
-        <div class="card">
-          <div class ="row " >
-            <div class="col-md-4">
-              <span class='oil-image'><%= image_tag(bulk_order.item.avatar.url, :size => "250x250") %></span>
-            </div>
-            <div class="col-md-4">
-              <div class='row'>
-                <h1 style="margin-bottom:-15px"><%= bulk_order.item_name %></h1>
-                <h3>WholeSale: $<%= bulk_order.wholesale_price %>/g </h3>
-                <h3>Market: $<%= bulk_order.market_price %>/g</h3>
-                <%=link_to user_supplier_path_url(bulk_order.item.user) do%>
-                <%=bulk_order.item.user.company_name%></h3>
+      <div class='card'>
+          <div style='margin: 2vw 0vw -3vw 0vw'class ="row" >
+            <div class="col-sm-4">
+              <h2 style="margin-left:10px"><%= bulk_order.item_name %></h2>
+              <h5 style="margin-left:10px">
+                <%if !bulk_order.item.rating.nil?%>
+                  <%bulk_order.item.rating.times do%>
+                  <i class="glyphicon glyphicon-star"></i>
+                  <%end%>
+                  <%(5-bulk_order.item.rating).times do%>
+                  <i class="glyphicon glyphicon-star-empty"></i>
+                  <%end%>
+                  <%else%>
+                  <h5 style="margin-left:10px">No reviews yet</h5>
                 <%end%>
+                </h5>
+              <%=link_to item_path(bulk_order.item) do %>
+              <span class='oil-image'><%= image_tag(bulk_order.item.avatar.url, :size => "250x250") %></span>
+              <%end%>
+            </div>
+            <div class="col-sm-4">
+              <div class='row'>
+                <h4>WholeSale: $<%= bulk_order.wholesale_price %>/g </h4>
+                <h4>Market: $<%= bulk_order.market_price %>/g</h4>
               </div>
               <div class="row" >
                 <div class='piechart'id='pieChart_<%=i%>'></div>
+                <div class='row'>
+                  <div class='col-sm-6'>
+                    <%=link_to user_supplier_path_url(bulk_order.item.user) do%>
+                    <span><%=bulk_order.item.user.company_name%></span>
+                    <%end%>
+                    <span><%=bulk_order.item.user.city%>, <%=bulk_order.item.user.state%><span>
+                  </div>
+                  <div class='col-sm-4'>
+                    <span ><%= image_tag(bulk_order.item.user.avatar.url, :size => "50x50") %></span>
+                  </div>
+                </div>
+
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-sm-4">
                 <div hidden>
                   <span id='expire_date_<%=i%>' ><%=bulk_order.expire_date%></span>
                 </div>
                 <div class='row'>
-                  <div class='col-md-10'>
+                  <div class='col-sm-10'>
                     <% if bulk_order.item.user_id == @user.id%>
                       <div class= 'clock' id='clock_<%=i%>'></div>
                       <h4 class="bulk_order_link" ><%= link_to 'View Batch', bulk_order_url(bulk_order) %></h4>
@@ -48,7 +71,7 @@
                       <div class= 'clock' id='clock_<%=i%>'></div>
                       <span hidden id='user_order_quantity'><%= bulk_order.user_orders.where(user_id: @user.id)[0].quantity%></span>
                         <%unless @user.is_vendor?%>
-                          <h4 class="bulk_order_link" ><%= link_to 'Edit Your Order', edit_user_order_url(bulk_order.user_orders.where(user_id: @user.id)[0], :item => bulk_order.item.id) %></h4>
+                          <h4 class="bulk_order_link"><%= link_to 'Edit Your Order', edit_user_order_url(bulk_order.user_orders.where(user_id: @user.id)[0], :item => bulk_order.item.id) %></h4>
                           <h4 class="bulk_order_link" ><i class="glyphicon glyphicon-flash "></i>
                             <%= link_to 'Buy Now', new_user_order_url(:bulk_order => bulk_order.id)%><h4>
                         <%end%>
@@ -89,7 +112,7 @@ for(i = 0; i<item_total; i++){
   var percent_filled = $('#percent_filled_'+i).text();
   var max =$('#bulk_order_amount_'+i).text();
   var orders_left = max - percent_filled
-  var ratio = (percent_filled ||0)+'/'+ max +'g'
+  var ratio = (percent_filled ||0)+'/'+ max +' g'
   var Apiec3 = c3.generate({
     bindto: '#pieChart_'+i,
     size: {

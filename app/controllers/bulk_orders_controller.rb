@@ -8,6 +8,7 @@ class BulkOrdersController < ApplicationController
     @item = @bulk_order.item
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @seller = @item.user
+    @reviews = Review.where(item: @item)
   end
 
   def index
@@ -49,9 +50,10 @@ class BulkOrdersController < ApplicationController
   # GET /bulk_orders/1/edit
   def edit
     @bulk = BulkOrder.find_by_id(params[:id])
-    @item = Item.find_by_id(params[:item])
+    @item = @bulk.item
     @seller = @item.user
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
+    @reviews = Review.where(item: @item)
   end
 
   def seller_edit

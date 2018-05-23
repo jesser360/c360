@@ -19,7 +19,9 @@
 <span hidden id='item_price'><%= @bulk.wholesale_price%></span>
   <div class ="row edit-row">
     <div class="col-md-6 edit-card">
-      <span style='float:right' class='oil-image'><%= image_tag(@item.avatar.url, :size => "250x250") %></span>
+      <%=link_to item_path(@item) do %>
+        <span style='float:right' class='oil-image'><%= image_tag(@item.avatar.url, :size => "250x250") %></span>
+      <%end%>
       <h1 id='item_name'><%=@bulk.item_name %></h1>
       <h3><%= @bulk.wholesale_price %>$ / gram</h3>
       <h4><%=link_to user_supplier_path_url(@seller) do%>

@@ -1,7 +1,9 @@
 
   <div class ="row edit-row" style='margin-top:10vw'>
       <div class="col-md-4">
+      <%=link_to item_path(@item) do%>
       <span class='oil-image'><%= image_tag(@item.avatar.url, :size => "250x250") %></span>
+      <%end%>
       </div>
       <div class="col-md-4 edit-card">
         <h1><%= @bulk.item_name %></h1>
@@ -15,27 +17,3 @@
         <span id ='user_order_quantity'>$<%=@user_order.total_price%></span>
       </div>
     </div>
-
-
-  <div hidden>
-  <span id='percent_filled'><%=@bulk.percent_filled rescue nil%></span>
-  <span id='max_amount'><%=@bulk.max_amount rescue nil%></span>
-  <span id='expire_date'><%=@bulk.expire_date rescue nil%></span>
-  <span id='item'><%=@bulk.item rescue nil%></span>
-  </div>
-<script>
-  var item_price = $('#item_price').text();
-  var percent_filled = $('#percent_filled').text();
-  var expire_date = $('#expire_date').text();
-  var user_order_quant = $('#user_order_quantity').text();
-  var other_order_quant = (percent_filled -user_order_quant)
-  var max_amount = $('#max_amount').text();
-  var item = $('#item').val();
-  $('#quant_input').on('input',function(){
-    var order_quant = $('#user_order_quantity').val();
-    $('#total_price').text( '$'+order_quant * item_price);
-    percent_filled = 23;
-  });
-
-
-</script>

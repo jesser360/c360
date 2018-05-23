@@ -7,13 +7,13 @@
       <li><a href="#id03" role="tab" data-toggle="tab">Distribution</a></li>
     </ul>
   </div>
-<%end%>
 
 <div class='spin' style='margin:10vw 10vw 5vw 10vw'>
   <div class="row prof-box-slim" >
     <div class='col-sm-1'>
     </div>
     <div class="col-sm-3">
+      <br>
       <%= image_tag(@user.avatar.url,:size => "120x120") %>
     </div>
     <div class="col-sm-3">
@@ -25,9 +25,7 @@
       <h3></h3>
       <h4 style ='color:lightgray'>Buyer Profile</h4>
       <h4 style ='color:lightgray'>501-555-2099</h4>
-      <%if @user ==@current_user%>
       <h4><%=link_to edit_user_path_url(@user), :id=>"edit-user-pencil" do%><i class="glyphicon glyphicon-cog"></i><%end%></h4>
-      <%end%></h4>
     </div>
   </div>
     <div id="myTabContent" class="tab-content">
@@ -145,6 +143,62 @@
   </div>
   <div hidden id='user_email'><%=@user.email%></div>
 </div>
+<%else%>
+<div class='user-review-profile'>
+  <div class="row prof-box-slim" >
+    <div class='col-sm-1'>
+    </div>
+    <div class="col-sm-3">
+      <br>
+      <%= image_tag(@user.avatar.url,:size => "120x120") %>
+    </div>
+    <div class="col-sm-3">
+      <h3 style ='color:lightgray'><%= @user.company_name if @user.company_name%></h3>
+      <h3 style ='color:lightgray'><%= @user.email%></h3>
+      <h4 style ='color:lightgray'><%= @user.city%>, <%= @user.state%>
+    </div>
+    <div class='col-sm-3'>
+      <h3></h3>
+      <h4 style ='color:lightgray'>Buyer Profile</h4>
+      <h4 style ='color:lightgray'>501-555-2099</h4>
+    </div>
+  </div>
+  <div class='row' style='margin:0vw 3vw 0vw 3vw'>
+    <h2 class='text-left'>User's Reviews</h2>
+    <%@reviews.each do |review|%>
+      <div class='row'>
+        <div class='col-sm-6'>
+          <h5><%= image_tag(review.user.avatar.url, :class => "nav_prof_pic") %>
+          <%=review.user.email%></h5>
+          <h4><%review.rating.times do%>
+          <i class="glyphicon glyphicon-star"></i>
+          <%end%>
+          <%(5-review.rating).times do%>
+          <i class="glyphicon glyphicon-star-empty"></i>
+          <%end%>
+          <%=review.title%></h4>
+          <h5><%=review.body%></h5>
+        </div>
+        <div class='col-sm-6'>
+          <div class='row'>
+            <div class='col-sm-4'>
+              <h3><%=review.bulk_order.item_name%></h3>
+              <%=link_to item_path(review.item) do %>
+              <%= image_tag(review.item.avatar.url, :size => "100x100") %>
+              <%end%>
+            </div>
+            <div class='col-sm-8'>
+              <h4><%=review.bulk_order.description%></h4>
+              <h4>*bulk order</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr>
+    <%end%>
+  </div>
+</div>
+<%end%>
   <article>
     <%= hidden_field_tag(:amount) %>
   </article>

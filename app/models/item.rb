@@ -8,6 +8,8 @@ class Item < ApplicationRecord
   has_many :bulk_orders
   has_many :order_items
   belongs_to :user
+  has_many :reviews
+
 
   def avatar_remote_url=(url_value)
     self.avatar = URI.parse(url_value)

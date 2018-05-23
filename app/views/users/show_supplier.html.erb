@@ -1,14 +1,14 @@
 <div id='prof-pg'>
-<%if @user ==@current_user%>
   <div class=" tabs-right tab-sideways tabs-krajee">
     <ul id="myTab"class="nav nav-tabs" role="tablist">
       <li class="active tab-sideways"><a href="#id00" role="tab" data-toggle="tab" >Products</a></li>
-      <li class="tab-sideways"><a href="#id01" role="tab" data-toggle="tab" >Orders</a></li>
+      <li class="tab-sideways"><a href="#id01" role="tab" data-toggle="tab" >Batches</a></li>
+      <%if @user ==@current_user%>
       <li><a href="#id02" role="tab" data-toggle="tab">Bids</a></li>
       <li><a href="#id03" role="tab" data-toggle="tab">Retail</a></li>
+      <%end%>
     </ul>
   </div>
-<%end%>
 
 <div class='spin' style='margin:10vw 10vw 5vw 10vw'>
   <div class="row prof-box-slim" >
@@ -39,17 +39,21 @@
           <h2 style='margin-left:-4vw'> Products
           <%if @user ==@current_user%>
             <h4 style='margin-left:-4vw;width:30px'class="bulk_order_link"><%=link_to new_item_path do %><i class="glyphicon glyphicon-plus"></i><%end%></h4>
+          <%else%>
+          <h4 style='margin-left:-4vw;'></h4>
           <%end%>
-              <%@user.items.each do |item|%>
-              <div class ='product-items text-center'>
-                  <h3 ><%=item.item_name%></h3>
+            <%@user.items.each do |item|%>
+            <div class ='product-items text-center'>
+                <h3 ><%=item.item_name%></h3>
+                <%=link_to item_path(item) do %>
                   <h3 ><%=image_tag(item.avatar.url, :size => "120x120")%></h3>
-                  <h4 ><%=item.description%></h4>
-                  <h4><%if @user == @current_user%>
-                    <%=link_to edit_item_path(item), :id=>"edit-user-pencil"  do%><i class="glyphicon glyphicon-pencil"></i><%end%></h4>
-                  <%end%>
-                </div>
-              <%end%>
+                <%end%>
+                <h4 ><%=item.description%></h4>
+                <h4><%if @user == @current_user%>
+                  <%=link_to edit_item_path(item), :id=>"edit-user-pencil"  do%><i class="glyphicon glyphicon-pencil"></i><%end%></h4>
+                <%end%>
+              </div>
+            <%end%>
           </div>
         </div>
       </div>
@@ -59,34 +63,37 @@
             <h2 style='margin-left:-4vw'> Batches
             <%if @user ==@current_user%>
               <span style='width:30px'class="bulk_order_link"><%=link_to new_bulk_order_path do %><i class="glyphicon glyphicon-plus"></i><%end%></span></h2>
+
+              <div class='row'>
+                <h4 id='queued-arrow' style='margin: 2vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='queued-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
+                <h3 class="text-left"> Queued Orders:</h3>
+                <div id='queued-orders'>
+                  <%@queued_orders.each do |order|%>
+                    <div class='col-md-6'>
+                      <div class='row'>
+                        <div class='col-md-6'>
+                          <h4><%=order.item_name%></h4>
+                          <h3 ><%=image_tag(order.item.avatar.url, :size => "120x120")%></h3>
+                        </div>
+                        <div class='col-md-6'>
+                          <h4>Market Price : $<%=order.market_price%> </h4>
+                          <h4>Whole Sale Price : $<%=order.wholesale_price%></h4>
+                          <h4>Order Size : <%=order.max_amount%> grams</h4>
+                          <h3><%=link_to seller_edit_bulk_order_path_url(order) do %><i class="glyphicon glyphicon-pencil"></i><%end%>
+                          <%=link_to publish_bulk_order_path_url(order), :method=> :post do %><i class="glyphicon glyphicon-share-alt"></i><%end%></h3>
+                        </div>
+                      </div>
+                      <hr>
+                    </div>
+                  <%end%>
+                </div>
+              </div>
             <%end%>
             <div class='row'>
-              <h4 id='queued-arrow' style='margin: 2vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='queued-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
-              <h2 class="text-left"> Queued Orders:</h2>
-              <div id='queued-orders'>
-                <%@queued_orders.each do |order|%>
-                  <div class='col-md-6'>
-                    <div class='row'>
-                      <div class='col-md-6'>
-                        <h4><%=order.item_name%></h4>
-                        <h3 ><%=image_tag(order.item.avatar.url, :size => "120x120")%></h3>
-                      </div>
-                      <div class='col-md-6'>
-                        <h4>Market Price : $<%=order.market_price%> </h4>
-                        <h4>Whole Sale Price : $<%=order.wholesale_price%></h4>
-                        <h4>Order Size : <%=order.max_amount%> grams</h4>
-                        <h3><%=link_to seller_edit_bulk_order_path_url(order) do %><i class="glyphicon glyphicon-pencil"></i><%end%>
-                        <%=link_to publish_bulk_order_path_url(order), :method=> :post do %><i class="glyphicon glyphicon-share-alt"></i><%end%></h3>
-                      </div>
-                    </div>
-                    <hr>
-                  </div>
-                <%end%>
-              </div>
-            </div>
-            <div class='row'>
-              <h4 id='open-arrow' style='margin: 2vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='open-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
-              <h2 class="text-left"> Open Orders:</h2>
+              <%if @user ==@current_user%>
+                <h4 id='open-arrow' style='margin: 2vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='open-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
+              <%end%>
+              <h3 class="text-left"> Open Orders:</h3>
               <div id='open-orders'>
                 <%@open_orders.each do |order|%>
                 <div class='col-md-6'>
@@ -107,30 +114,32 @@
                 <%end%>
               </div>
             </div>
-            <div class='row'>
-              <h4 id='closed-arrow' style='margin: 2vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='closed-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
-              <h2 class="text-left"> Closed Orders:</h2>
-              <div id='closed-orders'>
-                <%@closed_orders.each do |order|%>
-                <div class='col-md-6'>
-                  <div class='row'>
-                    <div class='col-md-6'>
-                      <h4><%=order.item_name%></h4>
-                      <h3 ><%=image_tag(order.item.avatar.url, :size => "120x120")%></h3>
+            <%if @user ==@current_user%>
+              <div class='row'>
+                <h4 id='closed-arrow' style='margin: 2vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='closed-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
+                <h3 class="text-left"> Closed Orders:</h3>
+                <div id='closed-orders'>
+                  <%@closed_orders.each do |order|%>
+                  <div class='col-md-6'>
+                    <div class='row'>
+                      <div class='col-md-6'>
+                        <h4><%=order.item_name%></h4>
+                        <h3 ><%=image_tag(order.item.avatar.url, :size => "120x120")%></h3>
+                      </div>
+                      <div class='col-md-6'>
+                        <h4><%=order.percent_filled%> / <%=order.max_amount%> g reserved</h4>
+                        <h4>Users: <%=order.user_orders.count%></h4>
+                        <h4>Amount: $<%=order.percent_filled * order.wholesale_price%></h4>
+                        <h3><%=link_to bulk_order_path(order) do%><i class="glyphicon glyphicon-eye-open"></i><%end%>
+                        <%=link_to new_bulk_order_path(market_pr: order.market_price, whole_pr: order.wholesale_price, amount:order.max_amount, item: order.item) do%><i class="glyphicon glyphicon-refresh"></i><%end%></h3>
+                      </div>
                     </div>
-                    <div class='col-md-6'>
-                      <h4><%=order.percent_filled%> / <%=order.max_amount%> g reserved</h4>
-                      <h4>Users: <%=order.user_orders.count%></h4>
-                      <h4>Amount: $<%=order.percent_filled * order.wholesale_price%></h4>
-                      <h3><%=link_to bulk_order_path(order) do%><i class="glyphicon glyphicon-eye-open"></i><%end%>
-                      <%=link_to new_bulk_order_path(market_pr: order.market_price, whole_pr: order.wholesale_price, amount:order.max_amount, item: order.item) do%><i class="glyphicon glyphicon-refresh"></i><%end%></h3>
-                    </div>
+                    <hr>
                   </div>
-                  <hr>
+                  <%end%>
                 </div>
-                <%end%>
               </div>
-            </div>
+            <%end%>
           </div>
         </div>
       </div>
@@ -181,12 +190,6 @@
 </div>
 <script>
   $(document).ready(function(){
-
-    // $('.item-carousel').slick({
-    //   infinite: false,
-    //   slidesToShow: 3,
-    //   slidesToScroll: 3
-    // });
 
     ToggleArrow('#queued-arrow','#queued-orders','#queued-icon')
     ToggleArrow('#open-arrow','#open-orders','#open-icon')

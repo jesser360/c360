@@ -1,19 +1,49 @@
-<p id="notice"><%= notice %></p>
+<div class='container'style='margin:10vw'>
+  <div class='row'>
+    <div class='col-sm-6'>
+      <h1>  <%= @item.item_name %></h1>
+      <i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i>
+      <i class="glyphicon glyphicon-star-empty"></i><i class="glyphicon glyphicon-star-empty"></i>
+      <h4>  <%= @item.description %></h4>
+      <%= image_tag(@item.avatar.url, :size => "250x250") %>
+      <br>
+      <br>
+      <h2 class='text-left'>Customer Reviews</h2>
+      <%@reviews.each do |review|%>
+      <%=link_to user_path_url(review.user) do%>
+        <h5><%= image_tag(review.user.avatar.url, :class => "nav_prof_pic",) %>
+      <%end%>
+      <%=review.user.email%></h5>
+      <h4><%review.rating.times do%>
+      <i class="glyphicon glyphicon-star"></i>
+      <%end%>
+      <%(5-review.rating).times do%>
+      <i class="glyphicon glyphicon-star-empty"></i>
+      <%end%>
+      <%=review.title%></h4>
+      <h5><%=review.body%></h5>
+      <hr>
+      <%end%>
+    </div>
+    <div class='col-sm-6'>
+      <h3 class='text-center'>Open Batches to Join</h3>
+      <%@open_orders.each do |order|%>
+      <div class='row'>
+        <div class='col-sm-6'>
+          <%=link_to edit_bulk_order_path(order) do%>
+            <h5>Pie graph pic here</h5>
+          <%end%>
+        </div>
+        <div class='col-sm-6'>
+          <h4>Wholesale Price: <%=order.wholesale_price%>$ / gram</h4>
+          <h4>BuyNow Price: <%=order.market_price%>$ / gram</h4>
+          <h4>Grams left: <%=order.max_amount - order.percent_filled%> grams</h4>
+        </div>
+      </div>
+      <hr>
+      <%end%>
+    </div>
+  </div>
 
-<p>
-  <strong>Item name:</strong>
-  <%= @item.item_name %>
-</p>
 
-<p>
-  <strong>Price:</strong>
-  <%= @item.price %>
-</p>
-
-<p>
-  <strong>Image:</strong>
-  <%= @item.image %>
-</p>
-
-<%= link_to 'Edit', edit_item_path(@item) %> |
-<%= link_to 'Back', items_path %>
+</div>

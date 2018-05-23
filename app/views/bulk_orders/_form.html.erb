@@ -15,7 +15,9 @@
 
   <div class ="row edit-row spin">
       <div class="col-md-6 edit-card">
-        <span style='float:right' class='oil-image'><%= image_tag(@bulk_order.item.avatar.url, :size => "250x250") %></span>
+        <%=link_to item_path(@bulk_order.item) do %>
+          <span style='float:right' class='oil-image'><%= image_tag(@bulk_order.item.avatar.url, :size => "250x250") %></span>
+        <%end%>
         <h1 id='item_name'><%= @bulk_order.item_name %></h1>
         <h4><%=link_to user_supplier_path_url(@seller) do%>
           <%=@seller.company_name%></h3>
@@ -58,6 +60,25 @@
           <div id='pieChart'></div>
         </div>
       </div>
+    </div>
+
+    <div class='row' style='margin:-3vw 3vw 0vw 3vw'>
+      <h2 class='text-left'>Customer Reviews</h2>
+      <%@reviews.each do |review|%>
+      <%=link_to user_path_url(review.user) do%>
+        <h5><%= image_tag(review.user.avatar.url, :class => "nav_prof_pic",) %>
+      <%end%>
+      <%=review.user.email%></h5>
+      <h4><%review.rating.times do%>
+      <i class="glyphicon glyphicon-star"></i>
+      <%end%>
+      <%(5-review.rating).times do%>
+      <i class="glyphicon glyphicon-star-empty"></i>
+      <%end%>
+      <%=review.title%></h4>
+      <h5><%=review.body%></h5>
+      <hr>
+      <%end%>
     </div>
 
   <%= hidden_field_tag(:user_id, @user.id)%>

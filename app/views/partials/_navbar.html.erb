@@ -38,9 +38,9 @@
       </div>
       <div id='prof-pic'>
         <%if current_user && current_user.avatar.present?%>
-          <%= image_tag(current_user.avatar.url(:thumb),:id =>"nav_prof_pic") %>
+          <%= image_tag(current_user.avatar.url(:thumb),:id =>'nav_pic',:class =>"nav_prof_pic") %>
         <%else%>
-        <%= image_tag('user-icon.png',:id =>"nav_prof_pic") %>
+        <%= image_tag('user-icon.png',:class =>"nav_prof_pic") %>
         <%end%>
         <a id='prof-carrot' href="#proflink" data-toggle="collapse" aria-expanded="false"></a>
         <ul  class=" collapse list-unstyled" id="proflink">
@@ -67,7 +67,7 @@
           $('#sidebar').toggleClass("hidden")
           $('#sidebarCollapse').show()
       });
-    $('#nav_prof_pic').on('click',function(){
+    $('#nav_pic').on('click',function(){
       if($('.collapse').is(":visible")){
         $('.collapse').collapse('hide');
       }else{

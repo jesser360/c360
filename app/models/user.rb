@@ -9,4 +9,5 @@ class User < ApplicationRecord
   has_many :order_items
   belongs_to :bid, optional: true
   has_many :bid_offers
+  has_many :reviews
 end
