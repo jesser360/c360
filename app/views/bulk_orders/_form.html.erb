@@ -66,7 +66,7 @@
       <h2 class='text-left'>Customer Reviews</h2>
       <%@reviews.each do |review|%>
       <%=link_to user_path_url(review.user) do%>
-        <h5><%= image_tag(review.user.avatar.url, :class => "nav_prof_pic",) %>
+        <h5><%= image_tag(review.user.avatar.url, :class => "not_nav_prof_pic",) %>
       <%end%>
       <%=review.user.email%></h5>
       <h4><%review.rating.times do%>
@@ -91,7 +91,7 @@
   <span id='expire_date'><%=@bulk_order.expire_date rescue nil%></span>
   <span id='item'><%=@bulk_order.item rescue nil%></span>
   <%@bulk_order.user_orders.each do |order|%>
-    <%if order.user_id == @user.id%>
+    <%if order.user_id == @user.id && order.buy_now != true%>
     <span id='user_order_quantity'><%=order.quantity%></span>
     <%end%>
   <%end%>

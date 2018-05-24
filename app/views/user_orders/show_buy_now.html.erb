@@ -1,19 +1,86 @@
 
+<div class='container'>
   <div class ="row edit-row" style='margin-top:10vw'>
-      <div class="col-md-4">
-      <%=link_to item_path(@item) do%>
-      <span class='oil-image'><%= image_tag(@item.avatar.url, :size => "250x250") %></span>
-      <%end%>
-      </div>
-      <div class="col-md-4 edit-card">
-        <h1><%= @bulk.item_name %></h1>
-          <h3><%= @bulk.market_price %>$ / gram</h3>
-        <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
-      </div>
-      <div class="col-md-4 edit-card">
-        <h4>Order Amount:</h4>
-        <span id ='user_order_quantity'><%=@user_order.quantity%></span> grams<br>
-        <h4>Order Price:</h4>
-        <span id ='user_order_quantity'>$<%=@user_order.total_price%></span>
+    <div class="col-md-4">
+    <%=link_to item_path(@item) do%>
+    <span class='oil-image'><%= image_tag(@item.avatar.url, :size => "250x250") %></span>
+    <%end%>
+    </div>
+    <div class="col-md-4 edit-card">
+      <h1><%= @bulk.item_name %></h1>
+        <h3><%= @bulk.market_price %>$ / gram</h3>
+      <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
+    </div>
+    <div class="col-md-4 edit-card">
+      <h4>Order Amount:</h4>
+      <span id ='user_order_quantity'><%=@user_order.quantity%></span> grams<br>
+      <h4>Order Price:</h4>
+      <span id ='user_order_quantity'>$<%=@user_order.total_price%></span>
+    </div>
+  </div>
+
+  <%if @existing_review%>
+    <div class='row' style='margin-left:3vw'>
+      <div class='col-sm-8'>
+        <h3 class='text-left'>Your Review</h3>
+        <h4><%@existing_review.rating.times do%>
+        <i class="glyphicon glyphicon-star"></i>
+        <%end%>
+        <%(5-@existing_review.rating).times do%>
+        <i class="glyphicon glyphicon-star-empty"></i>
+        <%end%>
+        <%=@existing_review.title%></h4>
+        <h5><%=@existing_review.body%></h5>
+        <hr>
       </div>
     </div>
+  <%else%>
+    <div class=' row'>
+      <h3 class='text-left'>Leave a Review</h3>
+      <form style='margin:1vw'>
+        <fieldset class="rating-starz">
+          <input type="radio" id="star5" name="rating" value="5" /><label for="star5" ></label>
+          <input type="radio" id="star4" name="rating" value="4" /><label for="star4" ></label>
+          <input type="radio" id="star3" name="rating" value="3" /><label for="star3" ></label>
+          <input type="radio" id="star2" name="rating" value="2" /><label for="star2" ></label>
+          <input type="radio" id="star1" name="rating" value="1" /><label for="star1" ></label>
+      </fieldset><br><br>
+        <label for='title'>Title:</label>
+        <input style='margin:1vw' id='title' type="text" maxlength="100" size="50" value=""><br>
+        <label for='body'>Body:</label>
+        <input style='margin:1vw' id='body' maxlength="200" size="80"type="text" value="">
+      </form>
+      <button style='margin: 0vw 0vw 1vw 1vw' class='btn-primary'id="submitReview">Submit</button><br>
+    </div>
+  <%end%>
+</div>
+<span hidden id='item'><%=@item.id%></span>
+<span hidden id='user_order'><%=@user_order.id%></span>
+
+<script>
+
+var item = $('#item').text()
+var user_order = $('#user_order').text()
+
+$('#submitReview').on('click',function(e){
+  var rating = null
+  for(var i=1; i<=5;i++){
+      if($('#star'+i).is(':checked')){
+        rating = i
+      }
+  }
+  var title = $('#title').val()
+  var body = $('#body').val()
+  e.preventDefault();
+  $.ajax({
+    type: "POST",
+    url: '/reviews',
+    data: { "rating": rating,"title": title,"body": body,"user_order": user_order,"item": item },
+    success: function (data) {
+    },
+    error:function(error){
+      console.log(error)
+    }
+  });
+})
+</script>

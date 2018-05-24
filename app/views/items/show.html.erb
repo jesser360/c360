@@ -2,8 +2,12 @@
   <div class='row'>
     <div class='col-sm-6'>
       <h1>  <%= @item.item_name %></h1>
-      <i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i>
-      <i class="glyphicon glyphicon-star-empty"></i><i class="glyphicon glyphicon-star-empty"></i>
+      <h4><%(@item.rating / @item.rating_count).round.times do%>
+      <i class="glyphicon glyphicon-star"></i>
+      <%end%>
+      <%(5-((@item.rating / @item.rating_count).round)).times do%>
+      <i class="glyphicon glyphicon-star-empty"></i>
+      <%end%>
       <h4>  <%= @item.description %></h4>
       <%= image_tag(@item.avatar.url, :size => "250x250") %>
       <br>
@@ -11,7 +15,7 @@
       <h2 class='text-left'>Customer Reviews</h2>
       <%@reviews.each do |review|%>
       <%=link_to user_path_url(review.user) do%>
-        <h5><%= image_tag(review.user.avatar.url, :class => "nav_prof_pic",) %>
+        <h5><%= image_tag(review.user.avatar.url, :class => "not_nav_prof_pic",) %>
       <%end%>
       <%=review.user.email%></h5>
       <h4><%review.rating.times do%>

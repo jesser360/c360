@@ -11,6 +11,7 @@ class UserOrdersController < ApplicationController
     @bulk = @user_order.bulk_order
     @item = @bulk.item
     @user_order =  UserOrder.find_by_id(params[:id])
+    @existing_review = Review.where(item: @item).where(bulk_order: @bulk)[0]
   end
 
   def show_buy_now
@@ -18,6 +19,8 @@ class UserOrdersController < ApplicationController
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @bulk = @user_order.bulk_order
     @item = @bulk.item
+    @existing_review = Review.where(item: @item).where(user_order: @user_order)[0]
+
   end
 
   # GET /user_orders/new

@@ -182,13 +182,21 @@
         <div class='col-sm-6'>
           <div class='row'>
             <div class='col-sm-4'>
-              <h3><%=review.bulk_order.item_name%></h3>
+              <%if review.bulk_order%>
+                <h3><%=review.bulk_order.item_name%></h3>
+              <%else%>
+                <h3><%=review.user_order.bulk_order.item_name%></h3>
+              <%end%>
               <%=link_to item_path(review.item) do %>
               <%= image_tag(review.item.avatar.url, :size => "100x100") %>
               <%end%>
             </div>
             <div class='col-sm-8'>
-              <h4><%=review.bulk_order.description%></h4>
+              <%if review.bulk_order%>
+                <h3><%=review.bulk_order.description%></h3>
+              <%else%>
+                <h3><%=review.user_order.bulk_order.description%></h3>
+              <%end%>
               <h4>*bulk order</h4>
             </div>
           </div>

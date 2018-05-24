@@ -44,6 +44,8 @@ class ItemsController < ApplicationController
     @item = Item.new(item_params)
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
 
+    @item.rating = 0
+    @item.rating_count = 0
     @item.current_amount = item_params[:max_amount]
     @item.user = @user #This is the owner of the item
     respond_to do |format|

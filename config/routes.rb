@@ -17,12 +17,14 @@ Rails.application.routes.draw do
   resources :emails
   resources :bids
   resources :bid_offers
+  resources :reviews
 
   root 'pages#home'
   get '/home' => 'pages#home'
   get '/store' => 'bulk_orders#index'
   get '/about' => 'pages#about'
   get '/services' => 'pages#services'
+
 
   post '/bulk_order/publish/:id' => 'bulk_orders#publish', as: 'publish_bulk_order_path'
   get '/bulk_order/seller/edit/:id' => 'bulk_orders#seller_edit', as: 'seller_edit_bulk_order_path'

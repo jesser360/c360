@@ -94,7 +94,81 @@
    font-size: 40px;
    // margin-right:10px;
  }
+//  .rating-stars {
+//    unicode-bidi: bidi-override;
+//    direction: rtl;
+//    float:left;
+//  }
+//  .rating-stars > span:hover:before,
+//  .rating-stars > span:hover ~ span:before {
+//     content: "\2605";
+//     position: absolute;
+//  }
+//  .rating-stars > span {
+//   display: inline-block;
+//   position: relative;
+//   width: 1.1em;
+// }
+.rating-starz {
+    float:left;
+}
+
+/* :not(:checked) is a filter, so that browsers that don’t support :checked don’t
+   follow these rules. Every browser that supports :checked also supports :not(), so
+   it doesn’t make the test unnecessarily selective */
+.rating-starz:not(:checked) > input {
+    position:absolute;
+    top:-9999px;
+    clip:rect(0,0,0,0);
+}
+
+.rating-starz:not(:checked) > label {
+    float:right;
+    padding:0 .1em;
+    overflow:hidden;
+    white-space:nowrap;
+    cursor:pointer;
+    font-size:200%;
+    line-height:1.2;
+    color:#ddd;
+    text-shadow:1px 1px #bbb, 2px 2px #666, .1em .1em .2em rgba(0,0,0,.5);
+}
+
+.rating-starz:not(:checked) > label:before {
+    content: ' ★ ';
+}
+
+.rating-starz > input:checked ~ label {
+    color: #f70;
+    text-shadow:1px 1px #c60, 2px 2px #940, .1em .1em .2em rgba(0,0,0,.5);
+}
+
+.rating-starz:not(:checked) > label:hover,
+.rating-starz:not(:checked) > label:hover ~ label {
+    color: gold;
+    text-shadow:1px 1px goldenrod, 2px 2px #B57340, .1em .1em .2em rgba(0,0,0,.5);
+}
+
+.rating-starz > input:checked + label:hover,
+.rating-starz > input:checked + label:hover ~ label,
+.rating-starz > input:checked ~ label:hover,
+.rating-starz > input:checked ~ label:hover ~ label,
+.rating-starz > label:hover ~ input:checked ~ label {
+    color: #ea0;
+    text-shadow:1px 1px goldenrod, 2px 2px #B57340, .1em .1em .2em rgba(0,0,0,.5);
+}
+
+.rating-starz > label:active {
+    position:relative;
+    top:2px;
+    left:2px;
+}
  .nav_prof_pic{
+   border-radius:50%;
+   height:5vw;
+   width:5vw;
+ }
+ .not_nav_prof_pic{
    border-radius:50%;
    height:5vw;
    width:5vw;

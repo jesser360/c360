@@ -38,7 +38,7 @@
       </div>
       <div id='prof-pic'>
         <%if current_user && current_user.avatar.present?%>
-          <%= image_tag(current_user.avatar.url(:thumb),:id =>'nav_pic',:class =>"nav_prof_pic") %>
+          <%= image_tag(current_user.avatar.url(:thumb),:class =>"nav_prof_pic") %>
         <%else%>
         <%= image_tag('user-icon.png',:class =>"nav_prof_pic") %>
         <%end%>
@@ -67,7 +67,7 @@
           $('#sidebar').toggleClass("hidden")
           $('#sidebarCollapse').show()
       });
-    $('#nav_pic').on('click',function(){
+    $('.nav_prof_pic').on('click',function(){
       if($('.collapse').is(":visible")){
         $('.collapse').collapse('hide');
       }else{

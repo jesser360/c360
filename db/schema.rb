@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180523213704) do
+ActiveRecord::Schema.define(version: 20180524221446) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -118,9 +118,11 @@ ActiveRecord::Schema.define(version: 20180523213704) do
     t.datetime "updated_at", null: false
     t.string "title"
     t.bigint "bulk_order_id"
+    t.bigint "user_order_id"
     t.index ["bulk_order_id"], name: "index_reviews_on_bulk_order_id"
     t.index ["item_id"], name: "index_reviews_on_item_id"
     t.index ["user_id"], name: "index_reviews_on_user_id"
+    t.index ["user_order_id"], name: "index_reviews_on_user_order_id"
   end
 
   create_table "user_orders", force: :cascade do |t|
@@ -162,6 +164,7 @@ ActiveRecord::Schema.define(version: 20180523213704) do
   add_foreign_key "order_items", "users"
   add_foreign_key "reviews", "bulk_orders"
   add_foreign_key "reviews", "items"
+  add_foreign_key "reviews", "user_orders"
   add_foreign_key "reviews", "users"
   add_foreign_key "user_orders", "bulk_orders"
   add_foreign_key "user_orders", "users"
