@@ -33,7 +33,7 @@
                 <%end%>
                 </h5>
               <%=link_to item_path(bulk_order.item) do %>
-              <span class='oil-image'><%= image_tag(bulk_order.item.avatar.url, :size => "250x250") %></span>
+              <span><%= image_tag(bulk_order.item.avatar.url, :size => "200x200") %></span>
               <%end%>
             </div>
             <div class="col-sm-4">
@@ -54,7 +54,6 @@
                     <span ><%= image_tag(bulk_order.item.user.avatar.url, :size => "50x50") %></span>
                   </div>
                 </div>
-
               </div>
             </div>
             <div class="col-sm-4">
@@ -63,24 +62,26 @@
                 </div>
                 <div class='row'>
                   <div class='col-sm-10'>
-                    <% if bulk_order.item.user_id == @user.id%>
+                    <% if @user && bulk_order.item.user_id == @user.id %>
                       <div class= 'clock' id='clock_<%=i%>'></div>
                       <h4 class="bulk_order_link" ><%= link_to 'View Batch', bulk_order_url(bulk_order) %></h4>
                     <%else%>
-                      <%if bulk_order.users.where(email: @user.email).length > 0%>
+                      <%if @user && bulk_order.users.where(email: @user.email).length > 0%>
                       <div class= 'clock' id='clock_<%=i%>'></div>
                       <span hidden id='user_order_quantity'><%= bulk_order.user_orders.where(user_id: @user.id)[0].quantity%></span>
-                        <%unless @user.is_vendor?%>
+                        <%if @user && !@user.is_vendor?%>
                           <h4 class="bulk_order_link"><%= link_to 'Edit Your Order', edit_user_order_url(bulk_order.user_orders.where(user_id: @user.id)[0], :item => bulk_order.item.id) %></h4>
                           <h4 class="bulk_order_link" ><i class="glyphicon glyphicon-flash "></i>
                             <%= link_to 'Buy Now', new_user_order_url(:bulk_order => bulk_order.id)%><h4>
                         <%end%>
                       <%else%>
                       <div class= 'clock' id='clock_<%=i%>'></div>
-                        <%unless @user.is_vendor?%>
+                        <%if @user && !@user.is_vendor?%>
                           <h4 class="bulk_order_link" ><%= link_to 'Join Order', edit_bulk_order_url(bulk_order, :item => bulk_order.item.id) %></h4>
                           <h4 class="bulk_order_link" ><i class="glyphicon glyphicon-flash "></i>
-                            <%= link_to 'Buy Now', new_user_order_url(:bulk_order => bulk_order.id)%><h4>
+                          <%= link_to 'Buy Now', new_user_order_url(:bulk_order => bulk_order.id)%><h4>
+                        <%else%>
+                          <h4 class="bulk_order_link" ><%= link_to 'Join Order', '/login'%></h4>
                         <%end%>
                       <%end%>
                     <%end%>

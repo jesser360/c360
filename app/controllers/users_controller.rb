@@ -55,7 +55,7 @@ class UsersController < ApplicationController
 
     @open_orders = []
     @closed_orders = []
-    @current_user.user_orders.each do |order|
+    @user.user_orders.each do |order|
       if order.bulk_order.completed || order.buy_now
         @closed_orders.push(order)
       else

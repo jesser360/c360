@@ -6,7 +6,7 @@ git_source(:github) do |repo_name|
 end
 
 
-
+gem 'trackerific'
 gem 'httparty'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'

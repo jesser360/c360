@@ -2,15 +2,29 @@
   <div class='row'>
     <div class='col-sm-6'>
       <h1>  <%= @item.item_name %></h1>
-      <h4><%(@item.rating / @item.rating_count).round.times do%>
-      <i class="glyphicon glyphicon-star"></i>
-      <%end%>
-      <%(5-((@item.rating / @item.rating_count).round)).times do%>
-      <i class="glyphicon glyphicon-star-empty"></i>
+      <%if @item.rating > 0%>
+        <h4><%(@item.rating / @item.rating_count).round.times do%>
+        <i class="glyphicon glyphicon-star"></i>
+        <%end%>
+        <%(5-((@item.rating / @item.rating_count).round)).times do%>
+        <i class="glyphicon glyphicon-star-empty"></i>
+        <%end%>
       <%end%>
       <h4>  <%= @item.description %></h4>
       <%= image_tag(@item.avatar.url, :size => "250x250") %>
       <br>
+      <br>
+      <div class='row'>
+        <div class='col-sm-3'>
+          <span ><%= image_tag(@item.user.avatar.url, :size => "50x50") %></span>
+        </div>
+        <div class='col-sm-6'>
+          <%=link_to user_supplier_path_url(@item.user) do%>
+          <span><%=@item.user.company_name%></span>
+          <%end%><br>
+          <span><%=@item.user.city%>, <%=@item.user.state%><span>
+        </div>
+      </div>
       <br>
       <h2 class='text-left'>Customer Reviews</h2>
       <%@reviews.each do |review|%>

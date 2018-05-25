@@ -1,5 +1,13 @@
 class BulkOrdersController < ApplicationController
   before_action :set_bulk_order, only: [:show, :edit, :update, :destroy]
+  before_action :auth, only: [:show, :edit, :update, :destroy]
+
+  def auth
+    @user = User.find_by_id(session[:user_id]) if session[:user_id]
+    if @user.nil?
+      redirect_to '/login'
+    end
+  end
 
   # GET /bulk_orders/1
   # GET /bulk_orders/1.json
