@@ -193,11 +193,14 @@
             </div>
             <div class='col-sm-8'>
               <%if review.bulk_order%>
-                <h3><%=review.bulk_order.description%></h3>
+                <h4><%=review.bulk_order.description%></h4>
+                <h5><%=review.bulk_order.max_amount%> grams total</h5>
+                <h5>*Bulk order</h5>
               <%else%>
-                <h3><%=review.user_order.bulk_order.description%></h3>
+                <h4><%=review.user_order.bulk_order.description%></h4>
+                <h5><%=review.user_order.quantity%> grams total</h5>
+                <h5>*Buy Now order</h5>
               <%end%>
-              <h4>*bulk order</h4>
             </div>
           </div>
         </div>

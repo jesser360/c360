@@ -10,9 +10,20 @@ class ItemsController < ApplicationController
   end
 
   def show
+    @current_user = User.find_by_id(session[:user_id]) if session[:user_id]
     @item = Item.find_by_id(params[:id])
     @reviews = Review.where(item: @item)
     @open_orders=BulkOrder.where(item: @item).where(completed: false)
+
+    @existing_bulk_order_reviews = 0
+    @completed_user_bulk_orders = @current_user.bulk_orders.where(item: @item).where(completed: true)
+    @completed_user_bulk_orders.each do |order|
+      if Review.where(item: @item).where(bulk_order:order).present?
+        @existing_bulk_order_reviews += 1
+      end
+    end
+    # @finished_user_order = UserOrder.where(item: @item).where(buy_now: true).where(user: @current_user)[0]
+    # @existing_user_order_review = Review.where(item: @item).where(user_order_order: @finished_user_order)[0]
   end
 
   # GET /items
