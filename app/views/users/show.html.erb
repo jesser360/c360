@@ -2,9 +2,9 @@
 <%if @user == @current_user%>
   <div class="tabs-right tab-sideways tabs-krajee">
     <ul id="myTab"class="nav nav-tabs" role="tablist">
-      <li class="active"><a href="#id01" role="tab" data-toggle="tab" >Market Place</a></li>
-      <li><a href="#id02" role="tab" data-toggle="tab">Brokerage</a></li>
-      <li><a href="#id03" role="tab" data-toggle="tab">Distribution</a></li>
+      <li class="active"><a href="#id01" role="tab" data-toggle="tab" >Orders</a></li>
+      <li><a href="#id02" role="tab" data-toggle="tab">Bids</a></li>
+      <li><a href="#id03" role="tab" data-toggle="tab">Retail</a></li>
     </ul>
   </div>
 
@@ -91,48 +91,102 @@
       </div>
     </div>
     <div class="tab-pane fade" id="id02">
-      <div class="col-md-9 prof-info">
       <div class='row'>
-        <div class='col-md-3'>
-          <br>
-          <h4>Cant find the right order for you? Create your own here!</h4>
-          <h4><%=link_to new_bid_path do%><i class="glyphicon glyphicon-pencil"></i> Create Bid<%end%></h4>
-        </div>
-        <div class='col-md-9'>
-          <div class='col-md-6'>
-            <h2 class='text-center'> Open Bids:</h2>
-            <%@user_bids_buyer_open.each do |bid|%>
-              <h4>Title: <%=bid.title%><h4>
-              <h4>Amount: <%=bid.amount%> grams<h4>
-              <h4>Price range: $<%=bid.price_min%> - $<%=bid.price_max%><h4>
-              <%if bid.bid_offers.present?%>
-                <%=link_to 'View All Bids',bid_offers_path(:bid_id => bid.id)%>
-              <%else%>
-                <h4>**No Bids Yet</h4>
-              <%end%>
-              <hr>
-            <%end%>
+        <div class="col-md-12 prof-info">
+          <h4 style='float:left;width:30px'class="bulk_order_link"><%=link_to new_bid_path do%><i class="glyphicon glyphicon-plus"></i><%end%></h4>
+          <h1 style='margin-left:-4vw'> Bids</h1>
+          <div class='row'>
+            <h4 id='queued-bid-arrow' style='margin: 1vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='queued-bid-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
+            <h2 class='text-left'> Queued Bids:</h2>
+            <div id='queued-bids'>
+              <div class='row'>
+                <%@user_bids_buyer_queued.each do |bid|%>
+                  <div class=' product-items text-center'>
+                    <h4>Title: <%=bid.title%><h4>
+                    <h4>Amount: <%=bid.amount%> grams<h4>
+                    <h4>Price Max: $<%=bid.price_max%><h4>
+                    <h4>Date range:<br> <%=bid.early_date.strftime('%m/%d/%Y')%> to <%=bid.late_date.strftime('%m/%d/%Y')%><h4>
+                    <h4>Frequency: <%=bid.frequency%><h4>
+                    <%if bid.DEH_approved == false%>
+                      <h4>No DEH needed</h4>
+                    <% else %>
+                      <h4>DEH Required</h4>
+                    <% end%>
+                    <h3><%=link_to edit_bid_path(bid) do %><i class="glyphicon glyphicon-pencil"></i><%end%>
+                    <%=link_to publish_bid_path_url(bid), :method=> :post do %><i class="glyphicon glyphicon-share-alt"></i><%end%></h3>
+                  </div>
+                <%end%>
+              </div>
+            </div>
           </div>
-          <div class='col-md-6'>
-            <h2 class='text-center'> Closed Bids:</h2>
-            <%@user_bids_buyer_closed.each do |bid|%>
-              <h4>Title: <%=bid.title%><h4>
-              <h4>Amount: <%=bid.amount%> grams<h4>
-              <h4>Final Price: $<span class='bid_price'><%=bid.bid_offers[0].price %></span><h4>
-              <h4>Supplier: <%=bid.supplier.email%><h4>
-              <h4>Delivery Date:<%=bid.bid_offers[0].delivery_date%></h4>
-              <%if bid.paid%>
-                <h4>Order is being Proccesed</h4>
-              <%else%>
-                <button type="submit" id = 'payButton' class='payBidButton' onclick="payStripe('<%=bid.bid_offers[0].price%>')">PAY</button>
-              <%end%>
+          <div class='row'>
+            <h4 id='open-bid-arrow' style='margin: 1vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='open-bid-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
+            <h2 class='text-left'> Open Bids:</h2>
+            <div id='open-bids'>
+              <div class='row'>
+                <%@user_bids_buyer_open.each do |bid|%>
+                  <div class='product-items text-center'>
+                    <h4>Title: <%=bid.title%><h4>
+                    <h4>Amount: <%=bid.amount%> grams<h4>
+                    <h4>Price Max: $<%=bid.price_max%><h4>
+                    <h4>Date range:<br> <%=bid.early_date.strftime('%m/%d/%Y')%> to <%=bid.late_date.strftime('%m/%d/%Y')%><h4>
+                    <h4>Frequency: <%=bid.frequency%><h4>
+                    <%if bid.DEH_approved == false%>
+                      <h4>No DEH needed</h4>
+                    <% else %>
+                      <h4>DEH Required</h4>
+                    <% end%>
+                    <%if bid.bid_offers.present?%>
+                      <h3><%=link_to 'View All Bid Offers',bid_offers_path(:bid_id => bid.id)%></h3>
+                    <%else%>
+                      <h3>**No Bid Offers Yet</h3>
+                    <%end%>
+                  </div>
+                <%end%>
+              </div>
+            </div>
+          </div>
+          <div class='row'>
+            <h4 id='closed-bid-arrow' style='margin: 1vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='closed-bid-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
+            <h2 class='text-left'> Closed Bids:</h2>
+            <div id='closed-bids'>
+              <%@user_bids_buyer_closed.each do |bid|%>
+                <div class='row'>
+                  <div class='col-sm-6'>
+                    <h4>Title: <%=bid.title%><h4>
+                    <h4>Amount: <%=bid.amount%> grams<h4>
+                    <h4>Final Price: $<span class='bid_price'><%=bid.bid_offers[0].price %></span><h4>
+                    <h4>Delivery Date:<%=bid.bid_offers[0].delivery_date%></h4>
+                  </div>
+                  <div class='col-sm-6'>
+                    <div class='row'>
+                      <div class='col-sm-4'>
+                        <span ><%= image_tag(bid.supplier.avatar.url, :size => "100x100") %></span>
+                      </div>
+                      <div class='col-sm-6'>
+                        <%=link_to user_supplier_path_url(bid.supplier) do%>
+                        <h4><%=bid.supplier.company_name%></h4>
+                        <%end%>
+                        <h4><%=bid.supplier.city%>, <%=bid.supplier.state%></h4>
+                      </div>
+                    </div>
+                    <br>
+                    <div class='row text-center'>
+                      <%if bid.paid%>
+                        <h4>Order is being Proccesed</h4>
+                      <%else%>
+                        <button type="submit" id = 'payButton' class='payBidButton' onclick="payStripe('<%=bid.bid_offers[0].price%>')">PAY</button>
+                      <%end%>
+                    </div>
+                  </div>
+                  <hr>
+                </div>
                 <hr>
-            <%end%>
+              <%end%>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    </div>
     <div class="tab-pane fade" id="id03">
       <div class="col-md-9 prof-info">
         <h3>RETAIL DISTRIBUTION IS UNDER CONSTRUCTION</h3>
@@ -257,6 +311,10 @@ $(window).on('popstate', function() {
 
 ToggleArrow('#open-arrow','#open-orders','#open-icon')
 ToggleArrow('#closed-arrow','#closed-orders','#closed-icon')
+
+ToggleArrow('#queued-bid-arrow','#queued-bids','#queued-bid-icon')
+ToggleArrow('#open-bid-arrow','#open-bids','#open-bid-icon')
+ToggleArrow('#closed-bid-arrow','#closed-bids','#closed-bid-icon')
 
 function ToggleArrow(btn,area,icon){
   $(btn).on('click',function(){

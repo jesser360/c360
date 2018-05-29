@@ -14,7 +14,7 @@ class BidOffersController < ApplicationController
     @bid_offer.bid = @bid
     respond_to do |format|
       if @bid_offer.save
-        format.html { redirect_to user_path_url(@user)}
+        format.html { redirect_to user_supplier_path_url(@user)}
         format.json { render :show, status: :created, location: @bid_offer }
       else
         puts @bid_offer.errors.messages

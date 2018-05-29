@@ -50,6 +50,7 @@ class UsersController < ApplicationController
     @bulk = @user.bulk_orders
     @reviews = Review.where(user: @user)
 
+    @user_bids_buyer_queued = Bid.where(buyer_id:@user.id).where(supplier_id:nil).where(published: false)
     @user_bids_buyer_open = Bid.where(buyer_id:@user.id).where(supplier_id:nil)
     @user_bids_buyer_closed = Bid.where(buyer_id:@user.id).where.not(supplier_id:nil)
 
@@ -83,7 +84,16 @@ class UsersController < ApplicationController
         end
       end
     end
-    @user_bids_open = Bid.where(supplier_id:nil)
+    @open_bids = Bid.where(supplier_id:nil)
+    @user_bids_new = []
+    @user_bids_offered = []
+    @open_bids.each do |bid|
+      if bid.bid_offers.where(user_id: @user.id).present?
+        @user_bids_offered.push(bid)
+      else
+        @user_bids_new.push(bid)
+      end
+    end
     @user_bids_supplier = Bid.where(supplier_id:@user.id)
   end
 

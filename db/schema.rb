@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180524221446) do
+ActiveRecord::Schema.define(version: 20180529213442) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,7 +30,6 @@ ActiveRecord::Schema.define(version: 20180524221446) do
   create_table "bids", force: :cascade do |t|
     t.integer "amount"
     t.string "title"
-    t.integer "price_min"
     t.integer "price_max"
     t.bigint "supplier_id"
     t.bigint "buyer_id"
@@ -38,6 +37,12 @@ ActiveRecord::Schema.define(version: 20180524221446) do
     t.datetime "updated_at", null: false
     t.integer "final_price"
     t.boolean "paid"
+    t.string "product_type"
+    t.date "early_date"
+    t.date "late_date"
+    t.string "frequency"
+    t.boolean "DEH_approved"
+    t.boolean "published"
     t.index ["buyer_id"], name: "index_bids_on_buyer_id"
     t.index ["supplier_id"], name: "index_bids_on_supplier_id"
   end

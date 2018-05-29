@@ -1,19 +1,90 @@
 <div>
-  <h1 align="center">Place your Estimated price for this Bid</h1>
-  <h3 align="center">you will be contacted if you are chosen for this Bid</h3>
+  <h1 align="center">Create a new bid to Send out to Suppliers</h1>
   <%= form_with(model: @bid, local: true) do |f| %>
     <div class='row signup-form'>
-      <h4>Title: <%=@bid.title%><h4>
-      <h4>Amount: <%=@bid.amount%> grams<h4>
-      <h4>Price range: $<%=@bid.price_min%> - $<%=@bid.price_max%><h4>
+      <div class="form-group">
+        <div class='col-sm-1'>
+        </div>
+        <div class="control-label col-sm-2 text-right">
+          <%= f.label :title %>
+        </div>
+        <div class="col-sm-6">
+          <%= f.text_field :title, class: "form-control", value: @bid.title, autofocus: true %>
+        </div>
+      </div>
     </div>
     <div class='row signup-form'>
       <div class="form-group">
-        <div class="control-label col-sm-2 text-right">
-          <%= f.label :Your_offered_price %>
+        <div class='col-sm-1'>
         </div>
-        <div class="col-sm-8">
-          <%= f.number_field :lowest_price, class: "form-control", placeholder: "Best estimated price", autofocus: true %>
+        <div class="control-label col-sm-2 text-right">
+          <%= f.label :how_many_grams %>
+        </div>
+        <div class="col-sm-6">
+          <%= f.number_field :amount, class: "form-control", value: @bid.amount, autofocus: true %>
+        </div>
+      </div>
+    </div>
+    <div class='row signup-form'>
+      <div class="form-group">
+        <div class='col-sm-1'>
+        </div>
+        <div class="control-label col-sm-2 text-right">
+          <%= f.label :price_max %>
+        </div>
+        <div class="col-sm-6">
+          <%= f.number_field :price_max, class: "form-control", value: @bid.price_max, autofocus: true %>
+        </div>
+      </div>
+    </div>
+    <div class='row signup-form'>
+      <div class="form-group">
+        <div class='col-sm-1'>
+        </div>
+        <div class="control-label col-sm-2 text-right">
+          <%= f.label :product_type %>
+        </div>
+        <div class="col-sm-6">
+          <%= f.text_field :product_type, class: "form-control", value: @bid.product_type, autofocus: true %>
+        </div>
+      </div>
+    </div>
+    <div class='row signup-form'>
+      <div class="form-group">
+        <div class='col-sm-1'>
+        </div>
+        <div class="control-label col-sm-2 text-right">
+          <%= f.label :Date_Range_to_be_delivered %>
+        </div>
+        <div class="col-sm-3">
+          <%= f.date_field :early_date, class: "form-control",value: @bid.early_date, autofocus: true %>
+        </div>
+        <div class="col-sm-3">
+          <%= f.date_field :late_date, class: "form-control",value: @bid.late_date, autofocus: true %>
+        </div>
+      </div>
+    </div>
+    <div class='row signup-form'>
+      <div class="form-group">
+        <div class='col-sm-1'>
+        </div>
+        <div class="control-label col-sm-2 text-right">
+          <%= f.label :Frequency %>
+        </div>
+        <div class="col-sm-6">
+          <%= f.select :frequency, ['One Time Purchase', 'Weekly','Monthly','Quarterly'], value: @bid.frequency,class: "form-control", autofocus: true%>
+        </div>
+      </div>
+    </div>
+    <div class='row signup-form'>
+      <div class="form-group">
+        <div class='col-sm-1'>
+        </div>
+        <div class="control-label col-sm-2 text-right">
+          <%= f.label :DEH_approved?,"Must be DEH Approved?" %>
+        </div>
+        <div class="col-sm-6">
+          <%= f.check_box :DEH_approved,value: @bid.title%>
         </div>
       </div>
     </div>

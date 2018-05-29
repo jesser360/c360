@@ -25,6 +25,8 @@ Rails.application.routes.draw do
   get '/about' => 'pages#about'
   get '/services' => 'pages#services'
 
+  post '/bid/publish/:id' => 'bids#publish', as: 'publish_bid_path'
+
 
   post '/bulk_order/publish/:id' => 'bulk_orders#publish', as: 'publish_bulk_order_path'
   get '/bulk_order/seller/edit/:id' => 'bulk_orders#seller_edit', as: 'seller_edit_bulk_order_path'
