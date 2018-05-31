@@ -17,6 +17,7 @@ gem "administrate"
 gem 'zip-codes'
 gem 'flipclockjs-rails', '~> 0.7.7'
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
 gem 'stripe'
 gem 'c3-rails'
 gem 'd3_rails'

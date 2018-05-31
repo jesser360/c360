@@ -1,10 +1,10 @@
 <div id='prof-pg'>
 <%if @user == @current_user%>
-  <div class="tabs-right tab-sideways tabs-krajee">
+  <div id='all-tabs' class="tabs-right tab-sideways tabs-krajee ">
     <ul id="myTab"class="nav nav-tabs" role="tablist">
-      <li class="active"><a href="#id01" role="tab" data-toggle="tab" >Orders</a></li>
-      <li><a href="#id02" role="tab" data-toggle="tab">Bids</a></li>
-      <li><a href="#id03" role="tab" data-toggle="tab">Retail</a></li>
+      <li class="active"><a id='order-tab' href="#id01" role="tab" data-toggle="tab" >Orders</a></li>
+      <li><a id='bid-tab'href="#id02" role="tab" data-toggle="tab">Bids</a></li>
+      <li ><a id='retail-tab'href="#id03" role="tab" data-toggle="tab">Retail</a></li>
     </ul>
   </div>
 
@@ -187,17 +187,21 @@
           </div>
         </div>
       </div>
-    <div class="tab-pane fade" id="id03">
-      <div class="col-md-9 prof-info">
-        <h3>RETAIL DISTRIBUTION IS UNDER CONSTRUCTION</h3>
-        <h4>Please Contact Us</h4>
-      </div>
     </div>
+    <div class="tab-pane fade" id="id03">
+      <div class='row'>
+        <div class="col-md-9 prof-info">
+          <h3>RETAIL DISTRIBUTION IS UNDER CONSTRUCTION</h3>
+          <h4>Please Contact Us</h4>
+        </div>
+      </div>
     </div>
   </div>
   <div hidden id='user_email'><%=@user.email%></div>
 </div>
+
 <%else%>
+
 <div class='user-review-profile'>
   <div class="row prof-box-slim" >
     <div class='col-sm-1'>
@@ -309,19 +313,41 @@ $(window).on('popstate', function() {
   handler.close();
 });
 
-ToggleArrow('#open-arrow','#open-orders','#open-icon')
-ToggleArrow('#closed-arrow','#closed-orders','#closed-icon')
+// OUTSIDE OF DOCUMENT READY TO LOAD FASTER SO NO FADE EFFECT
+var tab_name = localStorage.getItem('openTab')
+$(tab_name).trigger('click')
+$( document ).ready(function() {
 
-ToggleArrow('#queued-bid-arrow','#queued-bids','#queued-bid-icon')
-ToggleArrow('#open-bid-arrow','#open-bids','#open-bid-icon')
-ToggleArrow('#closed-bid-arrow','#closed-bids','#closed-bid-icon')
 
-function ToggleArrow(btn,area,icon){
-  $(btn).on('click',function(){
-    $(icon).hasClass('glyphicon-arrow-up') ?
-    $(icon).removeClass('glyphicon-arrow-up').addClass('glyphicon-arrow-down')
-    : $(icon).removeClass('glyphicon-arrow-down').addClass('glyphicon-arrow-up')
-    $(area).toggle('medium');
-  })
-}
+  function setTabValue(element){
+    $(element).on('click',function(){
+      localStorage.setItem('openTab',element)
+    })
+  }
+
+  setTabValue('#bid-tab')
+  setTabValue('#order-tab')
+  setTabValue('#retail-tab')
+
+  console.log(localStorage.getItem('openTab'))
+
+
+  ToggleArrow('#open-arrow','#open-orders','#open-icon')
+  ToggleArrow('#closed-arrow','#closed-orders','#closed-icon')
+
+  ToggleArrow('#queued-bid-arrow','#queued-bids','#queued-bid-icon')
+  ToggleArrow('#open-bid-arrow','#open-bids','#open-bid-icon')
+  ToggleArrow('#closed-bid-arrow','#closed-bids','#closed-bid-icon')
+
+  function ToggleArrow(btn,area,icon){
+    $(btn).on('click',function(){
+      $(icon).hasClass('glyphicon-arrow-up') ?
+      $(icon).removeClass('glyphicon-arrow-up').addClass('glyphicon-arrow-down')
+      : $(icon).removeClass('glyphicon-arrow-down').addClass('glyphicon-arrow-up')
+      $(area).toggle('medium');
+    })
+  }
+
+
+})
 </script>
