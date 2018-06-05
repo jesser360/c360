@@ -28,7 +28,12 @@
      padding: 0px;
      overflow-x: hidden;
  }
-
+ .plain-link{
+   color:black !important
+ }
+a.plain-link:active{
+  background-color:#ffd333 !important;
+}
  .tabs-krajee{
    margin-top:20vh;
  }
