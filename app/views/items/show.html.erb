@@ -27,7 +27,7 @@
       </div>
       <br>
       <h2 class='text-center'>Customer Reviews</h2>
-      <%if @existing_bulk_order_reviews < @completed_user_bulk_orders.count%>
+      <%if @completed_user_bulk_orders && @existing_bulk_order_reviews < @completed_user_bulk_orders.count%>
         <div class=' row'>
           <h3 class='text-left'>Leave a Review</h3>
           <form style='margin:1vw'>

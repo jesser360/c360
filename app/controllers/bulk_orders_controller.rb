@@ -22,7 +22,7 @@ class BulkOrdersController < ApplicationController
   def index
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @bulk_orders = BulkOrder.all
-    @open_bulk_orders = BulkOrder.where(completed: false)
+    @open_bulk_orders = BulkOrder.where(completed: false).where(published: true)
   end
 
   # GET /bulk_orders/new

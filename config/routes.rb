@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   get '/store' => 'bulk_orders#index'
   get '/about' => 'pages#about'
   get '/services' => 'pages#services'
+  get '/info' => 'pages#info'
 
   post '/bid/publish/:id' => 'bids#publish', as: 'publish_bid_path'
 

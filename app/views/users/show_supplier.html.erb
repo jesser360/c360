@@ -1,14 +1,4 @@
 <div id='prof-pg'>
-  <div class=" tabs-right tab-sideways tabs-krajee">
-    <ul id="myTab"class="nav nav-tabs" role="tablist">
-      <li class="active tab-sideways"><a id='product-tab'  href="#id00" role="tab" data-toggle="tab" >Products</a></li>
-      <li class="tab-sideways"><a id='batch-tab'  href="#id01" role="tab" data-toggle="tab" >Batches</a></li>
-      <%if @user ==@current_user%>
-      <li><a id='bids-tab' href="#id02" role="tab" data-toggle="tab">Bids</a></li>
-      <li><a id='retails-tab' href="#id03" role="tab" data-toggle="tab">Retail</a></li>
-      <%end%>
-    </ul>
-  </div>
 
 <div class='spin' style='margin:10vw 10vw 5vw 10vw'>
   <div class="row prof-box-slim" >
@@ -32,6 +22,17 @@
       <%end%></h4>
     </div>
   </div>
+  <div class=" tabs-krajee">
+    <ul id="myTab"class="nav nav-tabs" role="tablist">
+      <li class="active tab-sideways"><a id='product-tab'  href="#id00" role="tab" data-toggle="tab" >Products</a></li>
+      <li class="tab-sideways"><a id='batch-tab'  href="#id01" role="tab" data-toggle="tab" >Batches</a></li>
+      <%if @user ==@current_user%>
+      <li><a id='bids-tab' href="#id02" role="tab" data-toggle="tab">Bids</a></li>
+      <li><a id='retails-tab' href="#id03" role="tab" data-toggle="tab">Retail</a></li>
+      <%end%>
+    </ul>
+  </div>
+
   <div id="myTabContent" class="tab-content">
     <div class="tab-pane fade in active" id="id00">
       <div class='row'>
@@ -39,6 +40,7 @@
           <h2 style='margin-left:-4vw'> Products
           <%if @user ==@current_user%>
             <span style='width:30px'class="bulk_order_link"><%=link_to new_item_path do %><i class="glyphicon glyphicon-plus"></i><%end%></span>
+            <span style='font-size: 1vw;float:right;margin:-1vw 15vw 0vw 0vw'>Create and Edit your CBD Products here. <br>Start new Bulk Orders in the Batches section above</span>
           <%end%>
           <div class='row' style='margin-left:3vw'>
             <br>
@@ -63,11 +65,12 @@
           <div class="col-md-12 prof-info">
             <h2 style='margin-left:-4vw'> Batches
             <%if @user ==@current_user%>
-              <span style='width:30px'class="bulk_order_link"><%=link_to new_bulk_order_path do %><i class="glyphicon glyphicon-plus"></i><%end%></span></h2>
+              <span style='width:30px'class="bulk_order_link"><%=link_to new_bulk_order_path do %><i class="glyphicon glyphicon-plus"></i><%end%></span>
+              <span style='font-size: 1vw;float:right;margin:-2vw 15vw 0vw 0vw'> <br>Create a new Batch for buyers to start joining<br>Queue up a Batch and Publish it when ready<br>Monitor the users in your open and closed Batches</span>
 
               <div class='row'>
                 <h4 id='queued-arrow' style='margin: 2vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='queued-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
-                <h3 class="text-left"> Queued Orders:</h3>
+                <h3 class="text-left"> Queued Batches:</h3>
                 <div id='queued-orders'>
                   <%@queued_orders.each do |order|%>
                     <div class='col-md-6'>
@@ -94,7 +97,7 @@
               <%if @user ==@current_user%>
                 <h4 id='open-arrow' style='margin: 2vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='open-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
               <%end%>
-              <h3 class="text-left"> Open Orders:</h3>
+              <h3 class="text-left"> Open Batches:</h3>
               <div id='open-orders'>
                 <%@open_orders.each do |order|%>
                 <div class='col-md-6'>
@@ -118,7 +121,7 @@
             <%if @user ==@current_user%>
               <div class='row'>
                 <h4 id='closed-arrow' style='margin: 2vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='closed-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
-                <h3 class="text-left"> Closed Orders:</h3>
+                <h3 class="text-left"> Closed Batches:</h3>
                 <div id='closed-orders'>
                   <%@closed_orders.each do |order|%>
                   <div class='col-md-6'>

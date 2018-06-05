@@ -16,10 +16,12 @@ class ItemsController < ApplicationController
     @open_orders=BulkOrder.where(item: @item).where(completed: false)
 
     @existing_bulk_order_reviews = 0
-    @completed_user_bulk_orders = @current_user.bulk_orders.where(item: @item).where(completed: true)
-    @completed_user_bulk_orders.each do |order|
-      if Review.where(item: @item).where(bulk_order:order).present?
-        @existing_bulk_order_reviews += 1
+    @completed_user_bulk_orders = @current_user.bulk_orders.where(item: @item).where(completed: true) rescue nil
+    if @completed_user_bulk_orders
+      @completed_user_bulk_orders.each do |order|
+        if Review.where(item: @item).where(bulk_order:order).present?
+          @existing_bulk_order_reviews += 1
+        end
       end
     end
     # @finished_user_order = UserOrder.where(item: @item).where(buy_now: true).where(user: @current_user)[0]

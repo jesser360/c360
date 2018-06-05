@@ -15,15 +15,16 @@
             <!-- Sidebar Links -->
             <ul class="list-unstyled " style='position:fixed;margin-top:8vw'>
                 <li class=" component active"><a class='sidebar-links' href="/home">Home</a></li>
+                <li class="component">
+                  <a class='sidebar-links' href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">WholeSale Store</a>
+                  <ul class="collapse list-unstyled" id="homeSubmenu">
+                    <li class="comp"><a class='sidebar-links' href="/store">Market</a></li>
+                    <li class="comp"><a class='sidebar-links' href="/info">Instructions</a></li>
+                    <li class="comp"><a class='sidebar-links' href="#">Reviews</a></li>
+                  </ul>
+                </li>
                 <li class="component"><a class='sidebar-links' href="/about">About</a></li>
                 <li class="component"><a class='sidebar-links' href="/services">Services</a></li>
-                <li class="component">
-                    <a class='sidebar-links' href="#homeSubmenu" data-toggle="collapse" aria-expanded="false">WholeSale Store</a>
-                    <ul class="collapse list-unstyled" id="homeSubmenu">
-                        <li class="comp"><a class='sidebar-links' href="/store">Market</a></li>
-                        <li class="comp"><a class='sidebar-links' href="#">Instructions</a></li>
-                        <li class="comp"><a class='sidebar-links' href="#">Reviews</a></li>
-                    </ul>
                 <li class="component"><a class='sidebar-links' href="#">Contact</a></li>
             </ul>
         </nav>

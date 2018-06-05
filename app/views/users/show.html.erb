@@ -1,12 +1,4 @@
-<div id='prof-pg'>
 <%if @user == @current_user%>
-  <div id='all-tabs' class="tabs-right tab-sideways tabs-krajee ">
-    <ul id="myTab"class="nav nav-tabs" role="tablist">
-      <li class="active"><a id='order-tab' href="#id01" role="tab" data-toggle="tab" >Orders</a></li>
-      <li><a id='bid-tab'href="#id02" role="tab" data-toggle="tab">Bids</a></li>
-      <li ><a id='retail-tab'href="#id03" role="tab" data-toggle="tab">Retail</a></li>
-    </ul>
-  </div>
 
 <div class='spin' style='margin:10vw 10vw 5vw 10vw'>
   <div class="row prof-box-slim" >
@@ -27,6 +19,13 @@
       <h4 style ='color:lightgray'>501-555-2099</h4>
       <h4><%=link_to edit_user_path_url(@user), :id=>"edit-user-pencil" do%><i class="glyphicon glyphicon-cog"></i><%end%></h4>
     </div>
+  </div>
+  <div id='all-tabs' class=" tabs-krajee ">
+    <ul id="myTab"class="nav nav-tabs" role="tablist">
+      <li class="active"><a id='order-tab' href="#id01" role="tab" data-toggle="tab" >Orders</a></li>
+      <li><a id='bid-tab'href="#id02" role="tab" data-toggle="tab">Bids</a></li>
+      <li ><a id='retail-tab'href="#id03" role="tab" data-toggle="tab">Retail</a></li>
+    </ul>
   </div>
     <div id="myTabContent" class="tab-content">
       <div class="tab-pane fade in active" id="id01">
@@ -221,7 +220,7 @@
       <h4 style ='color:lightgray'>501-555-2099</h4>
     </div>
   </div>
-  <div class='row' style='margin:0vw 3vw 0vw 3vw'>
+  <div class='row' style='margin:10vw 3vw 0vw 3vw'>
     <h2 class='text-left'>User's Reviews</h2>
     <%@reviews.each do |review|%>
       <div class='row'>
@@ -268,6 +267,7 @@
   </div>
 </div>
 <%end%>
+
   <article>
     <%= hidden_field_tag(:amount) %>
   </article>

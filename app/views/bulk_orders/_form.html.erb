@@ -45,13 +45,15 @@
         <%elsif @seller==@user%>
         <h4>Buyers:</h4>
           <% @bulk_order.user_orders.each do |user_order| %>
-            <% @user_found = User.find_by_id(user_order.user_id)%>
-            <strong><%=@user_found.email%></strong>
-            <ul>
-              <li> Bought <%=user_order.quantity%> <%=@bulk_order.item_name%> for $<%=user_order.total_price%> on <%=Date.parse(user_order.updated_at.to_date.to_s).strftime('%m/%d/%Y')|| ate.parse(user_order.created_at.to_date.to_s).strftime('%m/%d/%Y')%></li>
-              <li>Lives in <%=@user_found.city%>, <%=@user_found.state%></li>
-            </ul>
-          <br>
+            <%if !user_order.buy_now %>
+              <% @user_found = User.find_by_id(user_order.user_id)%>
+              <strong><%=@user_found.email%></strong>
+              <ul>
+                <li> Bought <%=user_order.quantity%> <%=@bulk_order.item_name%> for $<%=user_order.total_price%> on <%=Date.parse(user_order.updated_at.to_date.to_s).strftime('%m/%d/%Y')|| ate.parse(user_order.created_at.to_date.to_s).strftime('%m/%d/%Y')%></li>
+                <li>Lives in <%=@user_found.city%>, <%=@user_found.state%></li>
+              </ul>
+              <hr>
+            <%end%>
           <%end%>
         <%end%>
       </div>
