@@ -63,7 +63,7 @@
       <%end%>
     </div>
     <div class='col-sm-6'>
-      <h3 class='text-center'>Open Batches to Join</h3>
+      <h3 class='text-center'>Open Batches for <%=@item.item_name%></h3>
       <%@open_orders.each_with_index do |order,i|%>
       <div class='row'>
         <div class='col-sm-6'>
@@ -75,9 +75,11 @@
         <div class='col-sm-6'>
           <h4>Wholesale Price: <%=order.wholesale_price%>$ / gram</h4>
           <h4>BuyNow Price: <%=order.market_price%>$ / gram</h4>
-          <h4 class="bulk_order_link" ><%= link_to 'Join Order', edit_bulk_order_url(order, :item => order.item.id) %></h4>
-          <h4 class="bulk_order_link" ><i class="glyphicon glyphicon-flash "></i>
-          <%= link_to 'Buy Now', new_user_order_url(:bulk_order => order.id)%><h4>
+          <%if !@current_user.is_vendor %>
+            <h4 class="bulk_order_link" ><%= link_to 'Join Order', edit_bulk_order_url(order, :item => order.item.id) %></h4>
+            <h4 class="bulk_order_link" ><i class="glyphicon glyphicon-flash "></i>
+            <%= link_to 'Buy Now', new_user_order_url(:bulk_order => order.id)%><h4>
+          <%end%>
         </div>
       </div>
       <hr>

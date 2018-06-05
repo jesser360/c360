@@ -75,11 +75,12 @@
       <%end%></h4>
       <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</span>
     </div>
-    <div class='col-md-3' style='font-size:1.2em;margin-top:5vh'>
+    <div class='col-md-2' style='font-size:1.2em;margin-top:5vh'>
       <!-- <div class='row edit-card' style='margin-top:5vh'>
         <div id='small-clock'></div>
       </div> -->
-      <div class='row' style='padding-left:10px;margin-top:5vh'>
+      <div class='row' style='padding-left:10px;margin-top:-2vw'>
+        <h3>Order here</h3>
         <div class="field" id='quant_input'>
           <label>Quantity (g)</label>
           <input style='width:7vw' id ='user_order_quantity' value=0 type='number' min='1' max='<%=@bulk_order.max_amount%>'name='user_order[quantity]'>
@@ -101,8 +102,23 @@
         <%= hidden_field_tag(:price,params[:price])%>
       </div>
     </div>
-    <div class='col-md-3 '>
-      EMPTY
+    <div class='col-md-4'>
+      <h2 class='text-left'>Customer Reviews</h2>
+      <%@reviews.each do |review|%>
+      <%=link_to user_path_url(review.user) do%>
+        <h5><%= image_tag(review.user.avatar.url, :class => "not_nav_prof_pic",) %>
+      <%end%>
+      <%=review.user.email%></h5>
+      <h4><%review.rating.times do%>
+      <i class="glyphicon glyphicon-star"></i>
+      <%end%>
+      <%(5-review.rating).times do%>
+      <i class="glyphicon glyphicon-star-empty"></i>
+      <%end%>
+      <%=review.title%></h4>
+      <h5><%=review.body%></h5>
+      <hr>
+      <%end%>
     </div>
   </div>
 <%end%>

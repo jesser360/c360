@@ -19,6 +19,7 @@ class UserOrdersController < ApplicationController
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @bulk = @user_order.bulk_order
     @item = @bulk.item
+    @reviews = Review.where(item: @item)
     @existing_review = Review.where(item: @item).where(user_order: @user_order)[0]
 
   end
@@ -29,6 +30,7 @@ class UserOrdersController < ApplicationController
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @bulk_order = BulkOrder.find_by_id(params[:bulk_order])
     @item = @bulk_order.item
+    @reviews = Review.where(item: @item)
 
   end
 
