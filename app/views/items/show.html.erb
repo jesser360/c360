@@ -76,9 +76,13 @@
           <h4>Wholesale Price: <%=order.wholesale_price%>$ / gram</h4>
           <h4>BuyNow Price: <%=order.market_price%>$ / gram</h4>
           <%if !@current_user.is_vendor %>
-            <h4 class="bulk_order_link" ><%= link_to 'Join Order', edit_bulk_order_url(order, :item => order.item.id) %></h4>
-            <h4 class="bulk_order_link" ><i class="glyphicon glyphicon-flash "></i>
-            <%= link_to 'Buy Now', new_user_order_url(:bulk_order => order.id)%><h4>
+            <%if order.users.where(email: @current_user.email).length > 0%>
+              <h4 class="bulk_order_link"><%= link_to 'Edit Your Order', edit_user_order_url(order.user_orders.where(user_id: @current_user.id)[0]) %></h4>
+            <%else%>
+              <h4 class="bulk_order_link" ><%= link_to 'Join Order', edit_bulk_order_url(order, :item => order.item.id) %></h4>
+              <h4 class="bulk_order_link" ><i class="glyphicon glyphicon-flash "></i>
+                <%= link_to 'Buy Now', new_user_order_url(:bulk_order => order.id)%><h4>
+            <%end%>
           <%end%>
         </div>
       </div>

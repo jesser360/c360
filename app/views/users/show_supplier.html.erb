@@ -39,7 +39,7 @@
         <div class="col-md-12 prof-info">
           <h2 style='margin-left:-4vw'> Products
           <%if @user ==@current_user%>
-            <span style='width:30px'class="bulk_order_link"><%=link_to new_item_path do %><i class="glyphicon glyphicon-plus"></i><%end%></span>
+            <span style='width:30px'class="bulk_order_link"><%=link_to new_item_path do %><span data-tooltip="Create New Product"><i class="glyphicon glyphicon-plus"></i></span><%end%></span>
             <span style='font-size: 1vw;float:right;margin:-1vw 15vw 0vw 0vw'>Create and Edit your CBD Products here. <br>Start new Bulk Orders in the Batches section above</span>
           <%end%>
           <div class='row' style='margin-left:3vw'>
@@ -52,7 +52,7 @@
                   <%end%>
                   <h4 ><%=item.description%></h4>
                   <%if @user == @current_user%>
-                    <h4><%=link_to edit_item_path(item), :id=>"edit-user-pencil"  do%><i class="glyphicon glyphicon-pencil"></i><%end%></h4>
+                    <h4 style='float:right'><%=link_to edit_item_path(item), :id=>"edit-user-pencil"  do%><span data-tooltip="Edit Product>"><i class="glyphicon glyphicon-pencil"></i></span><%end%></h4>
                   <%end%>
                 </div>
               <%end%>
@@ -65,7 +65,7 @@
           <div class="col-md-12 prof-info">
             <h2 style='margin-left:-4vw'> Batches
             <%if @user ==@current_user%>
-              <span style='width:30px'class="bulk_order_link"><%=link_to new_bulk_order_path do %><i class="glyphicon glyphicon-plus"></i><%end%></span>
+              <span style='width:30px'class="bulk_order_link"><%=link_to new_bulk_order_path do %><span data-tooltip="Create new Batch"><i class="glyphicon glyphicon-plus"></i></span><%end%></span>
               <span style='font-size: 1vw;float:right;margin:-2vw 15vw 0vw 0vw'> <br>Create a new Batch for buyers to start joining<br>Queue up a Batch and Publish it when ready<br>Monitor the users in your open and closed Batches</span>
               <div class='row'>
                 <h4 id='queued-arrow' style='margin: 2vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='queued-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
@@ -82,8 +82,8 @@
                           <h4>Market Price : $<%=order.market_price%> </h4>
                           <h4>Whole Sale Price : $<%=order.wholesale_price%></h4>
                           <h4>Order Size : <%=order.max_amount%> grams</h4>
-                          <h3><%=link_to seller_edit_bulk_order_path_url(order) do %><i class="glyphicon glyphicon-pencil"></i><%end%>
-                          <%=link_to publish_bulk_order_path_url(order), :method=> :post do %><i class="glyphicon glyphicon-share-alt"></i><%end%></h3>
+                          <h3><%=link_to seller_edit_bulk_order_path_url(order) do %><span data-tooltip="Edit Batch Details"><i class="glyphicon glyphicon-pencil"></i></span><%end%>
+                          <%=link_to publish_bulk_order_path_url(order), :method=> :post do %><span data-tooltip="Publish Batch"><i class="glyphicon glyphicon-share-alt"></i></span><%end%></h3>
                         </div>
                       </div>
                       <hr>
@@ -109,7 +109,7 @@
                       <h4><%=order.percent_filled%> / <%=order.max_amount%> g reserved</h4>
                       <h4><%=order.user_orders.count%> Users</h4>
                       <h4>Spent: $<%=order.percent_filled * order.wholesale_price%></h4>
-                      <h3><%=link_to bulk_order_path(order) do%><i class="glyphicon glyphicon-eye-open"></i><%end%></h3>
+                      <h3><%=link_to bulk_order_path(order) do%><span data-tooltip="View Batch Details"><i class="glyphicon glyphicon-eye-open"></i></span><%end%></h3>
                     </div>
                   </div>
                   <hr>
@@ -133,8 +133,8 @@
                         <h4><%=order.percent_filled%> / <%=order.max_amount%> g reserved</h4>
                         <h4>Users: <%=order.user_orders.count%></h4>
                         <h4>Amount: $<%=order.percent_filled * order.wholesale_price%></h4>
-                        <h3><%=link_to bulk_order_path(order) do%><i class="glyphicon glyphicon-eye-open"></i><%end%>
-                        <%=link_to new_bulk_order_path(market_pr: order.market_price, whole_pr: order.wholesale_price, amount:order.max_amount, item: order.item) do%><i class="glyphicon glyphicon-refresh"></i><%end%></h3>
+                        <h3><%=link_to bulk_order_path(order) do%><span data-tooltip="View Batch Details"><i class="glyphicon glyphicon-eye-open"></i></span><%end%>
+                        <%=link_to new_bulk_order_path(market_pr: order.market_price, whole_pr: order.wholesale_price, amount:order.max_amount, item: order.item) do%><span data-tooltip="Re Up Batch"><i class="glyphicon glyphicon-refresh"></i></span><%end%></h3>
                       </div>
                     </div>
                     <hr>
@@ -151,7 +151,6 @@
         <div class="col-md-12 prof-info">
           <h2 style='margin-left:-4vw'> Bids</h2>
           <span style='font-size: 1vw;float:right;margin:-3vw 15vw 0vw 0vw'>Recieve a bid from a potential Buyer <br>Make you best Offer for that Bid<br> Wait to see if they accept and close the Bid</span>
-
           <div class='row'>
             <h4 id='new-bid-arrow' style='margin:  1vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='new-bid-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
             <h3 class='text-left'> New Bids:</h3>
@@ -164,7 +163,7 @@
                     <h4>Price Max: $<%=bid.price_max%><h4>
                     <h4>Date range:<br> <%=bid.early_date.strftime('%m/%d/%Y')%> to <%=bid.late_date.strftime('%m/%d/%Y')%><h4>
                     <h4>Frequency: <%=bid.frequency%><h4>
-                    <%=link_to 'Make an Offer',new_bid_offer_path(:bid_id => bid.id)%>
+                    <span style='float:right'><%=link_to new_bid_offer_path(:bid_id => bid.id) do %><span data-tooltip="Make an Offer"><i class="glyphicon glyphicon-tag"></i></span><%end%></span>
                   </div>
                 <%end%>
               </div>
@@ -182,7 +181,7 @@
                     <h4>Price Max: $<%=bid.price_max%><h4>
                     <h4>Date range:<br> <%=bid.early_date.strftime('%m/%d/%Y')%> to <%=bid.late_date.strftime('%m/%d/%Y')%><h4>
                     <h4>Frequency: <%=bid.frequency%><h4>
-                      <%=link_to 'View Your Offer',bid_offer_path(@user.bid_offers.where(bid: bid)[0])%><br>
+                      <span style='float:right'><%=link_to bid_offer_path(@user.bid_offers.where(bid: bid)[0]) do %><span data-tooltip="View your Offer"><i class="glyphicon glyphicon-eye-open"></i></span><%end%></span>
                   </div>
                 <%end%>
               </div>

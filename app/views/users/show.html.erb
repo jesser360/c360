@@ -47,8 +47,8 @@
                         <h4><%=order.bulk_order.percent_filled%> / <%=order.bulk_order.max_amount%> g reserved</h4>
                         <h4><%=order.quantity%>grams</h4>
                         <h4>Spent: $<%=order.total_price%></h4>
-                        <h3><%=link_to edit_user_order_path(order) do%><i class="glyphicon glyphicon-pencil"></i><%end%>
-                        <%=link_to user_order_path(order), :method => :delete do %><i class="glyphicon glyphicon-trash"></i><%end%></h3>
+                        <h4><%=link_to edit_user_order_path(order) do%><span data-tooltip="Edit Your Order"><i class="glyphicon glyphicon-pencil"></i></span><%end%>
+                        <%=link_to user_order_path(order), :method => :delete do %><span data-tooltip="Delete Your Order"><i class="glyphicon glyphicon-trash"></i></span><%end%></h4>
                       </div>
                     </div>
                     <hr>
@@ -74,10 +74,10 @@
                       <h4>Spent: $<%=order.total_price%></h4>
                       <%if order.buy_now%>
                       <h5>** Buy Now Order</h5>
-                        <h3><%=link_to user_order_buy_now_path_url(order) do%><i class="glyphicon glyphicon-eye-open"></i><%end%></h3>
+                        <h4><%=link_to user_order_buy_now_path_url(order) do%><span data-tooltip="View Your Order"><i class="glyphicon glyphicon-eye-open"></i></span><%end%></h4>
                       <%else%>
                       <h4><%=order.bulk_order.percent_filled%> / <%=order.bulk_order.max_amount%> g</h4>
-                        <h3><%=link_to user_order_path(order) do%><i class="glyphicon glyphicon-eye-open"></i><%end%></h3>
+                        <h4><%=link_to user_order_path(order) do%><span data-tooltip="View Your Order"><i class="glyphicon glyphicon-eye-open"></i></span><%end%></h4>
                       <%end%>
                     </div>
                   </div>
@@ -92,8 +92,8 @@
     <div class="tab-pane fade" id="id02">
       <div class='row'>
         <div class="col-md-12 prof-info">
-          <h4 style='float:left;width:30px'class="bulk_order_link"><%=link_to new_bid_path do%><i class="glyphicon glyphicon-plus"></i><%end%></h4>
-          <h1 style='margin-left:-4vw'> Bids</h1>
+          <h2 style='margin-left:-4vw'> Bids
+            <span style='width:30px'class="bulk_order_link"><%=link_to new_bid_path do %><span data-tooltip="Create New Bid"><i class="glyphicon glyphicon-plus"></i></span><%end%></span>
           <div class='row'>
             <h4 id='queued-bid-arrow' style='margin: 1vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='queued-bid-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
             <h2 class='text-left'> Queued Bids:</h2>
@@ -111,8 +111,8 @@
                     <% else %>
                       <h4>DEH Required</h4>
                     <% end%>
-                    <h3><%=link_to edit_bid_path(bid) do %><i class="glyphicon glyphicon-pencil"></i><%end%>
-                    <%=link_to publish_bid_path_url(bid), :method=> :post do %><i class="glyphicon glyphicon-share-alt"></i><%end%></h3>
+                    <h4><%=link_to edit_bid_path(bid) do %><span data-tooltip="Edit Bid"><i class="glyphicon glyphicon-pencil"></i></span><%end%>
+                    <%=link_to publish_bid_path_url(bid), :method=> :post do %><span data-tooltip="Publish Bid"><i class="glyphicon glyphicon-share-alt"></i></span><%end%></h4>
                   </div>
                 <%end%>
               </div>
@@ -136,9 +136,9 @@
                       <h4>DEH Required</h4>
                     <% end%>
                     <%if bid.bid_offers.present?%>
-                      <h3><%=link_to 'View All Bid Offers',bid_offers_path(:bid_id => bid.id)%></h3>
+                      <h4 class='text-right'><%=link_to bid_offers_path(:bid_id => bid.id) do%><span data-tooltip="View Bid Offers"><i class="glyphicon glyphicon-eye-open"></i></span><%end%></h4>
                     <%else%>
-                      <h3>**No Bid Offers Yet</h3>
+                      <h4 class='text-right'>**No Offers Yet</h4>
                     <%end%>
                   </div>
                 <%end%>
