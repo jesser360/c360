@@ -19,7 +19,9 @@
       <div class='card'>
           <div style='margin: 2vw 0vw -3vw 0vw'class ="row" >
             <div class="col-sm-4">
-              <h2 style="margin-left:10px"><%= bulk_order.item_name %></h2>
+              <%=link_to item_path(bulk_order.item),{:class => 'plain-link'} do %>
+                <h2 style="margin-left:10px"><%= bulk_order.item_name %></h2>
+              <%end%>
               <h5 style="margin-left:10px">
                 <%if bulk_order.item.rating > 0%>
                     <h4><%(bulk_order.item.rating / bulk_order.item.rating_count).round.times do%>
