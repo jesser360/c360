@@ -13,7 +13,7 @@ class ItemsController < ApplicationController
     @current_user = User.find_by_id(session[:user_id]) if session[:user_id]
     @item = Item.find_by_id(params[:id])
     @reviews = Review.where(item: @item)
-    @open_orders=BulkOrder.where(item: @item).where(completed: false)
+    @open_orders=BulkOrder.where(item: @item).where(completed: false).where(['expire_date > ?', DateTime.now])
 
     @existing_bulk_order_reviews = 0
     @completed_user_bulk_orders = @current_user.bulk_orders.where(item: @item).where(completed: true) rescue nil

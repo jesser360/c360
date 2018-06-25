@@ -56,9 +56,12 @@ class UsersController < ApplicationController
 
     @open_orders = []
     @closed_orders = []
+    @expired_orders = []
     @user.user_orders.each do |order|
       if order.bulk_order.completed || order.buy_now
         @closed_orders.push(order)
+      elsif Date.today > order.bulk_order.expire_date
+        @expired_orders.push(order)
       else
         @open_orders.push(order)
       end
@@ -72,11 +75,14 @@ class UsersController < ApplicationController
 
     @open_orders = []
     @closed_orders = []
+    @expired_orders = []
     @queued_orders = []
     @user.items.each do |item|
       item.bulk_orders.each do |bulk_order|
         if bulk_order.published != true
           @queued_orders.push(bulk_order)
+        elsif Date.today > bulk_order.expire_date
+          @expired_orders.push(bulk_order)
         elsif bulk_order.completed == false
           @open_orders.push(bulk_order)
         else

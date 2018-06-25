@@ -86,6 +86,36 @@
               <%end%>
             </div>
           </div>
+            <div class='row'>
+              <h4 id='expired-arrow' style='margin: 2vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='expired-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
+              <h2 class="text-left"> Expired Orders:</h2>
+              <div id='expired-orders'>
+                <%@expired_orders.each do |order|%>
+                  <div class='col-md-6'>
+                    <div class='row'>
+                      <div class='col-md-6'>
+                        <h4><%=order.bulk_order.item_name%></h4>
+                        <h3 ><%=image_tag(order.bulk_order.item.avatar.url, :size => "120x120")%></h3>
+                        <%if order.buy_now%>
+                      <%end%>
+                    </div>
+                    <div class='col-md-6'>
+                      <h4><%=order.quantity%>grams</h4>
+                      <h4>Spent: $<%=order.total_price%></h4>
+                      <%if order.buy_now%>
+                      <h5>** Buy Now Order</h5>
+                        <h4><%=link_to user_order_buy_now_path_url(order) do%><span data-tooltip="View Your Order"><i class="glyphicon glyphicon-eye-open"></i></span><%end%></h4>
+                      <%else%>
+                      <h4><%=order.bulk_order.percent_filled%> / <%=order.bulk_order.max_amount%> g</h4>
+                        <h4><%=link_to user_order_path(order) do%><span data-tooltip="View Your Order"><i class="glyphicon glyphicon-eye-open"></i></span><%end%></h4>
+                      <%end%>
+                    </div>
+                  </div>
+                  <hr>
+                </div>
+              <%end%>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -334,6 +364,7 @@ $( document ).ready(function() {
 
   ToggleArrow('#open-arrow','#open-orders','#open-icon')
   ToggleArrow('#closed-arrow','#closed-orders','#closed-icon')
+  ToggleArrow('#expired-arrow','#expired-orders','#expired-icon')
 
   ToggleArrow('#queued-bid-arrow','#queued-bids','#queued-bid-icon')
   ToggleArrow('#open-bid-arrow','#open-bids','#open-bid-icon')

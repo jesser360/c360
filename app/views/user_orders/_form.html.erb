@@ -96,11 +96,28 @@
             <li>NOT a double charge</li>
           </ul>
         <%end%>
-        <button type ='submit' id='payButton'>PAY </button>
+        <button type ='submit' id='payButton'>PAY</button>
         <%= hidden_field_tag(:user_id, @user.id)%>
         <%= hidden_field_tag(:bulk_order,params[:bulk_order])%>
         <%= hidden_field_tag(:price,params[:price])%>
       </div>
+      <!-- <div>
+        <a class="donate-with-crypto"
+           href="https://commerce.coinbase.com/checkout/2184bf26-dd75-4800-bf55-b85a56edfc48">
+          <span>Donate with Crypto</span>
+        </a>
+        <a class="buy-with-crypto"
+           href="https://commerce.coinbase.com/checkout/029325a1-5fb0-40b9-aed0-56445209719b">
+          <span>Buy with Crypto - 1$</span>
+        </a>
+        <script src="https://commerce.coinbase.com/v1/checkout.js">
+        </script>
+      </div>
+      <hr> -->
+      <!-- <div >
+          <input id='order-num'></input>
+          <button id='check-order' onclick='checkOrder()'>Check Order</button>
+      </div> -->
     </div>
     <div class='col-md-4'>
       <h2 class='text-left'>Customer Reviews</h2>
@@ -143,6 +160,25 @@
 <script src="https://checkout.stripe.com/checkout.js"></script>
 <script>
 
+  function checkOrder(){
+    console.log('checking order '+$('#order-num').val())
+    $.ajaxSetup({
+      headers:{    'Content-Type': 'text/plain',
+                    'Access-Control-Allow-Origin' : '*',
+                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE'}
+    })
+    $.ajax({
+          url: 'https://cbd360.herokuapp.com/webhook',
+          type: 'post',
+          dataType: 'text',
+          // data: {'status':200},
+          success: function( response){
+            console.log('response!',response)
+          },
+          error: function( errorThrown ){
+              console.log( 'error!',errorThrown );
+          }
+      });  }
   var amount=0;
     $('#user_order_quantity').on('input',function(){
       var order_quant = parseInt($('#user_order_quantity').val());
