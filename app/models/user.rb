@@ -2,6 +2,8 @@ class User < ApplicationRecord
   has_attached_file :avatar, :styles => { :medium => "300x300>", :thumb => "100x100>" },:default_url => 'user-icon.png'
   validates_attachment_content_type :avatar, :content_type => /\Aimage\/.*\Z/
 
+  validates :email, :presence => true, :uniqueness => true
+
   has_many :user_orders
   has_and_belongs_to_many :bulk_orders
   has_secure_password
