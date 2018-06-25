@@ -53,8 +53,8 @@ class UserOrdersController < ApplicationController
 
     @user_order = UserOrder.create_buy_now_user_order(params[:user_order],@user,@item,@bulk_order)
 
-    NotifMailer.single_order_email(@user,@bulk_order,@user_order).deliver
-    NotifMailer.vendor_buy_now_email(@user,@user_order,@item).deliver
+    # NotifMailer.single_order_email(@user,@bulk_order,@user_order).deliver
+    # NotifMailer.vendor_buy_now_email(@user,@user_order,@item).deliver
 
     respond_to do |format|
       if @user_order.save
