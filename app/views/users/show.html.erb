@@ -23,36 +23,45 @@
   <div id='all-tabs' class=" tabs-krajee ">
     <ul id="myTab"class="nav nav-tabs" role="tablist">
       <li class="active"><a id='order-tab' href="#id01" role="tab" data-toggle="tab" >Orders</a></li>
-      <li><a id='bid-tab'href="#id02" role="tab" data-toggle="tab">Bids</a></li>
-      <li ><a id='retail-tab'href="#id03" role="tab" data-toggle="tab">Retail</a></li>
+      <!-- <li><a id='bid-tab'href="#id02" role="tab" data-toggle="tab">Bids</a></li> -->
+      <!-- <li ><a id='retail-tab'href="#id03" role="tab" data-toggle="tab">Retail</a></li> -->
     </ul>
   </div>
     <div id="myTabContent" class="tab-content">
       <div class="tab-pane fade in active" id="id01">
         <div class='row'>
           <div class="col-md-12 prof-info">
-          <h2 style='margin-left:-4vw'> Orders
+          <!-- <h2 style='margin-left:-4vw'> Orders -->
             <div class='row'>
               <h4 id='open-arrow' style='margin: 2vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='open-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
-              <h2 class="text-left"> Open Orders:</h2>
+              <h2 class="text-left"> Active/Open Orders:</h2>
+              <span hidden id='open_order_total'><%=@open_orders.count%></span>
               <div id='open-orders'>
-                <%@open_orders.each do |order|%>
-                  <div class='col-md-6'>
-                    <div class='row'>
-                      <div class='col-md-6'>
-                        <h4><%=order.bulk_order.item_name%></h4>
-                        <h3 ><%=image_tag(order.bulk_order.item.avatar.url, :size => "120x120")%></h3>
-                      </div>
-                      <div class='col-md-6'>
-                        <h4><%=order.bulk_order.percent_filled%> / <%=order.bulk_order.max_amount%> g reserved</h4>
-                        <h4><%=order.quantity%>grams</h4>
-                        <h4>Spent: $<%=order.total_price%></h4>
-                        <h4><%=link_to edit_user_order_path(order) do%><span data-tooltip="Edit Your Order"><i class="glyphicon glyphicon-pencil"></i></span><%end%>
-                        <%=link_to user_order_path(order), :method => :delete do %><span data-tooltip="Delete Your Order"><i class="glyphicon glyphicon-trash"></i></span><%end%></h4>
-                      </div>
+                <%@open_orders.each_with_index do |order,i|%>
+                  <div class='row'>
+                    <div class='col-md-4'>
+                      <h4><%=order.bulk_order.item_name%></h4>
+                      <h3 ><%=image_tag(order.bulk_order.item.avatar.url, :size => "120x120")%></h3>
                     </div>
-                    <hr>
+                    <div class='col-md-4'>
+                      <h4><%=order.bulk_order.percent_filled%> / <%=order.bulk_order.max_amount%> g reserved</h4>
+                      <h4><%=order.quantity%> grams</h4>
+                      <h4>Spent: $<%=order.total_price%></h4>
+                      <h4><%=link_to edit_user_order_path(order) do%><span data-tooltip="Edit Your Order"><i class="glyphicon glyphicon-pencil"></i></span><%end%>
+                      <%=link_to user_order_path(order), :method => :delete do %><span data-tooltip="Delete Your Order"><i class="glyphicon glyphicon-trash"></i></span><%end%></h4>
+                    </div>
+                    <div class='col-md-4'>
+                      <div class= 'clock' id='clock_<%=i%>'></div>
+                      <div class='piechart'id='pieChart_<%=i%>'></div>
+                    </div>
+                    <div hidden>
+                        <span id='expire_date_<%=i%>'><%=order.bulk_order.expire_date%></span>
+                        <span id='percent_filled_<%=i%>'><%=order.bulk_order.percent_filled%></span>
+                        <span id='bulk_order_amount_<%=i%>'><%=order.bulk_order.max_amount%></span>
+                        <span id='user_order_quant_<%=i%>'><%=order.quantity%></span>
+                    </div>
                   </div>
+                  <hr>
                 <%end%>
               </div>
             </div>
@@ -61,27 +70,48 @@
               <h2 class="text-left"> Closed Orders:</h2>
               <div id='closed-orders'>
                 <%@closed_orders.each do |order|%>
-                  <div class='col-md-6'>
+                  <div class='order-box'>
+                    <div class='row order-header'>
+                      <div class='col-md-3'>
+                        <h5>Order Completed on:</h5>
+                        <h5><%=order.bulk_order.updated_at.strftime('%m/%d/%Y')%></h5>
+                      </div>
+                      <div class='col-md-3'>
+                        <h5>Order Will Ship on:</h5>
+                        <h5><%=(order.bulk_order.updated_at+5.days).strftime('%m/%d/%Y')%></h5>
+                      </div>
+                      <div class='col-md-3'>
+                        <h5>Estimated Delivery:</h5>
+                        <h5><%=(order.bulk_order.updated_at+7.days).strftime('%m/%d/%Y')%></h5>
+                      </div>
+                      <div class='col-md-3'>
+                        <h5>Total</h5>
+                        <h5>$<%=order.total_price%></h5>
+                      </div>
+                    </div>
                     <div class='row'>
-                      <div class='col-md-6'>
+                      <div class='col-md-4'>
                         <h4><%=order.bulk_order.item_name%></h4>
                         <h3 ><%=image_tag(order.bulk_order.item.avatar.url, :size => "120x120")%></h3>
                         <%if order.buy_now%>
                       <%end%>
                     </div>
-                    <div class='col-md-6'>
-                      <h4><%=order.quantity%>grams</h4>
-                      <h4>Spent: $<%=order.total_price%></h4>
+                    <div class='col-md-4'>
+                      <h4>Order Quantity: <%=order.quantity%> grams</h4>
                       <%if order.buy_now%>
-                      <h5>** Buy Now Order</h5>
+                      <h5>** Custom Buy Now Order</h5>
                         <h4><%=link_to user_order_buy_now_path_url(order) do%><span data-tooltip="View Your Order"><i class="glyphicon glyphicon-eye-open"></i></span><%end%></h4>
                       <%else%>
-                      <h4><%=order.bulk_order.percent_filled%> / <%=order.bulk_order.max_amount%> g</h4>
+                      <h5>Total Batch quantity: <%=order.bulk_order.max_amount%> g</h5>
+                      <h5>Users in Order: <%=order.bulk_order.user_orders.count%></h5>
                         <h4><%=link_to user_order_path(order) do%><span data-tooltip="View Your Order"><i class="glyphicon glyphicon-eye-open"></i></span><%end%></h4>
                       <%end%>
                     </div>
+                    <div class='col-md-4'>
+                      <button>Track Shipment</button><br><br>
+                      <button>Request Cancellation</button>
+                    </div>
                   </div>
-                  <hr>
                 </div>
               <%end%>
             </div>
@@ -100,14 +130,14 @@
                       <%end%>
                     </div>
                     <div class='col-md-6'>
-                      <h4><%=order.quantity%>grams</h4>
+                      <h4><%=order.quantity%> grams</h4>
                       <h4>Spent: $<%=order.total_price%></h4>
                       <%if order.buy_now%>
                       <h5>** Buy Now Order</h5>
-                        <h4><%=link_to user_order_buy_now_path_url(order) do%><span data-tooltip="View Your Order"><i class="glyphicon glyphicon-eye-open"></i></span><%end%></h4>
+                        <!-- <h4><%=link_to user_order_buy_now_path_url(order) do%><span data-tooltip="View Your Order"><i class="glyphicon glyphicon-eye-open"></i></span><%end%></h4> -->
                       <%else%>
                       <h4><%=order.bulk_order.percent_filled%> / <%=order.bulk_order.max_amount%> g</h4>
-                        <h4><%=link_to user_order_path(order) do%><span data-tooltip="View Your Order"><i class="glyphicon glyphicon-eye-open"></i></span><%end%></h4>
+                        <!-- <h4><%=link_to user_order_path(order) do%><span data-tooltip="View Your Order"><i class="glyphicon glyphicon-eye-open"></i></span><%end%></h4> -->
                       <%end%>
                     </div>
                   </div>
@@ -359,8 +389,7 @@ $( document ).ready(function() {
   setTabValue('#order-tab')
   setTabValue('#retail-tab')
 
-  console.log(localStorage.getItem('openTab'))
-
+  // console.log(localStorage.getItem('openTab'))
 
   ToggleArrow('#open-arrow','#open-orders','#open-icon')
   ToggleArrow('#closed-arrow','#closed-orders','#closed-icon')
@@ -379,6 +408,48 @@ $( document ).ready(function() {
     })
   }
 
-
+  var open_order_total = parseInt($('#open_order_total').text());
+  for(i = 0; i<open_order_total; i++){
+    // console.log()
+    var expire = $('#expire_date_'+i).text();
+    var clock = new FlipClock($('#clock_'+i),new Date(expire || 0), {
+      countdown: true,
+      clockFace: 'DailyCounter',
+      showSeconds: false
+    });
+    var percent_filled = $('#percent_filled_'+i).text();
+    var max =$('#bulk_order_amount_'+i).text();
+    var user_order_quant =$('#user_order_quant_'+i).text();
+    var other_orders = percent_filled - user_order_quant;
+    var orders_left = max - percent_filled
+    var ratio = (percent_filled ||0)+'/'+ max +' g'
+    var Apiec3 = c3.generate({
+      bindto: '#pieChart_'+i,
+      size: {
+        height: 150,
+        width: 150
+      },
+      data: {
+        columns: [
+          ['Your Order', user_order_quant],
+          ['Other Orders', other_orders],
+          ['Remaining', orders_left],
+        ],
+        type : 'donut',
+      },
+      legend: {
+        position: 'right'
+      },
+      donut: {
+        title: ratio,
+        label: {
+          show:false
+        }
+      },
+      legend: {
+        show: false
+      }
+    });
+  }
 })
 </script>

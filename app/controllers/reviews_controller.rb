@@ -13,7 +13,7 @@ class ReviewsController < ApplicationController
     if params[:bulk]
       @review.bulk_order = BulkOrder.find_by_id(params[:bulk])
     else
-      @review.user_order = UserOrder.find_by_id(params[:user_order]) 
+      @review.user_order = UserOrder.find_by_id(params[:user_order])
     end
     @review.rating = params[:rating]
     @review.body = params[:body]
@@ -24,8 +24,8 @@ class ReviewsController < ApplicationController
 
     respond_to do |format|
       if @review.save
-        format.html { redirect_to user_path_url(@user)}
-        format.json { render :show, status: :created, location: @review }
+        format.html { redirect_to item_path(@item)}
+        format.json { render :show, status: :created, location: @item }
       else
         puts @review.errors.messages
         # format.html { render :new }

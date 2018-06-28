@@ -1,31 +1,26 @@
-<div class='container'style='margin:10vw'>
-  <div class='row'>
+<div class='edit-order'>
+  <div class='row edit-row'>
     <div class='col-sm-6'>
-      <h1>  <%= @item.item_name %></h1>
-      <%if @item.rating > 0%>
-        <h4><%(@item.rating / @item.rating_count).round.times do%>
-        <i class="glyphicon glyphicon-star"></i>
+      <div class='edit-card'>
+        <span style='float:right' class='oil-image'><%= image_tag(@item.avatar.url, :size => "220x220") %></span>
+        <h1>  <%= @item.item_name %></h1>
+        <%if @item.rating > 0%>
+          <h4><%(@item.rating / @item.rating_count).round.times do%>
+          <i class="glyphicon glyphicon-star"></i>
+          <%end%>
+          <%(5-((@item.rating / @item.rating_count).round)).times do%>
+          <i class="glyphicon glyphicon-star-empty"></i>
+          <%end%>
+          <%else%>
+          <h4 style='margin:1vw 0vw 2vw 0vw'>*No reviews yet*</h4>
         <%end%>
-        <%(5-((@item.rating / @item.rating_count).round)).times do%>
-        <i class="glyphicon glyphicon-star-empty"></i>
-        <%end%>
-      <%end%>
-      <h4>  <%= @item.description %></h4>
-      <%= image_tag(@item.avatar.url, :size => "250x250") %>
-      <br>
-      <br>
-      <div class='row'>
-        <div class='col-sm-3'>
-          <span ><%= image_tag(@item.user.avatar.url, :size => "50x50") %></span>
-        </div>
-        <div class='col-sm-6'>
-          <%=link_to user_supplier_path_url(@item.user) do%>
-          <span><%=@item.user.company_name%></span>
-          <%end%><br>
-          <span><%=@item.user.city%>, <%=@item.user.state%><span>
-        </div>
+        <h4><i><%= @item.description %></i></h4>
+        <br>
+        <h4><%=link_to user_supplier_path_url(@item.user) do%>
+          <%= image_tag(@item.user.avatar.url, :size => "50x50") %>
+          <span class='plain-link'><%=@item.user.company_name%></span>
+          <%end%></h4>
       </div>
-      <br>
       <h2 class='text-center'>Customer Reviews</h2>
       <%if @completed_user_bulk_orders && @existing_bulk_order_reviews < @completed_user_bulk_orders.count%>
         <div class=' row'>
@@ -98,7 +93,7 @@
 
 
 <span hidden id='order_total'><%=@open_orders.count %></span>
-<span hidden id='item'><%=@item %></span>
+<span hidden id='item'><%=@item.id %></span>
 <span hidden id='existing_bulk_order'><%=@existing_bulk_order %></span>
 <span hidden id='existing_user_order'><%=@existing_user_order %></span>
 

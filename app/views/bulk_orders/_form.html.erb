@@ -16,32 +16,35 @@
   <div class ="row edit-row spin">
       <div class="col-md-6 edit-card">
         <%=link_to item_path(@bulk_order.item) do %>
-          <span style='float:right' class='oil-image'><%= image_tag(@bulk_order.item.avatar.url, :size => "250x250") %></span>
+          <span style='float:right' class='oil-image'><%= image_tag(@bulk_order.item.avatar.url, :size => "220x220") %></span>
         <%end%>
         <h1 id='item_name'><%= @bulk_order.item_name %></h1>
+        <h3><%= @bulk_order.wholesale_price %>$ / gram</h3>
+        <h4><%=@bulk_order.max_amount - @bulk_order.percent_filled%> grams available</h4>
+        <h4><i><%=@bulk_order.description rescue nil%></i></h4>
         <h4><%=link_to user_supplier_path_url(@seller) do%>
+          <%= image_tag(@seller.avatar.url, :size => "50x50") %>
           <%=@seller.company_name%></h3>
           <%end%>
         </h4>
-        <h4><%= @bulk_order.wholesale_price %>$ / gram</h4>
-        <h4> Order Size - <%= @bulk_order.max_amount %> grams</h4>
-        <h4><%=@bulk_order.max_amount - @bulk_order.percent_filled%> grams available</h4>
-        <h4><%=@bulk_order.description rescue nil%></h4>
+
       </div>
       <div class='col-md-3' style='font-size:1.2em;margin-top:-5vh'>
         <div class='row edit-card' style='margin-top:5vh'>
           <div id='small-clock'></div>
         </div>
         <%if @user.is_vendor == false%>
-          <div class="field" >
-            <label>Quantity (g)</label>
-            <input style='width:7vw' type='number' id='order_quant' min='1' max="'<%=@bulk_order.max_amount - (@bulk_order.percent_filled ||0)%>'" name='bulk_order[quantity]'>
+          <div class='row' style='padding-left:10px;margin-top:2vw'>
+            <div class="field" >
+              <label>Quantity (g)</label>
+              <input style='width:7vw' type='number' id='order_quant' min='1' max="'<%=@bulk_order.max_amount - (@bulk_order.percent_filled ||0)%>'" name='bulk_order[quantity]'>
+            </div>
+            <div class="field">
+              <label>Price</label>
+              <span id='total_price'>$</span>
+            </div>
+            <button type="submit" id='payButton'>PAY</button>
           </div>
-          <div class="field">
-            <label>Price</label>
-            <span id='total_price'>$</span>
-          </div>
-          <button type="submit" id='payButton'>PAY</button>
         <%elsif @seller==@user%>
         <h4>Buyers:</h4>
           <% @bulk_order.user_orders.each do |user_order| %>
@@ -163,7 +166,6 @@ var other_order_quant = (percent_filled -user_order_quant)
 var max_amount = $('#max_amount').text();
 var expire_date = $('#expire_date').text();
   var item_price = parseInt($('#item_price').text());
-  var max_amount = $('#max_amount').text();
   var item = $('#item').val();
   $('#order_quant').on('input',function(){
     var order_quant = parseInt($('#order_quant').val());

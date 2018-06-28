@@ -27,8 +27,8 @@
       <li class="active tab-sideways"><a id='product-tab'  href="#id00" role="tab" data-toggle="tab" >Products</a></li>
       <li class="tab-sideways"><a id='batch-tab'  href="#id01" role="tab" data-toggle="tab" >Batches</a></li>
       <%if @user ==@current_user%>
-      <li><a id='bids-tab' href="#id02" role="tab" data-toggle="tab">Bids</a></li>
-      <li><a id='retails-tab' href="#id03" role="tab" data-toggle="tab">Retail</a></li>
+      <!-- <li><a id='bids-tab' href="#id02" role="tab" data-toggle="tab">Bids</a></li> -->
+      <!-- <li><a id='retails-tab' href="#id03" role="tab" data-toggle="tab">Retail</a></li> -->
       <%end%>
     </ul>
   </div>
@@ -96,7 +96,7 @@
               <%if @user ==@current_user%>
                 <h4 id='open-arrow' style='margin: 2vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='open-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
               <%end%>
-              <h3 class="text-left"> Open Batches:</h3>
+              <h3 class="text-left"> Active Batches:</h3>
               <div id='open-orders'>
                 <%@open_orders.each do |order|%>
                 <div class='col-md-6'>

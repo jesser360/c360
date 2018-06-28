@@ -34,6 +34,10 @@
 a.plain-link:active{
   background-color:#ffd333 !important;
 }
+.plain-link a{
+  text-decoration: none!important;
+
+}
 a.plain-link:hover{
   text-decoration: none!important;
 }
@@ -69,6 +73,16 @@ a.plain-link:hover{
    margin-top:3%;
    z-index:1000;
    color:red;
+ }
+ .order-box{
+   border:1px solid darkgray;
+   padding:1vw;
+   margin:1vw;
+ }
+ .order-header{
+   background-color: lightgray;
+   // border:1px solid darkgray;
+   margin: -1vw -1vw 1vw -1vw;
  }
  .user-review-profile{
    margin:10vw;
