@@ -18,7 +18,8 @@
 <%if !@user_order.new_record?%>
 <span hidden id='item_price'><%= @bulk.wholesale_price%></span>
   <div class ="row edit-row">
-    <div class="col-md-6 edit-card">
+    <div class="col-md-6">
+      <div class='edit-card'>
       <%=link_to item_path(@item) do %>
         <span style='float:right' class='oil-image'><%= image_tag(@item.avatar.url, :size => "220x220") %></span>
       <%end%>
@@ -30,43 +31,51 @@
         <%= image_tag(@item.user.avatar.url, :size => "50x50") %>
         <%=@seller.company_name%>
         <%end%></h4>
+      </div>
+      <%if @bulk.user_orders.count >1%>
+        <div style='margin:1vw'>
+          <h4>Other Users in this Bulk Order</h5>
+            <%@bulk.user_orders.each do |user_order|%>
+              <%if user_order.user !=current_user%>
+                <div class='row'>
+                  <div style='margin-top:1vw'class='col-md-2'>
+                    <%=link_to user_path_url(user_order.user) do%>
+                      <%= image_tag(user_order.user.avatar.url, :size => "50x50") %>
+                    <%end%>
+                  </div>
+                  <div class='col-md-9'>
+                  <h5><%=user_order.user.email%> in <%=user_order.user.city%><h5>
+                  <h5>Bought <%=user_order.quantity%> grams on <%=user_order.updated_at.strftime('%m/%d/%Y')%><h5>
+                  </div>
+                </div>
+              <%end%>
+              <br>
+            <%end%>
+        </div>
+      <%end%>
     </div>
-    <!-- <div class='row'>
-      <div class='col-sm-3'>
-        <span ><%= image_tag(@item.user.avatar.url, :size => "50x50") %></span>
-      </div>
-      <div class='col-sm-6'>
-        <%=link_to user_supplier_path_url(@item.user) do%>
-        <span><%=@item.user.company_name%></span>
-        <%end%><br>
-        <span><%=@item.user.city%>, <%=@item.user.state%><span>
-      </div>
-    </div> -->
     <div class='col-md-3' style='font-size:1.2em;margin-top:-5vh'>
       <div class='row edit-card' style='margin-top:5vh'>
         <div id='small-clock'></div>
       </div>
       <div class='row' style='padding-left:10px;margin-top:2vw'>
         <div class="field">
-          <label>Current Amount</label>
-          <span><%=@user_order.quantity%> g</span>
+          <label>Current Order</label>
+          <span><%=@user_order.quantity%> g for $<%=@user_order.total_price%> </span>
         </div>
         <div class="field" id='quant_input'>
           <label>Quantity (g)</label>
           <input style='width:7vw' id ='user_order_quantity' value='<%=@user_order.quantity%>' type='number' min='1' max='<%=@bulk.max_amount-(@bulk.percent_filled rescue 0)+(@user_order.quantity rescue 0)%>'name='user_order[quantity]'>
         </div>
+          <h5><%=@user_order.bulk_order.max_amount - @user_order.bulk_order.percent_filled + @user_order.quantity%> grams needed to complete order</h5>
         <div class="field">
           <label>Price</label>
           <span id='total_price'>$<%=@user_order.total_price%></span>
         </div>
-        <%unless @user_order.new_record?%>
-          <ul>
-            <li>Previous charge is deleted</li>
-            <li>New payment is created</li>
-            <li>NOT a double charge</li>
-          </ul>
-        <%end%>
         <button type ='submit' id='payButton'>Edit Order</button>
+        <%unless @user_order.new_record?%>
+        <h5>You will be asked to enter your card info again but you will not be double charged</h5>
+        <%end%>
         <%= hidden_field_tag(:user_id, @user.id)%>
         <%= hidden_field_tag(:item,params[:item])%>
         <%= hidden_field_tag(:price,params[:price])%>
@@ -162,6 +171,7 @@
   <span id='max_amount'><%=@bulk.max_amount rescue nil%></span>
   <span id='expire_date'><%=@bulk.expire_date rescue nil%></span>
   <span id='item'><%=@bulk.item rescue nil%></span>
+  <span id='user_email'><%=@user.email rescue nil%></span>
   </div>
 
   <article>
@@ -170,31 +180,42 @@
   <article>
     <%= hidden_field_tag(:stripeToken) %>
   </article>
+  <article>
+    <%= hidden_field_tag(:stripeEmail) %>
+  </article>
+  <article>
+    <%= hidden_field_tag(:shipping) %>
+  </article>
+  <article>
+    <%= hidden_field_tag(:billing) %>
+  </article>
 
 </form>
 
 <script src="https://checkout.stripe.com/checkout.js"></script>
 <script>
 
-  function checkOrder(){
-    console.log('checking order '+$('#order-num').val())
-    $.ajaxSetup({
-      headers:{    'Content-Type': 'text/plain',
-                    'Access-Control-Allow-Origin' : '*',
-                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE'}
-    })
-    $.ajax({
-          url: 'https://cbd360.herokuapp.com/webhook',
-          type: 'post',
-          dataType: 'text',
-          // data: {'status':200},
-          success: function( response){
-            console.log('response!',response)
-          },
-          error: function( errorThrown ){
-              console.log( 'error!',errorThrown );
-          }
-      });  }
+  // function checkOrder(){
+  //   console.log('checking order '+$('#order-num').val())
+  //   $.ajaxSetup({
+  //     headers:{    'Content-Type': 'text/plain',
+  //                   'Access-Control-Allow-Origin' : '*',
+  //                   'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE'}
+  //   })
+  //   $.ajax({
+  //         url: 'https://cbd360.herokuapp.com/webhook',
+  //         type: 'post',
+  //         dataType: 'text',
+  //         // data: {'status':200},
+  //         success: function( response){
+  //           console.log('response!',response)
+  //         },
+  //         error: function( errorThrown ){
+  //             console.log( 'error!',errorThrown );
+  //         }
+  //     });
+  //   }
+
   var amount=0;
     $('#user_order_quantity').on('input',function(){
       var order_quant = parseInt($('#user_order_quantity').val());
@@ -211,8 +232,11 @@
       $('#user_order_quantity').css("border","3px solid red");
     }else{
       handler.open({
+        billingAddress:true,
+        shippingAddress:true,
         amount: Math.round(amount),
-        description: $('#user_order_quantity').val() + ( $('#user_order_quantity').val() > 1 ? ' grams':' gram')
+        description: $('#user_order_quantity').val() + ( $('#user_order_quantity').val() > 1 ? ' grams':' gram'),
+        email:$('#user_email').text(),
       });
     }
   });
@@ -221,10 +245,12 @@
     image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
     locale: 'auto',
     name: $('#item_name').text(),
-    token: function(token) {
+    token: function(token,args) {
       $('input#stripeToken').val(token.id);
+      $('input#stripeEmail').val(token.email);
       $('input#amount').val(amount)
-
+      $('input#shipping').val([args['shipping_address_line1'],args['shipping_address_city'],args['shipping_address_state'],args['shipping_address_zip'],args['shipping_name'],args['shipping_address_apt']])
+      $('input#billing').val([args['billing_address_line1'],args['billing_address_city'],args['billing_address_state'],args['billing_address_zip'],args['billing_name'],args['billing_address_apt']])
       $(".spin").spin({
         lines: 12, // The number of lines to draw
         length: 15, // The length of each line
@@ -243,6 +269,7 @@
   handler.close();
   });
 
+  var user_email = $('#user_email').text();
   var item_price = $('#item_price').text();
   var item_market_price = $('#item_market_price').text();
   var percent_filled = $('#percent_filled').text();

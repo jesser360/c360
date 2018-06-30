@@ -44,6 +44,7 @@
               <span id='total_price'>$</span>
             </div>
             <button type="submit" id='payButton'>PAY</button>
+            <h5>Your card will only be charge when the bulk order fills</h5>
           </div>
         <%elsif @seller==@user%>
         <h4>Buyers:</h4>
@@ -95,6 +96,7 @@
   <span id='percent_filled'><%=@bulk_order.percent_filled rescue 0%></span>
   <span id='expire_date'><%=@bulk_order.expire_date rescue nil%></span>
   <span id='item'><%=@bulk_order.item rescue nil%></span>
+  <span id='user_email'><%=@user.email rescue nil%></span>
   <%@bulk_order.user_orders.each do |order|%>
     <%if order.user_id == @user.id && order.buy_now != true%>
     <span id='user_order_quantity'><%=order.quantity%></span>
@@ -105,9 +107,17 @@
   <article>
     <%= hidden_field_tag(:amount) %>
   </article>
-
   <article>
     <%= hidden_field_tag(:stripeToken) %>
+  </article>
+  <article>
+    <%= hidden_field_tag(:stripeEmail) %>
+  </article>
+  <article>
+    <%= hidden_field_tag(:shipping) %>
+  </article>
+  <article>
+    <%= hidden_field_tag(:billing) %>
   </article>
 </form>
 
@@ -125,9 +135,11 @@
       $('#order_quant').css("border","3px solid red");
     }else{
       handler.open({
+        billingAddress:true,
+        shippingAddress:true,
         amount: Math.round(amount),
         description: $('#order_quant').val() + ( $('#order_quant').val() > 1 ? ' grams':' gram'),
-        email:'<%=@user.email%>'
+        email:$('#user_email').text(),
       });
     }
   });
@@ -136,10 +148,11 @@
     image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
     locale: 'auto',
     name: $('#item_name').text(),
-    token: function(token) {
+    token: function(token,args) {
       $('input#stripeToken').val(token.id);
       $('input#amount').val(amount)
-
+      $('input#shipping').val([args['shipping_address_line1'],args['shipping_address_city'],args['shipping_address_state'],args['shipping_address_zip'],args['shipping_name'],args['shipping_address_apt']])
+      $('input#billing').val([args['billing_address_line1'],args['billing_address_city'],args['billing_address_state'],args['billing_address_zip'],args['billing_name'],args['billing_address_apt']])
       $(".spin").spin({
         lines: 12, // The number of lines to draw
         length: 15, // The length of each line

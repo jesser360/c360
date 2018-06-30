@@ -53,6 +53,12 @@ class UserOrdersController < ApplicationController
 
     @user_order = UserOrder.create_buy_now_user_order(params[:user_order],@user,@item,@bulk_order)
 
+    @user_order.addresses.delete_all
+
+    @shipping_address = Address.create_shipping_address(params,@user_order)
+    @billing_address = Address.create_billing_address(params,@user_order)
+
+
     # NotifMailer.single_order_email(@user,@bulk_order,@user_order).deliver
     # NotifMailer.vendor_buy_now_email(@user,@user_order,@item).deliver
 
@@ -87,6 +93,9 @@ class UserOrdersController < ApplicationController
     @user_order.total_price = @user_order.quantity * @bulk_order.wholesale_price
     @user_order.save
 
+    @shipping_address = Address.create_shipping_address(params,@user_order)
+    @billing_address = Address.create_billing_address(params,@user_order)
+
     # Add new amount to bulk order
     @bulk_order.percent_filled = @bulk_order.percent_filled + @user_order.quantity
     @bulk_order.save
@@ -118,8 +127,9 @@ class UserOrdersController < ApplicationController
     @bulk_order = @user_order.bulk_order
 
     @bulk_order.percent_filled = @bulk_order.percent_filled - @user_order.quantity
+    @bulk_order.buyer_count -=1
     @bulk_order.users.delete(@user)
-
+    @user_order.addresses.delete_all
     @user_order.destroy
     if @bulk_order.percent_filled < 1
       @bulk_order.destroy
@@ -145,6 +155,6 @@ class UserOrdersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_order_params
-      params.permit( :user_id, :bulk_order_id, :quantity,:item, :price, :amount, :stripeToken)
+      params.permit( :user_id, :bulk_order_id, :quantity,:item, :price, :amount, :stripeToken,:args,:stripeEmail)
     end
 end

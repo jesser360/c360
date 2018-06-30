@@ -10,10 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180529213442) do
+ActiveRecord::Schema.define(version: 20180630020601) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "addresses", force: :cascade do |t|
+    t.boolean "shipping"
+    t.string "street"
+    t.string "city"
+    t.string "state"
+    t.integer "zipcode"
+    t.string "name"
+    t.string "apt"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_order_id"
+    t.index ["user_order_id"], name: "index_addresses_on_user_order_id"
+  end
 
   create_table "bid_offers", force: :cascade do |t|
     t.bigint "user_id"
@@ -62,6 +76,7 @@ ActiveRecord::Schema.define(version: 20180529213442) do
     t.string "item_name"
     t.string "description"
     t.boolean "published"
+    t.integer "buyer_count"
     t.index ["item_id"], name: "index_bulk_orders_on_item_id"
   end
 
@@ -161,6 +176,7 @@ ActiveRecord::Schema.define(version: 20180529213442) do
     t.datetime "avatar_updated_at"
   end
 
+  add_foreign_key "addresses", "user_orders"
   add_foreign_key "bid_offers", "bids"
   add_foreign_key "bid_offers", "users"
   add_foreign_key "bulk_orders", "items"

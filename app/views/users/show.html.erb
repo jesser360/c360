@@ -40,15 +40,23 @@
                 <%@open_orders.each_with_index do |order,i|%>
                   <div class='row'>
                     <div class='col-md-4'>
-                      <h4><%=order.bulk_order.item_name%></h4>
+                      <h3><%=order.bulk_order.item_name%></h3>
                       <h3 ><%=image_tag(order.bulk_order.item.avatar.url, :size => "120x120")%></h3>
                     </div>
                     <div class='col-md-4'>
-                      <h4><%=order.bulk_order.percent_filled%> / <%=order.bulk_order.max_amount%> g reserved</h4>
-                      <h4><%=order.quantity%> grams</h4>
-                      <h4>Spent: $<%=order.total_price%></h4>
+                      <h4><%=order.quantity%> grams in your order</h4>
+                      <h4>Total price: $<%=order.total_price%></h4>
                       <h4><%=link_to edit_user_order_path(order) do%><span data-tooltip="Edit Your Order"><i class="glyphicon glyphicon-pencil"></i></span><%end%>
-                      <%=link_to user_order_path(order), :method => :delete do %><span data-tooltip="Delete Your Order"><i class="glyphicon glyphicon-trash"></i></span><%end%></h4>
+                        <%=link_to user_order_path(order), :method => :delete do %><span data-tooltip="Delete Your Order"><i class="glyphicon glyphicon-trash"></i></span><%end%></h4>
+                      <br>
+                      <h4><%=order.bulk_order.percent_filled%> / <%=order.bulk_order.max_amount%> g reserved in total</h4>
+                      <%if order.bulk_order.user_orders.count == 1%>
+                      <h4>No other user have joined yet</h4>
+                      <%elsif order.bulk_order.user_orders.count == 2%>
+                      <h4><%=order.bulk_order.user_orders.count - 1%> other user in this order</h4>
+                      <%else%>
+                      <h4><%=order.bulk_order.user_orders.count - 1%> other users in this order</h4>
+                      <%end%>
                     </div>
                     <div class='col-md-4'>
                       <div class= 'clock' id='clock_<%=i%>'></div>
@@ -302,7 +310,7 @@
               <%if review.bulk_order%>
                 <h3><%=review.bulk_order.item_name%></h3>
               <%else%>
-                <h3><%=review.user_order.bulk_order.item_name%></h3>
+                <h3><%=review.user_order.bulk_order.item_name rescue nil%></h3>
               <%end%>
               <%=link_to item_path(review.item) do %>
               <%= image_tag(review.item.avatar.url, :size => "100x100") %>
@@ -314,8 +322,8 @@
                 <h5><%=review.bulk_order.max_amount%> grams total</h5>
                 <h5>*Bulk order</h5>
               <%else%>
-                <h4><%=review.user_order.bulk_order.description%></h4>
-                <h5><%=review.user_order.quantity%> grams total</h5>
+                <h4><%=review.user_order.bulk_order.description rescue nil%></h4>
+                <h5><%=review.user_order.quantity rescue nil%> grams total</h5>
                 <h5>*Buy Now order</h5>
               <%end%>
             </div>

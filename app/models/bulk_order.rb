@@ -18,6 +18,7 @@ attr_accessor :amount
       @bulk_order.description= item.description
       @bulk_order.completed = false
       @bulk_order.percent_filled = 0
+      @bulk_order.buyer_count = 0
       @bulk_order.save
     end
     return @bulk_order
