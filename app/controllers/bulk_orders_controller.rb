@@ -79,16 +79,16 @@ class BulkOrdersController < ApplicationController
     @users = @bulk_order.users
     @item = @bulk_order.item
 
-    if params[:bulk_order][:quantity]
+    if params[:quantity]
       @user_order = UserOrder.new()
-      @user_order = UserOrder.create_user_order(params[:bulk_order],@user,@bulk_order)
+      @user_order = UserOrder.create_user_order(params,@user,@bulk_order)
 
       @shipping_address = Address.create_shipping_address(params,@user_order)
       @billing_address = Address.create_billing_address(params,@user_order)
 
       @bulk_order.users.push(@user)
       @bulk_order.user_orders.push(@user_order)
-      @bulk_order.percent_filled = (@bulk_order.percent_filled +  params[:bulk_order][:quantity].to_i)
+      @bulk_order.percent_filled = (@bulk_order.percent_filled +  params[:quantity].to_i)
       @bulk_order.buyer_count +=1
 
       if @bulk_order.percent_filled >= @bulk_order.max_amount

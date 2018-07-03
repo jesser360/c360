@@ -42,16 +42,29 @@
                 <br>
                 <div class='piechart'id='pieChart_<%=i%>'></div>
                 <div>
-                  <%if bulk_order.buyer_count > 0%>
-                    <%if bulk_order.buyer_count == 1%>
-                      <h5><%=bulk_order.user_orders.count%> other user has bought <%=bulk_order.percent_filled%> grams</h5>
+                  <%if @user%>
+                    <%if (bulk_order.users.where(email: @user.email).length > 0) then @user_in_order = true end%>
+                    <%if bulk_order.buyer_count == 0%>
+                      <h5>Be the first user to join and recieve 5% off!</h5>
+                    <%elsif bulk_order.buyer_count == 1 && @user_in_order%>
+                      <h5>Just you so far, dont worry others are coming!</h5>
+                    <%elsif bulk_order.buyer_count == 1 && !@user_in_order || bulk_order.buyer_count == 2 && @user_in_order%>
+                      <h5> One other user has bought <%=bulk_order.percent_filled%> grams</h5>
+                    <%elsif @user_in_order%>
+                      <h5> <%=bulk_order.buyer_count-1%> other users have bought <%=bulk_order.percent_filled%> grams</h5>
                     <%else%>
-                      <h5><%=bulk_order.user_orders.count%> users have bought <%=bulk_order.percent_filled%> grams</h5>
+                      <h5> <%=bulk_order.buyer_count%> other users have bought <%=bulk_order.percent_filled%> grams</h5>
                     <%end%>
-                    <h5><%=bulk_order.max_amount - bulk_order.percent_filled%> grams still left!</h5>
                   <%else%>
-                    <h5>Be the first user to join and recieve 5% off!</h5>
+                    <%if bulk_order.buyer_count == 0%>
+                      <h5>Be the first user to join and recieve 5% off!</h5>
+                    <%elsif bulk_order.buyer_count == 1%>
+                      <h5> One other user has bought <%=bulk_order.percent_filled%> grams</h5>
+                    <%else%>
+                      <h5> <%=bulk_order.buyer_count%> other users have bought <%=bulk_order.percent_filled%> grams</h5>
+                    <%end%>
                   <%end%>
+                    <h5><%=bulk_order.max_amount - bulk_order.percent_filled%> grams still left!</h5>
                 </div>
               </div>
             </div>

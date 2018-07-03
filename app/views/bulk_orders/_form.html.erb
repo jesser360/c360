@@ -36,15 +36,17 @@
         <%if @user.is_vendor == false%>
           <div class='row' style='padding-left:10px;margin-top:2vw'>
             <div class="field" >
-              <label>Quantity (g)</label>
-              <input style='width:7vw' type='number' id='order_quant' min='1' max="'<%=@bulk_order.max_amount - (@bulk_order.percent_filled ||0)%>'" name='bulk_order[quantity]'>
+              <label>Quantity (grams)</label>
+              <!-- <input id ='user_order_quantity_entry' style='width:7vw' type='number' id='order_quant' min='1' max="'<%=@bulk_order.max_amount - (@bulk_order.percent_filled ||0)%>'" name='bulk_order[quantity]'> -->
             </div>
+            <div id="slider-range-min"></div>
+            <input type="text" id="user_order_quantity" value='0' readonly style="border:0; color:#f6931f; font-weight:bold;"></input>
             <div class="field">
               <label>Price</label>
               <span id='total_price'>$</span>
             </div>
             <button type="submit" id='payButton'>PAY</button>
-            <h5>Your card will only be charge when the bulk order fills</h5>
+            <h5>Your card will only be charged when this bulk order fills</h5>
           </div>
         <%elsif @seller==@user%>
         <h4>Buyers:</h4>
@@ -108,6 +110,9 @@
     <%= hidden_field_tag(:amount) %>
   </article>
   <article>
+    <%= hidden_field_tag(:quantity) %>
+  </article>
+  <article>
     <%= hidden_field_tag(:stripeToken) %>
   </article>
   <article>
@@ -123,25 +128,17 @@
 
   <script src="https://checkout.stripe.com/checkout.js"></script>
   <script>
-  var amount=0;
-  $('#order_quant').on('input',function(){
-    var order_quant = parseInt($('#order_quant').val());
-    amount = parseInt(item_price * order_quant)
-    amount = amount * 100; // Needs to be an integer!
-  });
+  var payment_amount=0;
+
   $('#payButton').on('click', function(e) {
     e.preventDefault();
-    if(parseInt($('#order_quant').val()) > (parseInt($('#max_amount').text()) - parseInt($('#percent_filled').text()) ) ){
-      $('#order_quant').css("border","3px solid red");
-    }else{
       handler.open({
         billingAddress:true,
         shippingAddress:true,
-        amount: Math.round(amount),
-        description: $('#order_quant').val() + ( $('#order_quant').val() > 1 ? ' grams':' gram'),
+        amount: Math.round(payment_amount),
+        description: user_order_quant + ( user_order_quant > 1 ? ' grams':' gram'),
         email:$('#user_email').text(),
       });
-    }
   });
   var handler = StripeCheckout.configure({
     key: '<%= Rails.configuration.stripe[:publishable_key] %>',
@@ -150,7 +147,8 @@
     name: $('#item_name').text(),
     token: function(token,args) {
       $('input#stripeToken').val(token.id);
-      $('input#amount').val(amount)
+      $('input#amount').val(payment_amount)
+      $('input#quantity').val(user_order_quant)
       $('input#shipping').val([args['shipping_address_line1'],args['shipping_address_city'],args['shipping_address_state'],args['shipping_address_zip'],args['shipping_name'],args['shipping_address_apt']])
       $('input#billing').val([args['billing_address_line1'],args['billing_address_city'],args['billing_address_state'],args['billing_address_zip'],args['billing_name'],args['billing_address_apt']])
       $(".spin").spin({
@@ -170,9 +168,7 @@
 $(window).on('popstate', function() {
   handler.close();
 });
-</script>
 
-<script>
 var percent_filled = $('#percent_filled').text();
 var user_order_quant = $('#user_order_quantity').text();
 var other_order_quant = (percent_filled -user_order_quant)
@@ -180,35 +176,56 @@ var max_amount = $('#max_amount').text();
 var expire_date = $('#expire_date').text();
   var item_price = parseInt($('#item_price').text());
   var item = $('#item').val();
-  $('#order_quant').on('input',function(){
-    var order_quant = parseInt($('#order_quant').val());
-    $('#total_price').text( '$'+ (item_price * order_quant));
-  });
-
-  var Apiec3 = c3.generate({
-    bindto: '#pieChart',
+  function renderPieChart(){
+    var Apiec3 = c3.generate({
+      bindto: '#pieChart',
       data: {
-          columns: [
-              ['Your Order', user_order_quant],
-              ['Other', other_order_quant || 0],
-              ['Remaining',  max_amount-(percent_filled)],
-          ],
-          type : 'donut',
+        columns: [
+          ['Your Order', user_order_quant],
+          ['Other', other_order_quant || 0],
+          ['Remaining',  max_amount-(percent_filled)],
+        ],
+        type : 'donut',
       },
       legend: {
-      position: 'right'
+        position: 'right'
       },
       donut: {
-          title: ( (percent_filled ||0)+"/"+max_amount+" spots taken"),
-          label: {
-            show:true
-          }
+        title: ( (percent_filled ||0)+"/"+max_amount+" spots taken"),
+        label: {
+          show:true
+        }
       },
       legend: {
         show: false
       }
-  });
+    });
+  }
+  function renderSlider(){
+    $( "#slider-range-min" ).slider({
+      range: "min",
+      value: user_order_quant,
+      min: 1,
+      max: max_amount - percent_filled,
+      slide: function( event, ui ) {
+        user_order_quant = ui.value;
+        percent_filled = parseInt(other_order_quant) +parseInt(user_order_quant);
+        remaining_quant = (parseInt(max_amount)-parseInt(percent_filled));
+        $('#user_order_quantity').val(ui.value);
+        renderPieChart();
+        $('#total_price').text( '$'+ (item_price * user_order_quant));
+        $( "#amount" ).val(ui.value );
+        payment_amount =(parseInt(item_price * user_order_quant)) * 100
+      }
+    });
+    $( "#amount" ).val( "$" + $( "#slider-range-min" ).slider( "value" ) );
+  }
 
+  renderSlider();
+
+  setTimeout(function(){
+    renderPieChart();
+  },10)
   // d3.select(".c3-chart-arcs-title")
   //     .append("tspan")
   //     .attr("dy", 16)

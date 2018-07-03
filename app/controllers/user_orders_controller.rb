@@ -1,6 +1,8 @@
 class UserOrdersController < ApplicationController
   require 'httparty'
+  require 'shippo'
   include HTTParty
+
   # basic_auth 'username', 'password'
   before_action :set_user_order, only: [:show, :edit, :update, :destroy]
 
@@ -15,6 +17,14 @@ class UserOrdersController < ApplicationController
   end
 
   def show_buy_now
+    @request = HTTParty.post('https://api.goshippo.com/tracks/',
+      :body => {
+        # "carrier": "usps",
+        # "tracking_number": @user_order.tracking_number
+        "carrier":"shippo","tracking_number":"SHIPPO_TRANSIT"
+
+      },
+      :headers => {'Authorization':'ShippoToken shippo_test_1bf025e980d46aaea6ed705ebdb5ec4e3755edc1'})
     @user_order =  UserOrder.find_by_id(params[:id])
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @bulk = @user_order.bulk_order
@@ -22,6 +32,8 @@ class UserOrdersController < ApplicationController
     @reviews = Review.where(item: @item)
     @existing_review = Review.where(item: @item).where(user_order: @user_order)[0]
 
+    @status = @request['tracking_status']['status']
+    @status_message = @request['tracking_status']['status_details']
   end
 
   # GET /user_orders/new
@@ -49,18 +61,82 @@ class UserOrdersController < ApplicationController
     # BUY NOW OPTION
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @bulk_order = BulkOrder.find_by_id(params[:bulk_order])
+
     @item = @bulk_order.item
 
-    @user_order = UserOrder.create_buy_now_user_order(params[:user_order],@user,@item,@bulk_order)
+    @user_order = UserOrder.create_buy_now_user_order(params,@user,@item,@bulk_order)
 
     @user_order.addresses.delete_all
 
     @shipping_address = Address.create_shipping_address(params,@user_order)
     @billing_address = Address.create_billing_address(params,@user_order)
 
+    Shippo::API.token = ENV['SHIPPO_TOKEN']
 
-    # NotifMailer.single_order_email(@user,@bulk_order,@user_order).deliver
-    # NotifMailer.vendor_buy_now_email(@user,@user_order,@item).deliver
+    address_from = {
+        :name => 'SC360 brokerage',
+        :street1 => '4601 Stuart St',
+        :city => 'Denver',
+        :state => 'CO',
+        :zip => '94117',
+        :country => 'US',
+        :phone => '+1 555 341 9393',
+        :email => 'c360@gmail.com'
+    }
+
+    address_to = {
+        :name => @shipping_address.name,
+        :street1 => @shipping_address.street,
+        :city => @shipping_address.name,
+        :state => @shipping_address.state,
+        :zip => @shipping_address.zipcode,
+        :country => 'US',
+        :phone => '+1 555 341 9393',
+        :email => @user.email
+    }
+
+    parcel = {
+        :length => 5,
+        :width => 1,
+        :height => 5.555,
+        :distance_unit => :in,
+        :weight => 2,
+        :mass_unit => :lb
+    }
+
+    # @shipment = Shippo::Shipment.create(
+    #     :address_from => address_from,
+    #     :address_to => address_to,
+    #     :parcels => parcel,
+    #     :async => false
+    # )
+
+    # # Get the first rate in the rates results.
+    # # Customize this based on your business logic.
+    # @rate = @shipment.rates.first
+    #
+    # # Purchase the desired rate.
+    # @transaction = Shippo::Transaction.create(
+    #   :rate => @rate["object_id"],
+    #   :label_file_type => "PDF",
+    #   :async => false )
+    #
+    # # label_url and tracking_number
+    # if @transaction["status"] == "SUCCESS"
+    #   puts "Label sucessfully generated:"
+    #   puts "label_url: #{@transaction.label_url}"
+    #   puts "tracking_number: #{@transaction.tracking_number}"
+    #   @user_order.tracking_number = @transaction.tracking_number
+    #   @user_order.tracking_label = @transaction.label_url
+    #   @user_order.save
+    # else
+    #   puts "Error generating label:"
+    #   puts @transaction.messages
+    # end
+
+
+    NotifMailer.single_order_email(@user,@bulk_order,@user_order).deliver
+    NotifMailer.vendor_buy_now_email(@user,@user_order,@item).deliver
 
     respond_to do |format|
       if @user_order.save
@@ -74,6 +150,7 @@ class UserOrdersController < ApplicationController
     end
 
     StripeService::buy_now_payment(params,@user_order)
+
   end
 
   # PATCH/PUT /user_orders/1
@@ -89,7 +166,7 @@ class UserOrdersController < ApplicationController
     # Remove previous order amount from bulk_order
     @bulk_order.percent_filled = @bulk_order.percent_filled - (@bulk_order.user_orders.where(id:@user_order.id)[0].quantity)
 
-    @user_order.quantity = params[:user_order][:quantity]
+    @user_order.quantity = params[:quantity]
     @user_order.total_price = @user_order.quantity * @bulk_order.wholesale_price
     @user_order.save
 
@@ -106,6 +183,7 @@ class UserOrdersController < ApplicationController
       BulkOrder.email_bulk_order_users(@bulk_order,@user,@user_order)
       @bulk_order.save!
     end
+
     respond_to do |format|
       if @user_order.save
         format.html { redirect_to user_path_url(@user)}
@@ -126,16 +204,13 @@ class UserOrdersController < ApplicationController
     @user = @user_order.user
     @bulk_order = @user_order.bulk_order
 
+    @user_order.addresses.delete_all
+
     @bulk_order.percent_filled = @bulk_order.percent_filled - @user_order.quantity
     @bulk_order.buyer_count -=1
+    @bulk_order.save
     @bulk_order.users.delete(@user)
-    @user_order.addresses.delete_all
     @user_order.destroy
-    if @bulk_order.percent_filled < 1
-      @bulk_order.destroy
-    else
-      @bulk_order.save
-    end
     respond_to do |format|
       format.html { redirect_to user_path_url(@user)}
       format.json { head :no_content }

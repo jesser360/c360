@@ -54,6 +54,7 @@ GEM
     arel (8.0.0)
     autoprefixer-rails (8.5.2)
       execjs
+    awesome_print (1.8.0)
     aws-eventstream (1.0.0)
     aws-partitions (1.89.1)
     aws-sdk (3.0.1)
@@ -659,6 +660,8 @@ GEM
       railties (>= 3.1.0)
     datetime_picker_rails (0.0.7)
       momentjs-rails (>= 2.8.1)
+    domain_name (0.5.20180417)
+      unf (>= 0.0.5, < 1.0.0)
     dotenv (2.4.0)
     dotenv-rails (2.4.0)
       dotenv (= 2.4.0)
@@ -672,6 +675,9 @@ GEM
       jquery-rails (>= 1.0.17)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
+    hashie (3.5.7)
+    http-cookie (1.0.3)
+      domain_name (~> 0.5)
     httparty (0.16.2)
       multi_xml (>= 0.5.2)
     i18n (1.0.1)
@@ -686,6 +692,7 @@ GEM
       thor (>= 0.14, < 2.0)
     jquery-ui-rails (6.0.1)
       railties (>= 3.2.16)
+    json (1.8.6)
     kaminari (1.1.1)
       activesupport (>= 4.1.0)
       kaminari-actionview (= 1.1.1)
@@ -720,6 +727,7 @@ GEM
     multi_json (1.13.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
+    netrc (0.11.0)
     nio4r (2.3.1)
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
@@ -770,6 +778,10 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
+    rest-client (2.0.2)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 4.0)
+      netrc (~> 0.8)
     ruby_dep (1.5.0)
     rubyzip (1.2.1)
     sass (3.5.6)
@@ -787,6 +799,12 @@ GEM
     selenium-webdriver (3.12.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.2)
+    shippo (3.1.0)
+      activesupport (>= 4)
+      awesome_print
+      hashie (>= 3.5.2)
+      json (~> 1.8)
+      rest-client (>= 2.0, < 2.2)
     spinjs-rails (1.4)
       rails (>= 3.1)
     spring (2.0.2)
@@ -815,6 +833,9 @@ GEM
       thread_safe (~> 0.1)
     uglifier (4.1.10)
       execjs (>= 0.3.0, < 3)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.5)
     web-console (3.6.2)
       actionview (>= 5.0)
       activemodel (>= 5.0)
@@ -857,6 +878,7 @@ DEPENDENCIES
   rails_12factor
   sass-rails (~> 5.0)
   selenium-webdriver
+  shippo
   spinjs-rails
   spring
   spring-watcher-listen (~> 2.0.0)

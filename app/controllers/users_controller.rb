@@ -6,6 +6,8 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
+    @user.email_confirmed = false
+    @user.email_confirm_token = SecureRandom.urlsafe_base64.to_s
     @zip = ZipCodes.identify(user_params[:zipcode])
     @user.city = @zip[:city] rescue nil
     @user.state = @zip[:state_name] rescue nil
@@ -15,12 +17,15 @@ class UsersController < ApplicationController
         @key =  $supplier_hash.key(@code)
         $supplier_hash.delete(@key)
         if @user.save
-          session[:user_id] = @user.id
-          if @user.is_vendor
-            redirect_to user_supplier_path_url(@user)
-          else
-            redirect_to user_path_url(@user)
-          end
+          # session[:user_id] = @user.id
+          # if @user.is_vendor
+          #   redirect_to user_supplier_path_url(@user)
+          # else
+          #   redirect_to user_path_url(@user)
+          # end
+          NotifMailer.registration_confirmation(@user).deliver
+          flash[:success] = "Please confirm your email now"
+          redirect_to root_url
         else
           flash[:error] = @user.errors.full_messages
         end
@@ -30,17 +35,34 @@ class UsersController < ApplicationController
       end
     else
       if @user.save
-        session[:user_id] = @user.id
-        if @user.is_vendor
-          redirect_to user_supplier_path_url(@user)
-        else
-          redirect_to user_path_url(@user)
-        end
+        NotifMailer.registration_confirmation(@user).deliver
+        flash[:success] = "Please confirm your email address to continue"
+        redirect_to root_url
+        # if @user.is_vendor
+        #   redirect_to user_supplier_path_url(@user)
+        # else
+        #   redirect_to user_path_url(@user)
+        # end
       else
         flash[:error] = @user.errors.full_messages
       end
     end
 
+  end
+
+  def confirm_email
+      @user = User.find_by_email_confirm_token(params[:id])
+      if @user
+        @user.email_confirmed = true
+        @user.email_confirm_token = nil
+        @user.save!(:validate => false)
+        flash[:success] = "Welcome to the Sample App! Your email has been confirmed.
+        Please sign in to continue."
+        redirect_to '/login'
+      else
+        flash[:error] = "Sorry. User does not exist"
+        redirect_to root_url
+      end
   end
 
   def show
@@ -49,7 +71,7 @@ class UsersController < ApplicationController
     @current_user = User.find_by_id(session[:user_id]) if session[:user_id]
     @bulk = @user.bulk_orders
     @reviews = Review.where(user: @user)
-
+    
     @user_bids_buyer_queued = Bid.where(buyer_id:@user.id).where(supplier_id:nil).where(published: false)
     @user_bids_buyer_open = Bid.where(buyer_id:@user.id).where(supplier_id:nil)
     @user_bids_buyer_closed = Bid.where(buyer_id:@user.id).where.not(supplier_id:nil)

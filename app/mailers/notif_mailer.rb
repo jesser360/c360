@@ -1,6 +1,11 @@
 class NotifMailer < ApplicationMailer
-  default from: "jesser360@gmail.com"
+  default from: "c360@gmail.com"
 
+
+  def registration_confirmation(user)
+     @user = user
+     mail(:to => @user.email, :subject => "Registration Confirmation")
+  end
 
   def single_order_email(user,bulk_order,user_order)
     @user = user

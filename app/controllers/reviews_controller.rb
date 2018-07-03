@@ -10,11 +10,8 @@ class ReviewsController < ApplicationController
 
     @review.user = @user
     @review.item = @item
-    if params[:bulk]
-      @review.bulk_order = BulkOrder.find_by_id(params[:bulk])
-    else
-      @review.user_order = UserOrder.find_by_id(params[:user_order])
-    end
+    @review.bulk_order = BulkOrder.find_by_id(params[:bulk])
+    @review.user_order = UserOrder.find_by_id(params[:user_order])
     @review.rating = params[:rating]
     @review.body = params[:body]
     @review.title = params[:title]

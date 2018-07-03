@@ -29,12 +29,12 @@ attr_accessor :amount
     if bulk_order.users.count > 1
       bulk_order.users.each do |user|
         user_order = bulk_order.user_orders.where(user_id: user.id)[0]
-        # NotifMailer.single_order_email(user,bulk_order,user_order).deliver
+        NotifMailer.single_order_email(user,bulk_order,user_order).deliver
       end
     else
-      # NotifMailer.single_order_email(user,bulk_order,user_order).deliver
+      NotifMailer.single_order_email(user,bulk_order,user_order).deliver
     end
-    # NotifMailer.vendor_email(bulk_order).deliver
+    NotifMailer.vendor_email(bulk_order).deliver
   end
 
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180630020601) do
+ActiveRecord::Schema.define(version: 20180630181247) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -155,6 +155,8 @@ ActiveRecord::Schema.define(version: 20180630020601) do
     t.integer "total_price"
     t.string "charge_token"
     t.boolean "buy_now"
+    t.string "tracking_number"
+    t.string "tracking_label"
     t.index ["bulk_order_id"], name: "index_user_orders_on_bulk_order_id"
     t.index ["user_id"], name: "index_user_orders_on_user_id"
   end
@@ -174,6 +176,8 @@ ActiveRecord::Schema.define(version: 20180630020601) do
     t.string "avatar_content_type"
     t.integer "avatar_file_size"
     t.datetime "avatar_updated_at"
+    t.boolean "email_confirmed", default: false
+    t.string "email_confirm_token"
   end
 
   add_foreign_key "addresses", "user_orders"
