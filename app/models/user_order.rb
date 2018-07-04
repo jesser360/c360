@@ -1,5 +1,5 @@
 class UserOrder < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, optional: true
   belongs_to :bulk_order, optional: true
   has_many :reviews
   has_many :addresses
@@ -13,6 +13,7 @@ class UserOrder < ApplicationRecord
       @user_order.quantity = params[:quantity]
       @user_order.user = user
       @user_order.total_price = @user_order.quantity * bulk_order.wholesale_price
+      @user_order.buyer_email = params[:stripeEmail]
       @user_order.save
     end
     return @user_order

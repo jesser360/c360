@@ -25,6 +25,7 @@ Rails.application.routes.draw do
       end
     end
 
+  get 'user_order_search' => 'user_orders#search'
   get '/user_order/show_buy_now/:id' => 'user_orders#show_buy_now', as: 'user_order_buy_now_path'
   get '/users_supplier/:id' => 'users#show_supplier', as: 'user_supplier_path'
 

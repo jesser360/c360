@@ -1,5 +1,6 @@
-<% if @user && @item && @user_order%>
-  <h1>Hello <%= @user.email %></h1>
+<% if @item && @user_order%>
+  <h1>Hello <%= @buyer_email %></h1>
+
     <h4>Your Buy Now Order for <%=@item.item_name%> has been completed!</h4>
   <br><br>
   <h3>Order details</h3>
@@ -10,4 +11,7 @@
     <h4>You can get in touch with them at <strong><%=@vendor.email%></strong>.</h4>
 
     <span> Since you are the only buyer in this Buy Now Order, it will be shipped ASAP, thank you!</span>
+
+  <span> View and edit your order by searching with this Order ID below</span>
+  <%=@user_order.id%>
 <%end%>

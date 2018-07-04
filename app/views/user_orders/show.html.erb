@@ -18,6 +18,10 @@
       <span id ='user_order_quantity'><%=@user_order.quantity%></span> grams<br>
       <h4>Order Price:</h4>
       <span id ='user_order_quantity'>$<%=@user_order.total_price%></span>
+      <br><br>
+      <%if !@user_order.bulk_order.completed%>
+      <%=link_to 'Edit Order',edit_user_order_url(@user_order)%>
+      <%end%>
     </div>
     <div class='col-md-3 '>
       <div class='row'>
@@ -33,6 +37,8 @@
     <span id='item'><%=@item.item_name%></span>
     <span  id='user_order_quantity'><%=@user_order.quantity rescue nil%></span>
     <span  id='bulk'><%=@bulk.id %></span>
+    <span  id='bulk_order_status'><%=@bulk.completed%></span>
+    <span id='percent_filled'><%=@bulk.percent_filled rescue 0%></span>
   </div>
 
   <%if @existing_review%>
@@ -51,23 +57,27 @@
       </div>
     </div>
   <%else%>
-  <div class=' row'>
-    <h3 class='text-left'>Leave a Review</h3>
-    <form style='margin:1vw'>
-      <fieldset class="rating-starz">
-        <input type="radio" id="star5" name="rating" value="5" /><label for="star5" ></label>
-        <input type="radio" id="star4" name="rating" value="4" /><label for="star4" ></label>
-        <input type="radio" id="star3" name="rating" value="3" /><label for="star3" ></label>
-        <input type="radio" id="star2" name="rating" value="2" /><label for="star2" ></label>
-        <input type="radio" id="star1" name="rating" value="1" /><label for="star1" ></label>
-    </fieldset><br><br>
-      <label for='title'>Title:</label>
-      <input style='margin:1vw' id='title' type="text" maxlength="100" size="50" value=""><br>
-      <label for='body'>Body:</label>
-      <input style='margin:1vw' id='body' maxlength="200" size="80"type="text" value="">
-    </form>
-    <button style='margin: 0vw 0vw 1vw 1vw' class='btn-primary'id="submitReview">Submit</button><br>
-  </div>
+    <%if @user%>
+      <div class=' row'>
+        <h3 class='text-left'>Leave a Review</h3>
+        <form style='margin:1vw'>
+          <fieldset class="rating-starz">
+            <input type="radio" id="star5" name="rating" value="5" /><label for="star5" ></label>
+            <input type="radio" id="star4" name="rating" value="4" /><label for="star4" ></label>
+            <input type="radio" id="star3" name="rating" value="3" /><label for="star3" ></label>
+            <input type="radio" id="star2" name="rating" value="2" /><label for="star2" ></label>
+            <input type="radio" id="star1" name="rating" value="1" /><label for="star1" ></label>
+        </fieldset><br><br>
+          <label for='title'>Title:</label>
+          <input style='margin:1vw' id='title' type="text" maxlength="100" size="50" value=""><br>
+          <label for='body'>Body:</label>
+          <input style='margin:1vw' id='body' maxlength="200" size="80"type="text" value="">
+        </form>
+        <button style='margin: 0vw 0vw 1vw 1vw' class='btn-primary'id="submitReview">Submit</button><br>
+      </div>
+      <%else%>
+      <h4><a href ='/signup'>Signup here</a> for an account to leave a review now!</h4>
+      <%end%>
   <%end%>
 </div>
 
@@ -76,13 +86,19 @@
 var bulk = $('#bulk').text()
 var item = $('#item').text()
 var item_name = $('#item_name').text()
-
+var bulk_order_status = $('#bulk_order_status').text()
+if(bulk_order_status === 'true'){
+  bulk_order_status = ' Order Filled'
+}else{
+  bulk_order_status = 'Order in Progress'
+}
 var item_price = $('#item_price').text();
 var percent_filled = $('#percent_filled').text();
 var expire_date = $('#expire_date').text();
 var user_order_quant = $('#user_order_quantity').text();
 var max_amount = $('#max_amount').text();
-
+var percent_filled = $('#percent_filled').text();
+console.log(percent_filled)
 $('#submitReview').on('click',function(e){
   var rating = null
   for(var i=1; i<=5;i++){
@@ -109,8 +125,9 @@ var Apiec3 = c3.generate({
   bindto: '#pieChart',
     data: {
         columns: [
-            ['Other Orders/Empty', max_amount-user_order_quant],
+            ['Other Orders', percent_filled-user_order_quant],
             ['Your Order', user_order_quant],
+            ['Remaining', max_amount - percent_filled],
         ],
         type : 'donut',
     },
@@ -118,7 +135,7 @@ var Apiec3 = c3.generate({
     position: 'right'
     },
     donut: {
-        title: item_name,
+        title: bulk_order_status,
         label: {
           show:true
         }
@@ -127,12 +144,12 @@ var Apiec3 = c3.generate({
       show: false
     }
 });
-
-d3.select(".c3-chart-arcs-title")
-    .append("tspan")
-    .attr("dy", 16)
-    .attr("x", 0)
-    .text(user_order_quant+"/"+max_amount+"g are Yours");
+//
+// d3.select(".c3-chart-arcs-title")
+//     .append("tspan")
+//     .attr("dy", 16)
+//     .attr("x", 0)
+//     .text(user_order_quant+"/"+max_amount+"g are Yours");
 
 
     var clock_1 = new FlipClock($('#clock'),new Date(expire_date), {

@@ -1,20 +1,13 @@
 <% if @user && @item && @user_order%>
   Hello <%= @user.email %>
-  <%if @bulk_order%>
-    Your Bulk Order for <%=@bulk_order.item.item_name%> has been completed!
-  <%else%>
-    Your Buy Now Order for <%=@user_order.item.item_name%> has been completed!
-  <%end%>
-  Order details</h3>
+    <h4>Your Buy Now Order for <%=@item.item_name%> has been completed!
+  <br>
+  Order details
   Total Quantity: <%=@user_order.quantity%> grams
   Total Price: $<%=@user_order.total_price%>
 
-    You Bought this order from <strong><%=@vendor.company_name%>.
-    You can get in touch with them at <strong><%=@vendor.email%>.
+    You Bought this order from <strong><%=@vendor.company_name%></strong>.
+    You can get in touch with them at <strong><%=@vendor.email%></strong>.
 
-  <%if @bulk_order%>
-    <span>  There were a total of <%=@bulk_order.users.count%> users who were a part of this order.
-  <%else%>
-    <span> Since you are the only buyer in this Buy Now Order, it will be shipped ASAP, thank you!
-  <%end%>
+    <span> Since you are the only buyer in this Buy Now Order, it will be shipped ASAP, thank you!</span>
 <%end%>

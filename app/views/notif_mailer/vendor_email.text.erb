@@ -1,13 +1,17 @@
 <% if @bulk_order%>
-  Hello from C360,
+  Hello from C360,<br>
 
-  You have a Bulk order for <%=@bulk_order.item_name%>.
+  You have a Bulk order for <%=@bulk_order.item_name%>.<br>
 
-  The order in total was for <%=@bulk_order.max_amount%> grams
+  The order in total was for <%=@bulk_order.max_amount%> grams<br><br>
   Total Price: <%=@bulk_order.max_amount * @bulk_order.wholesale_price%>
 
   <%@bulk_order.user_orders.each do |user_order|%>
-    <%= user_order.user.email%> in <%= user_order.user.city%>,<%= user_order.user.state%>.
-    They bought <%= user_order.quantity%> for $<%=user_order.quantity * @bulk_order.wholesale_price%>.
+    <%if @user_order && @user_order.user%>
+      <h5><%= user_order.user.email%> in <%= user_order.user.city%>,<%= user_order.user.state%>.<br>
+    <%else%>
+      <h5><%= user_order.buyer_email%> in <%= user_order.addresses.first.city%>,<%= user_order.addresses.first.state%>.<br>
+    <%end%>
+    They bought <%= user_order.quantity%> for $<%=user_order.quantity * @bulk_order.wholesale_price%>.<hr></h5>
   <%end%>
 <%end%>

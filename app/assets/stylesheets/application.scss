@@ -297,12 +297,10 @@ a[aria-expanded="true"]::before {
    height:25vw;
  }
  #item-banner{
-   font-size:1.5vw;
+   font-size:1.2vw;
    font-family:"Lato", Arial, Helvetica, Verdana, sans-serif;
    color:#111416;
-   padding:1.1vw;
    text-align: center;
-   margin-bottom: -2vw;
  }
 
  .card {
@@ -612,6 +610,17 @@ font-size: 1.3vw;
   background-size: cover;
   background-position: 30% 30%;
   padding:8vw;
+}
+.blue-button{
+  background:    #3d85c6;
+  background:    -webkit-linear-gradient(#3d85c6, #073763);
+  background:    linear-gradient(#3d85c6, #073763);
+  border-radius: 5px;
+  padding:       8px 20px;
+  color:         #ffffff;
+  display:       inline-block;
+  text-align:    center;
+  text-shadow:   1px 1px #000000;
 }
 #market_button{
   background:    #3d85c6;

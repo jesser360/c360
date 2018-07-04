@@ -6,6 +6,24 @@ class UserOrdersController < ApplicationController
   # basic_auth 'username', 'password'
   before_action :set_user_order, only: [:show, :edit, :update, :destroy]
 
+
+  def search
+    @user_order = UserOrder.find_by_id(params[:order_id])
+    @buyer_email = params[:email]
+    if @user_order.buyer_email == @buyer_email
+      if @user_order && @user_order.buy_now
+        redirect_to user_order_buy_now_path_path(@user_order)
+      elsif @user_order && @user_order.bulk_order.completed
+        redirect_to user_order_path(@user_order)
+      elsif @user_order
+        redirect_to edit_user_order_path(@user_order)
+      else
+        redirect_to '/store'
+      end
+    else
+      redirect_to '/store'
+    end
+  end
   # GET /user_orders/1
   # GET /user_orders/1.json
   def show
@@ -32,6 +50,8 @@ class UserOrdersController < ApplicationController
     @reviews = Review.where(item: @item)
     @existing_review = Review.where(item: @item).where(user_order: @user_order)[0]
 
+    @shipping_address = @user_order.addresses.where(:shipping => true)[0]
+    @billing_address = @user_order.addresses.where(:shipping => false)[0]
     @status = @request['tracking_status']['status']
     @status_message = @request['tracking_status']['status_details']
   end
@@ -70,50 +90,52 @@ class UserOrdersController < ApplicationController
 
     @shipping_address = Address.create_shipping_address(params,@user_order)
     @billing_address = Address.create_billing_address(params,@user_order)
+    @buyer_email = params[:stripeEmail]
+    @user_order.buyer_email = @buyer_email
 
-    Shippo::API.token = ENV['SHIPPO_TOKEN']
-
-    address_from = {
-        :name => 'SC360 brokerage',
-        :street1 => '4601 Stuart St',
-        :city => 'Denver',
-        :state => 'CO',
-        :zip => '94117',
-        :country => 'US',
-        :phone => '+1 555 341 9393',
-        :email => 'c360@gmail.com'
-    }
-
-    address_to = {
-        :name => @shipping_address.name,
-        :street1 => @shipping_address.street,
-        :city => @shipping_address.name,
-        :state => @shipping_address.state,
-        :zip => @shipping_address.zipcode,
-        :country => 'US',
-        :phone => '+1 555 341 9393',
-        :email => @user.email
-    }
-
-    parcel = {
-        :length => 5,
-        :width => 1,
-        :height => 5.555,
-        :distance_unit => :in,
-        :weight => 2,
-        :mass_unit => :lb
-    }
-
-    # @shipment = Shippo::Shipment.create(
+    # Shippo::API.token = ENV['SHIPPO_TOKEN']
+    #
+    # address_from = {
+    #     :name => 'SC360 brokerage',
+    #     :street1 => '4601 Stuart St',
+    #     :city => 'Denver',
+    #     :state => 'CO',
+    #     :zip => '94117',
+    #     :country => 'US',
+    #     :phone => '+1 555 341 9393',
+    #     :email => 'c360@gmail.com'
+    # }
+    #
+    # address_to = {
+    #     :name => @shipping_address.name,
+    #     :street1 => @shipping_address.street,
+    #     :city => @shipping_address.name,
+    #     :state => @shipping_address.state,
+    #     :zip => @shipping_address.zipcode,
+    #     :country => 'US',
+    #     :phone => '+1 555 341 9393',
+    #     :email => @user.email
+    # }
+    #
+    # parcel = {
+    #     :length => 5,
+    #     :width => 1,
+    #     :height => 5.555,
+    #     :distance_unit => :in,
+    #     :weight => 2,
+    #     :mass_unit => :lb
+    # }
+    #
+    # shipment = Shippo::Shipment.create(
     #     :address_from => address_from,
     #     :address_to => address_to,
     #     :parcels => parcel,
     #     :async => false
     # )
-
+    #
     # # Get the first rate in the rates results.
     # # Customize this based on your business logic.
-    # @rate = @shipment.rates.first
+    # @rate = shipment.rates.first
     #
     # # Purchase the desired rate.
     # @transaction = Shippo::Transaction.create(
@@ -134,15 +156,27 @@ class UserOrdersController < ApplicationController
     #   puts @transaction.messages
     # end
 
+    if @user
+      NotifMailer.single_order_email(@bulk_order,@user_order).deliver
+      NotifMailer.vendor_buy_now_email(@user,@user_order,@item).deliver
+    else
+      NotifMailer.no_user_single_order_email(@bulk_order,@user_order).deliver
+      # NotifMailer.no_user_vendor_buy_now_email(@user_order,@item).deliver
+    end
 
-    NotifMailer.single_order_email(@user,@bulk_order,@user_order).deliver
-    NotifMailer.vendor_buy_now_email(@user,@user_order,@item).deliver
 
     respond_to do |format|
       if @user_order.save
-
-        format.html { redirect_to user_path_url(@user) }
-        format.json { render :show, status: :created, location: @user_order }
+        if @user
+          format.html { redirect_to user_path_url(@user) }
+          format.json { render :show, status: :created, location: @user_order }
+        elsif @user_order.buy_now
+          format.html { redirect_to user_order_buy_now_path_path(@user_order) }
+          format.json { render :show, status: :created, location: @user_order }
+        else
+          format.html { redirect_to edit_user_order_path(@user_order) }
+          format.json { render :show, status: :created, location: @user_order }
+        end
       else
         format.html { render :new }
         format.json { render json: @user_order.errors, status: :unprocessable_entity }
@@ -180,14 +214,17 @@ class UserOrdersController < ApplicationController
 
     if @bulk_order.percent_filled >= @bulk_order.max_amount
       @bulk_order.completed = true
-      BulkOrder.email_bulk_order_users(@bulk_order,@user,@user_order)
+      BulkOrder.email_bulk_order_users(@bulk_order)
       @bulk_order.save!
     end
 
     respond_to do |format|
       if @user_order.save
-        format.html { redirect_to user_path_url(@user)}
-        format.json { render :show, status: :ok, location: @user }
+        if @user
+          format.html { redirect_to user_path_url(@user)}
+        else
+          format.html { redirect_to user_order_path(@user_order)}
+        end
       else
         format.html { render :edit }
         format.json { render json: @user_order.errors, status: :unprocessable_entity }
@@ -201,7 +238,7 @@ class UserOrdersController < ApplicationController
   # DELETE /user_orders/1.json
   def destroy
     @user_order = UserOrder.find(params[:id])
-    @user = @user_order.user
+    @user = @user_order.user if @user_order.user
     @bulk_order = @user_order.bulk_order
 
     @user_order.addresses.delete_all
@@ -209,11 +246,14 @@ class UserOrdersController < ApplicationController
     @bulk_order.percent_filled = @bulk_order.percent_filled - @user_order.quantity
     @bulk_order.buyer_count -=1
     @bulk_order.save
-    @bulk_order.users.delete(@user)
+    @bulk_order.users.delete(@user) if @user_order.user
     @user_order.destroy
     respond_to do |format|
-      format.html { redirect_to user_path_url(@user)}
-      format.json { head :no_content }
+      if @user
+        format.html { redirect_to user_path_url(@user)}
+      else
+        format.html { redirect_to '/store'}
+      end
     end
     charge = Stripe::Charge.retrieve(@user_order.charge_token)
     re = Stripe::Refund.create(

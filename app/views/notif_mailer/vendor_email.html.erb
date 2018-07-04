@@ -7,7 +7,11 @@
   Total Price: <%=@bulk_order.max_amount * @bulk_order.wholesale_price%></h4>
 
   <%@bulk_order.user_orders.each do |user_order|%>
-    <h5><%= user_order.user.email%> in <%= user_order.user.city%>,<%= user_order.user.state%>.<br>
+    <%if @user_order && @user_order.user%>
+      <h5><%= user_order.user.email%> in <%= user_order.user.city%>,<%= user_order.user.state%>.<br>
+    <%else%>
+      <h5><%= user_order.buyer_email%> in <%= user_order.addresses.first.city%>,<%= user_order.addresses.first.state%>.<br>
+    <%end%>
     They bought <%= user_order.quantity%> for $<%=user_order.quantity * @bulk_order.wholesale_price%>.<hr></h5>
   <%end%>
 <%end%>

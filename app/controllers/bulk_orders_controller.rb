@@ -1,6 +1,6 @@
 class BulkOrdersController < ApplicationController
   before_action :set_bulk_order, only: [:show, :edit, :update, :destroy]
-  before_action :auth, only: [:show, :edit, :update, :destroy]
+  # before_action :auth, only: [:show, :edit, :update, :destroy]
 
   def auth
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
@@ -78,6 +78,7 @@ class BulkOrdersController < ApplicationController
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @users = @bulk_order.users
     @item = @bulk_order.item
+    @buyer_email = params[:stripeEmail]
 
     if params[:quantity]
       @user_order = UserOrder.new()
@@ -86,20 +87,29 @@ class BulkOrdersController < ApplicationController
       @shipping_address = Address.create_shipping_address(params,@user_order)
       @billing_address = Address.create_billing_address(params,@user_order)
 
-      @bulk_order.users.push(@user)
+      if @user
+        @bulk_order.users.push(@user)
+      end
       @bulk_order.user_orders.push(@user_order)
       @bulk_order.percent_filled = (@bulk_order.percent_filled +  params[:quantity].to_i)
       @bulk_order.buyer_count +=1
 
       if @bulk_order.percent_filled >= @bulk_order.max_amount
         @bulk_order.completed = true
-        BulkOrder.email_bulk_order_users(@bulk_order,@user,@user_order)
+        BulkOrder.email_bulk_order_users(@bulk_order)
+      end
+
+      if !@user
+        NotifMailer.no_user_bulk_order_email(@bulk_order,@user_order).deliver
       end
 
     respond_to do |format|
       if @bulk_order.save
-        format.html { redirect_to user_path_url(@user)}
-        format.json { render :show, status: :ok, location: @bulk_order }
+        if @user
+          format.html { redirect_to user_path(@user)}
+        else
+          format.html { redirect_to user_order_path(@user_order)}
+        end
       else
         format.html { render :edit }
         format.json { render json: @bulk_order.errors, status: :unprocessable_entity }

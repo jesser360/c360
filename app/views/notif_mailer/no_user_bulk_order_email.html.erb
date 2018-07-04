@@ -1,0 +1,17 @@
+<% if @item && @user_order%>
+  <h1>Hello <%= @buyer_email %></h1>
+    <h4>You have joined a Bulk Order for <%=@bulk_order.item.item_name%>!</h4>
+  <br><br>
+  <h3>Order details</h3>
+  <h5>Total Quantity: <%=@user_order.quantity%> grams</h5>
+  <h5>Total Price: $<%=@user_order.total_price%></h5>
+  <br>
+    <h4>You Bought this order from <strong><%=@vendor.company_name%></strong>.</h4>
+    <h4>You can get in touch with them at <strong><%=@vendor.email%></strong>.</h4>
+
+    <span>  There are a total of <%=@bulk_order.buyer_count%> users who were a part of this order.</span>
+
+
+  <span> View and edit your order by searching with this Order ID below</span>
+  <span><%=@user_order.id%></span>
+<%end%>
