@@ -17,14 +17,14 @@ class SessionsController < ApplicationController
         render 'new'
       end
     else
-      flash[:error]= "Incorrect Info"
+      flash[:error]= "Incorrect Login Credentials"
       render 'new'
     end
   end
 
   def destroy
     session[:user_id] = nil
-    redirect_to '/'
+    redirect_to '/store'
   end
 
 end

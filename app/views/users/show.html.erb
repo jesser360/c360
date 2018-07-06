@@ -31,8 +31,22 @@
       <div class="tab-pane fade in active" id="id01">
         <div class='row'>
           <div class="col-md-12 prof-info">
-          <!-- <h2 style='margin-left:-4vw'> Orders -->
             <div class='row'>
+              <div style='float:right'>
+                <button id='add-order-btn'class='blue-button'>Find previous orders</button>
+                <div hidden id='add-order-search'>
+                  <%= form_tag("/find_previous_orders", method: "get") do %>
+                  <%= label_tag(:order_id, "Order #:") %>
+                  <%= text_field_tag(:order_token) %><br>
+                  <%= label_tag(:email, "Email:") %>
+                  <%= text_field_tag(:email) %><br>
+                  <%= submit_tag("Search",:class=>'blue-button') %>
+                  <% end %>
+                </div>
+                  <% flash.each do |key, value| %>
+                  <div class="alert alert-<%= key %>"><%= value %></div>
+                  <% end %>
+              </div>
               <h4 id='open-arrow' style='margin: 2vw 0vw 0vw -4vw;float:left;width:30px'class="bulk_order_link"><i id='open-icon' class="glyphicon glyphicon-arrow-up"></i></h4>
               <h2 class="text-left"> Active/Open Orders:</h2>
               <span hidden id='open_order_total'><%=@open_orders.count%></span>
@@ -42,6 +56,9 @@
                   <div class='row'>
                     <div class='col-md-4'>
                       <h3><%=order.bulk_order.item_name%></h3>
+                      <%if order.duplicate%>
+                      <%=link_to "Combine Duplicate Orders", combine_duplicates_url(order.token)%>
+                      <%end%>
                       <%=link_to item_path(order.bulk_order.item) do %>
                         <h3 ><%=image_tag(order.bulk_order.item.avatar.url, :size => "120x120")%></h3>
                       <%end%>
@@ -53,11 +70,11 @@
                       <br>
                       <h4><%=order.bulk_order.percent_filled%> / <%=order.bulk_order.max_amount%> g reserved in total</h4>
                       <%if order.bulk_order.buyer_count == 1%>
-                      <h4>No other users have joined yet</h4>
+                        <h4>No other users have joined yet</h4>
                       <%elsif order.bulk_order.buyer_count == 2%>
-                      <h4><%=order.bulk_order.buyer_count - 1%> other user in this order</h4>
+                        <h4><%=order.bulk_order.buyer_count - 1%> other user in this order</h4>
                       <%else%>
-                      <h4><%=order.bulk_order.buyer_count - 1%> other users in this order</h4>
+                        <h4><%=order.bulk_order.buyer_count - 1%> other users in this order</h4>
                       <%end%>
                     </div>
                     <div class='col-md-4'>
@@ -110,21 +127,28 @@
                       <h4>Order Quantity: <%=order.quantity%> grams</h4>
                       <%if order.buy_now%>
                       <h5>** Custom Buy Now Order</h5>
-                        <!-- <h4><%=link_to user_order_buy_now_path_url(order) do%><span data-tooltip="View Your Order"><i class="glyphicon glyphicon-eye-open"></i></span><%end%></h4> -->
+                      <h4><%=link_to user_order_buy_now_path_url(order) do%><span data-tooltip="View Your Order"><i class="glyphicon glyphicon-eye-open"></i></span><%end%></h4>
                       <%else%>
                       <h5>Total Batch quantity: <%=order.bulk_order.max_amount%> g</h5>
                       <h5>Users in Order: <%=order.bulk_order.buyer_count%></h5>
-                        <!-- <h4><%=link_to user_order_path(order) do%><span data-tooltip="View Your Order"><i class="glyphicon glyphicon-eye-open"></i></span><%end%></h4> -->
+                      <h4><%=link_to user_order_path(order) do%><span data-tooltip="View Your Order"><i class="glyphicon glyphicon-eye-open"></i></span><%end%></h4>
                       <%end%>
                     </div>
                     <div class='col-md-4'>
-                      <button>Track Shipment</button><br><br>
-                      <button>Request Cancellation</button><br><br>
+                      <button class='blue-button' id='tracking-button_<%=i%>'>Track Shipment</button><br><br>
+                      <div hidden id='tracking-info_<%=i%>'>
+                        <label>Tracking Number:</label>
+                        <%=order.tracking_number rescue nil%><br>
+                        <a href="<%=order.tracking_label rescue nil%>" target="_blank">Shipping Label</a>
+
+
+                      </div>
+                      <button class='blue-button'>Request Cancellation</button><br><br>
                       <%@existing_review = @reviews.where(item: order.bulk_order.item).where(user_order: order)[0]%>
                       <%if @existing_review%>
-                      <button id='review-button_<%=i%>'>Show Review</button>
+                      <button class='blue-button' id='review-button_<%=i%>'>Show Review</button>
                       <%else%>
-                        <button id='review-button_<%=i%>'>Write a Review</button>
+                        <button class='blue-button' id='review-button_<%=i%>'>Write a Review</button>
                         <%end%>
                     </div>
                   </div>
@@ -436,7 +460,6 @@ var tab_name = localStorage.getItem('openTab')
 $(tab_name).trigger('click')
 $( document ).ready(function() {
 
-
   function setTabValue(element){
     $(element).on('click',function(){
       localStorage.setItem('openTab',element)
@@ -446,8 +469,6 @@ $( document ).ready(function() {
   setTabValue('#bid-tab')
   setTabValue('#order-tab')
   setTabValue('#retail-tab')
-
-  // console.log(localStorage.getItem('openTab'))
 
   ToggleArrow('#open-arrow','#open-orders','#open-icon')
   ToggleArrow('#closed-arrow','#closed-orders','#closed-icon')
@@ -465,11 +486,21 @@ $( document ).ready(function() {
       $(area).toggle('medium');
     })
   }
+
+  $('#add-order-btn').on('click',function(e){
+    e.preventDefault();
+    $('#add-order-search').toggle('fast');
+  })
+
   var closed_order_total = parseInt($('#closed_order_total').text());
     for(i = 0; i<closed_order_total; i++){
       $('#review-button_'+i).on('click',function(){
         var index = (this.id).split('_')[1]
         $('#review_box_'+index).toggle('fast');
+      });
+      $('#tracking-button_'+i).on('click',function(){
+        var index = (this.id).split('_')[1]
+        $('#tracking-info_'+index).toggle('fast');
       });
     }
 

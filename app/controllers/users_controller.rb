@@ -56,7 +56,7 @@ class UsersController < ApplicationController
         @user.email_confirmed = true
         @user.email_confirm_token = nil
         @user.save!(:validate => false)
-        flash[:success] = "Welcome to the Sample App! Your email has been confirmed.
+        flash[:success] = "Welcome to C360 Supply! Your email has been confirmed.
         Please sign in to continue."
         redirect_to '/login'
       else
@@ -67,11 +67,11 @@ class UsersController < ApplicationController
 
   def show
     @items = Item.all
-    @user = User.find_by_id(params[:id])
+    @user = User.find_by_token(params[:id])
     @current_user = User.find_by_id(session[:user_id]) if session[:user_id]
     @bulk = @user.bulk_orders
     @reviews = Review.where(user: @user)
-    
+
     @user_bids_buyer_queued = Bid.where(buyer_id:@user.id).where(supplier_id:nil).where(published: false)
     @user_bids_buyer_open = Bid.where(buyer_id:@user.id).where(supplier_id:nil)
     @user_bids_buyer_closed = Bid.where(buyer_id:@user.id).where.not(supplier_id:nil)
@@ -79,6 +79,7 @@ class UsersController < ApplicationController
     @open_orders = []
     @closed_orders = []
     @expired_orders = []
+    # @open_orders_duplicates_ids = []
     @user.user_orders.each do |order|
       if order.bulk_order.completed || order.buy_now
         @closed_orders.push(order)
@@ -86,13 +87,18 @@ class UsersController < ApplicationController
         @expired_orders.push(order)
       else
         @open_orders.push(order)
+        # @open_orders_duplicates.push(order.bulk_order.id)
+        # if order.bulk_order @open_orders_duplicates_ids.find_all { |e| @open_orders_duplicates.count(e) > 1 }
+        # puts'duplicate'
+        # puts order.id
       end
     end
+
 
   end
 
   def show_supplier
-    @user = User.find_by_id(params[:id])
+    @user = User.find_by_token(params[:token])
     @current_user = User.find_by_id(session[:user_id]) if session[:user_id]
 
     @open_orders = []
@@ -126,11 +132,11 @@ class UsersController < ApplicationController
   end
 
   def edit
-    @user = User.find_by_id(params[:id])
+    @user = User.find_by_token(params[:token])
   end
 
   def update
-    @user = User.find_by_id(params[:id])
+    @user = User.find_by_token(params[:token])
     @user.update(user_params)
     @zip = ZipCodes.identify(user_params[:zipcode])
     @user.city = @zip[:city] rescue nil
@@ -145,8 +151,12 @@ class UsersController < ApplicationController
 
 
 
-
   private
+
+  def set_user
+    @user = User.find_by_token(params[:id])
+  end
+
   def user_params
     params.require(:user).permit(:email,:company_name,:password, :password_confirmation, :is_vendor,:zipcode,:supplier_code,:avatar)
   end

@@ -2,7 +2,7 @@
 <!-- ALLOW THEM TO LEAVE REVEIW/RATING HERE -->
 <div class='container'>
   <div class ="row edit-row">
-    <div class="col-md-6 edit-card">
+    <div class="col-md-5 edit-card">
       <%=link_to item_path(@item) do %>
         <span style='float:right' class='oil-image'><%= image_tag(@item.avatar.url, :size => "250x250") %></span>
       <%end%>
@@ -13,74 +13,116 @@
       <%end%></h4>
       <h4><%=@item.description%></h4>
     </div>
-    <div class='col-md-2' style='font-size:1.2em;margin-top:5vh'>
-      <h4>Order Amount:</h4>
+    <div class='col-md-3' style='font-size:1.2em;margin-top:5vh'>
+      <label>ORDER DETAILS</label><hr>
+      <label>Order Amount:</label>
       <span id ='user_order_quantity'><%=@user_order.quantity%></span> grams<br>
-      <h4>Order Price:</h4>
+      <label>Order Price:</label>
       <span id ='user_order_quantity'>$<%=@user_order.total_price%></span>
+      <label>User Order made on:</label>
+      <spanx><%=@user_order.created_at.strftime('%m/%d/%Y')%></span>
+      <label>Bulk Order Completed on:</label>
+      <spanx><%=@user_order.bulk_order.updated_at.strftime('%m/%d/%Y')%></span>
       <br><br>
       <%if !@user_order.bulk_order.completed%>
       <%=link_to 'Edit Order',edit_user_order_url(@user_order)%>
       <%end%>
     </div>
-    <div class='col-md-3 '>
-      <div class='row'>
-        <div id='pieChart'></div>
+    <div class="col-md-4 edit-card">
+      <h3>Package Status:<br></h3>
+      <h4 style='color:darkgreen;font-weight:300'><%=@status%><br></h4>
+      <h4>*<%=@status_message%>*</h4>
+      <h3>Shipping Info</h3>
+      <h4><%=@shipping_address.name%></h4>
+      <h4><%=@shipping_address.street%> <%=@shipping_address.apt if @shipping_address.apt != nil%></h4>
+      <h4><%=@shipping_address.city%>,<%=@shipping_address.state%></h4>
+      <h4><%=@shipping_address.zipcode%></h4>
+      <button class='blue-button' style='float:right'  >Request Address change</button>
+    </div>
+  </div>
+  <div class='row'>
+    <div class='col-md-6'>
+      <%if @existing_review%>
+      <div class='row' style='margin-left:3vw'>
+        <div class='col-sm-8'>
+          <h3 class='text-left'>Your Review</h3>
+          <h4><%@existing_review.rating.times do%>
+            <i class="glyphicon glyphicon-star"></i>
+            <%end%>
+            <%(5-@existing_review.rating).times do%>
+            <i class="glyphicon glyphicon-star-empty"></i>
+            <%end%>
+            <%=@existing_review.title%></h4>
+            <h5><%=@existing_review.body%></h5>
+            <hr>
+          </div>
+        </div>
+        <%else%>
+        <%if @user%>
+        <div class=' row'>
+          <h3 class='text-left'>Leave a Review</h3>
+          <form style='margin:1vw'>
+            <fieldset class="rating-starz">
+              <input hidden type="radio" id="star5" name="rating" value="5" /><label for="star5" ></label>
+              <input hidden type="radio" id="star4" name="rating" value="4" /><label for="star4" ></label>
+              <input hidden type="radio" id="star3" name="rating" value="3" /><label for="star3" ></label>
+              <input hidden type="radio" id="star2" name="rating" value="2" /><label for="star2" ></label>
+              <input hidden type="radio" id="star1" name="rating" value="1" /><label for="star1" ></label>
+            </fieldset><br><br>
+            <label for='title'>Title:</label>
+            <input style='margin:1vw' id='title' type="text" maxlength="100" size="50" value=""><br>
+            <label for='body'>Body:</label>
+            <input style='margin:1vw' id='body' maxlength="200" size="80"type="text" value="">
+          </form>
+          <button style='margin: 0vw 0vw 1vw 1vw' class='btn-primary'id="submitReview">Submit</button><br>
+        </div>
+        <%else%>
+        <h4><a href ='/signup'>Signup here</a> for an account to leave a review now!</h4>
+        <%end%>
+        <%end%>
+      </div>
+      <div class='col-md-3 '>
+          <div id='pieChart'></div>
+      </div>
+    <div class='col-md-3'>
+      <div style='margin:1vw'>
+        <h4>Users in this Bulk Order</h5>
+          <%@bulk.user_orders.each do |user_order|%>
+              <div class='row'>
+                <div style='margin-top:1vw'class='col-md-2'>
+                  <%if user_order.user%>
+                    <%=link_to user_path_url(user_order.user) do%>
+                      <%= image_tag(user_order.user.avatar.url, :size => "50x50") %>
+                    <%end%>
+                  <%else%>
+                  <%= image_tag('user-icon.png', :size => "50x50") %>
+                  <%end%>
+                </div>
+                <div class='col-md-9'>
+                  <%if user_order.user%>
+                    <h5><%=user_order.user.email%> in <%=user_order.user.city%><h5>
+                    <h5>Bought <%=user_order.quantity%> grams on <%=user_order.updated_at.strftime('%m/%d/%Y')%><h5>
+                  <%else%>
+                    <h5>*Guest user* <%=user_order.buyer_email%> in <%=user_order.addresses.first.city%> <h5>
+                      <h5>Bought <%=user_order.quantity%> grams on <%=user_order.updated_at.strftime('%m/%d/%Y')%><h5>
+                  <%end%>
+                </div>
+              </div>
+            <%end%>
+            <br>
       </div>
     </div>
   </div>
-
-
-  <div hidden>
-    <span  id='max_amount'><%=@bulk.max_amount rescue nil%></span>
-    <span id='item'><%=@item.id%></span>
-    <span id='item'><%=@item.item_name%></span>
-    <span  id='user_order_quantity'><%=@user_order.quantity rescue nil%></span>
-    <span  id='bulk'><%=@bulk.id %></span>
-    <span  id='bulk_order_status'><%=@bulk.completed%></span>
-    <span id='percent_filled'><%=@bulk.percent_filled rescue 0%></span>
-  </div>
-
-  <%if @existing_review%>
-    <div class='row' style='margin-left:3vw'>
-      <div class='col-sm-8'>
-        <h3 class='text-left'>Your Review</h3>
-        <h4><%@existing_review.rating.times do%>
-        <i class="glyphicon glyphicon-star"></i>
-        <%end%>
-        <%(5-@existing_review.rating).times do%>
-        <i class="glyphicon glyphicon-star-empty"></i>
-        <%end%>
-        <%=@existing_review.title%></h4>
-        <h5><%=@existing_review.body%></h5>
-        <hr>
-      </div>
-    </div>
-  <%else%>
-    <%if @user%>
-      <div class=' row'>
-        <h3 class='text-left'>Leave a Review</h3>
-        <form style='margin:1vw'>
-          <fieldset class="rating-starz">
-            <input type="radio" id="star5" name="rating" value="5" /><label for="star5" ></label>
-            <input type="radio" id="star4" name="rating" value="4" /><label for="star4" ></label>
-            <input type="radio" id="star3" name="rating" value="3" /><label for="star3" ></label>
-            <input type="radio" id="star2" name="rating" value="2" /><label for="star2" ></label>
-            <input type="radio" id="star1" name="rating" value="1" /><label for="star1" ></label>
-        </fieldset><br><br>
-          <label for='title'>Title:</label>
-          <input style='margin:1vw' id='title' type="text" maxlength="100" size="50" value=""><br>
-          <label for='body'>Body:</label>
-          <input style='margin:1vw' id='body' maxlength="200" size="80"type="text" value="">
-        </form>
-        <button style='margin: 0vw 0vw 1vw 1vw' class='btn-primary'id="submitReview">Submit</button><br>
-      </div>
-      <%else%>
-      <h4><a href ='/signup'>Signup here</a> for an account to leave a review now!</h4>
-      <%end%>
-  <%end%>
 </div>
-
+<div hidden>
+  <span  id='max_amount'><%=@bulk.max_amount rescue nil%></span>
+  <span id='item'><%=@item.id%></span>
+  <span id='item'><%=@item.item_name%></span>
+  <span  id='user_order_quantity'><%=@user_order.quantity rescue nil%></span>
+  <span  id='bulk'><%=@bulk.id %></span>
+  <span  id='bulk_order_status'><%=@bulk.completed%></span>
+  <span id='percent_filled'><%=@bulk.percent_filled rescue 0%></span>
+</div>
 
 <script>
 var bulk = $('#bulk').text()

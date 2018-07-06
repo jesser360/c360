@@ -22,16 +22,16 @@
           <%end%></h4>
       </div>
       <h2 class='text-center'>Customer Reviews</h2>
-      <%if @completed_user_bulk_orders && @existing_bulk_order_reviews < @completed_user_bulk_orders.count%>
+      <%if @allowable_bulk_reviews.length > 0%>
         <div class=' row'>
           <h3 class='text-left'>Leave a Review</h3>
           <form style='margin:1vw'>
             <fieldset class="rating-starz">
-              <input type="radio" id="star5" name="rating" value="5" /><label for="star5" ></label>
-              <input type="radio" id="star4" name="rating" value="4" /><label for="star4" ></label>
-              <input type="radio" id="star3" name="rating" value="3" /><label for="star3" ></label>
-              <input type="radio" id="star2" name="rating" value="2" /><label for="star2" ></label>
-              <input type="radio" id="star1" name="rating" value="1" /><label for="star1" ></label>
+              <input hidden type="radio" id="star5" name="rating" value="5" /><label for="star5" ></label>
+              <input hidden type="radio" id="star4" name="rating" value="4" /><label for="star4" ></label>
+              <input hidden type="radio" id="star3" name="rating" value="3" /><label for="star3" ></label>
+              <input hidden type="radio" id="star2" name="rating" value="2" /><label for="star2" ></label>
+              <input hidden type="radio" id="star1" name="rating" value="1" /><label for="star1" ></label>
           </fieldset><br><br>
             <label for='title'>Title:</label>
             <input style='margin:1vw' id='title' type="text" maxlength="100" size="30" value=""><br>
@@ -88,21 +88,22 @@
       <span hidden id='percent_filled_<%=i%>'><%=order.percent_filled%></span>
       <span hidden id='bulk_order_amount_<%=i%>' ><%=order.max_amount%></span>
       <span hidden id='item_name_<%=i%>' ><%=order.item_name%></span>
+      <span hidden id='item_name_<%=i%>' ><%=order.item_name%></span>
       <%end%>
     </div>
   </div>
 </div>
 
 
+<span hidden id='allowable_bulk_reviews'><%=@allowable_bulk_reviews%></span>
+<span hidden id='corresponding_user_orders'><%=@corresponding_user_orders%></span>
 <span hidden id='order_total'><%=@open_orders.count %></span>
 <span hidden id='item'><%=@item.id %></span>
-<span hidden id='existing_bulk_order'><%=@existing_bulk_order %></span>
-<span hidden id='existing_user_order'><%=@existing_user_order %></span>
 
 <script>
 
-var bulk = $('#existing_bulk_order').text()
-var user_order = $('#existing_user_order').text()
+var allowable_bulks_array = $('#allowable_bulk_reviews').text().replace('[','').replace(']','').split(',')
+var corresponding_user_orders_array = $('#corresponding_user_orders').text().replace('[','').replace(']','').split(',')
 var item = $('#item').text()
 
 $('#submitReview').on('click',function(e){
@@ -118,7 +119,7 @@ $('#submitReview').on('click',function(e){
   $.ajax({
     type: "POST",
     url: '/reviews',
-    data: { "rating": rating,"title": title,"body": body,"bulk": bulk,"user_order":user_order,"item": item},
+    data: { "rating": rating,"title": title,"body": body,"bulk": parseInt(allowable_bulks_array[0]),"user_order": parseInt(corresponding_user_orders_array[0]),"item": item},
     success: function (data) {
     },
     error:function(error){

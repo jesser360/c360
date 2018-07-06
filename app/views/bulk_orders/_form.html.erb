@@ -1,5 +1,5 @@
 
-<form action="/bulk_orders<%= "/#{@bulk_order.id}" unless @bulk_order.new_record? %>" method="POST" >
+<form action="/bulk_orders<%= "/#{@bulk_order.token}" unless @bulk_order.new_record? %>" method="POST" >
     <%= "<input type=\"hidden\" name=\"_method\" value=\"PATCH\">".html_safe unless @bulk_order.new_record? %>
     <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
     <% if bulk_order.errors.any? %>
@@ -49,15 +49,20 @@
         <%elsif @seller==@user%>
         <h4>Buyers:</h4>
           <% @bulk_order.user_orders.each do |user_order| %>
-            <%if !user_order.buy_now %>
-              <% @user_found = User.find_by_id(user_order.user_id)%>
-              <strong><%=@user_found.email%></strong>
-              <ul>
-                <li> Bought <%=user_order.quantity%> <%=@bulk_order.item_name%> for $<%=user_order.total_price%> on <%=Date.parse(user_order.updated_at.to_date.to_s).strftime('%m/%d/%Y')|| ate.parse(user_order.created_at.to_date.to_s).strftime('%m/%d/%Y')%></li>
-                <li>Lives in <%=@user_found.city%>, <%=@user_found.state%></li>
-              </ul>
-              <hr>
+            <%if user_order.user%>
+              <strong><%=user_order.user.email%></strong>
+            <%else%>
+              <strong><%=user_order.buyer_email%></strong>
             <%end%>
+            <ul>
+              <li> Bought <%=user_order.quantity%> <%=@bulk_order.item_name%> for $<%=user_order.total_price%> on <%=Date.parse(user_order.updated_at.to_date.to_s).strftime('%m/%d/%Y')|| ate.parse(user_order.created_at.to_date.to_s).strftime('%m/%d/%Y')%></li>
+              <%if user_order.user%>
+                <li>Lives in <%=user_order.user.city if user_order.user%>, <%=user_order.user.state if user_order.user%></li>
+              <%else%>
+                <li>Lives in <%=user_order.addresses.first.city%>, <%=user_order.addresses.first.state%></li>
+              <%end%>
+            </ul>
+            <hr>
           <%end%>
         <%else%>
         <div class='row' style='padding-left:10px;margin-top:2vw'>
@@ -82,7 +87,7 @@
       </div>
     </div>
 
-    <div class='row' style='margin:-3vw 3vw 0vw 3vw'>
+    <div class='row'>
       <h2 class='text-left'>Customer Reviews</h2>
       <%@reviews.each do |review|%>
       <%=link_to user_path_url(review.user) do%>

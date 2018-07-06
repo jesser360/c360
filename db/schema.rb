@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180703234846) do
+ActiveRecord::Schema.define(version: 20180706031448) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,7 +77,9 @@ ActiveRecord::Schema.define(version: 20180703234846) do
     t.string "description"
     t.boolean "published"
     t.integer "buyer_count"
+    t.string "token"
     t.index ["item_id"], name: "index_bulk_orders_on_item_id"
+    t.index ["token"], name: "index_bulk_orders_on_token", unique: true
   end
 
   create_table "bulk_orders_users", id: false, force: :cascade do |t|
@@ -158,7 +160,10 @@ ActiveRecord::Schema.define(version: 20180703234846) do
     t.string "tracking_number"
     t.string "tracking_label"
     t.string "buyer_email"
+    t.string "token"
+    t.boolean "duplicate"
     t.index ["bulk_order_id"], name: "index_user_orders_on_bulk_order_id"
+    t.index ["token"], name: "index_user_orders_on_token", unique: true
     t.index ["user_id"], name: "index_user_orders_on_user_id"
   end
 
@@ -179,6 +184,8 @@ ActiveRecord::Schema.define(version: 20180703234846) do
     t.datetime "avatar_updated_at"
     t.boolean "email_confirmed", default: false
     t.string "email_confirm_token"
+    t.string "token"
+    t.index ["token"], name: "index_users_on_token", unique: true
   end
 
   add_foreign_key "addresses", "user_orders"

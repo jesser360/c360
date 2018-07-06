@@ -48,9 +48,9 @@
           <% if current_user %>
             <li><a><%= link_to('Log Out', logout_path, method: :delete, class: 'prof-links')%></a></li>
             <%if current_user.is_vendor%>
-              <li><a><%= link_to('Profile', user_supplier_path_url(current_user), class: 'prof-links')%></a></li>
+              <li><a><%= link_to('Profile', user_supplier_path_url(current_user.token), class: 'prof-links')%></a></li>
             <%else%>
-              <li><a><%= link_to('Profile', user_path_url(current_user), class: 'prof-links')%></a></li>
+              <li><a><%= link_to('Profile', user_path_url(current_user.token), class: 'prof-links')%></a></li>
             <%end%>
           <%else%>
             <li><a class='prof-links' href="/login">Login</a></li>

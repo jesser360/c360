@@ -4,6 +4,11 @@ has_many :reviews
 has_and_belongs_to_many :users
 belongs_to :item
 attr_accessor :amount
+has_secure_token
+
+def to_param
+ token
+end
 
 
   def self.create_bulk_order(item,params)

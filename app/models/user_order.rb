@@ -3,9 +3,11 @@ class UserOrder < ApplicationRecord
   belongs_to :bulk_order, optional: true
   has_many :reviews
   has_many :addresses
+  has_secure_token
 
-
-
+  def to_param
+   token
+  end
 
   def self.create_user_order(params,user,bulk_order)
     UserOrder.transaction do

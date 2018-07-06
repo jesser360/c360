@@ -15,17 +15,18 @@ class ItemsController < ApplicationController
     @reviews = Review.where(item: @item)
     @open_orders=BulkOrder.where(item: @item).where(completed: false).where(['expire_date > ?', DateTime.now])
 
-    @existing_bulk_order_reviews = 0
+    @allowable_bulk_reviews = []
+    @corresponding_user_orders = []
     @completed_user_bulk_orders = @current_user.bulk_orders.where(item: @item).where(completed: true) rescue nil
     if @completed_user_bulk_orders
-      @completed_user_bulk_orders.each do |order|
-        if Review.where(item: @item).where(bulk_order:order).present?
-          @existing_bulk_order_reviews += 1
+      @completed_user_bulk_orders.each do |bulk_order|
+        if !Review.where(item: @item).where(bulk_order:bulk_order).where(user: @current_user).present?
+          @allowable_bulk_reviews.push(bulk_order.id)
+          @user_order= bulk_order.user_orders.where(user: @current_user)[0].id
+          @corresponding_user_orders.push(@user_order)
         end
       end
     end
-    # @finished_user_order = UserOrder.where(item: @item).where(buy_now: true).where(user: @current_user)[0]
-    # @existing_user_order_review = Review.where(item: @item).where(user_order_order: @finished_user_order)[0]
   end
 
   # GET /items

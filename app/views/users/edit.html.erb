@@ -1,5 +1,5 @@
 <div class='spin'style='margin:10vw 10vw 5vw 10vw'>
-  <%= form_for @user,  :url => update_user_path_url(@user), html: {method: :patch} do |form| %>
+  <%= form_for @user,  :url => update_user_path_url(@user.token), html: {method: :patch} do |form| %>
     <% if @user.errors.any? %>
       <div id="error_explanation">
         <h2><%= pluralize(item.errors.count, "error") %> prohibited this item from being saved:</h2>

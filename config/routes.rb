@@ -25,18 +25,20 @@ Rails.application.routes.draw do
       end
     end
 
-  get 'user_order_search' => 'user_orders#search'
-  get '/user_order/show_buy_now/:id' => 'user_orders#show_buy_now', as: 'user_order_buy_now_path'
-  get '/users_supplier/:id' => 'users#show_supplier', as: 'user_supplier_path'
+  get '/combine_duplicates/:token' => 'user_orders#combine_duplicates', as: 'combine_duplicates'
+  get '/user_order_search' => 'user_orders#search'
+  get '/find_previous_orders' => 'user_orders#find_previous_orders'
+  get '/user_order/show_buy_now/:token' => 'user_orders#show_buy_now', as: 'user_order_buy_now_path'
+  get '/users_supplier/:token' => 'users#show_supplier', as: 'user_supplier_path'
 
-  get '/users/:id', to: 'users#show', as: 'user_path'
+  get '/users/:token', to: 'users#show', as: 'user_path'
   get '/signup' => 'users#new'
-  get '/users/edit/:id', to: 'users#edit', as: 'edit_user_path'
-  patch '/users/update/:id', to: 'users#update', as: 'update_user_path'
+  get '/users/edit/:token', to: 'users#edit', as: 'edit_user_path'
+  patch '/users/update/:token', to: 'users#update', as: 'update_user_path'
   get '/signup' => 'users#new'
   post '/signup' => 'users#create'
 
-  root 'pages#home'
+  root 'bulk_orders#index'
   get '/home' => 'pages#home'
   get '/store' => 'bulk_orders#index'
   get '/about' => 'pages#about'
@@ -46,8 +48,8 @@ Rails.application.routes.draw do
   post '/bid/publish/:id' => 'bids#publish', as: 'publish_bid_path'
 
 
-  post '/bulk_order/publish/:id' => 'bulk_orders#publish', as: 'publish_bulk_order_path'
-  get '/bulk_order/seller/edit/:id' => 'bulk_orders#seller_edit', as: 'seller_edit_bulk_order_path'
+  post '/bulk_order/publish/:token' => 'bulk_orders#publish', as: 'publish_bulk_order_path'
+  get '/bulk_order/seller/edit/:token' => 'bulk_orders#seller_edit', as: 'seller_edit_bulk_order_path'
 
   get '/login' => 'sessions#new'
   post '/login' => 'sessions#create'

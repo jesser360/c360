@@ -12,4 +12,10 @@ class User < ApplicationRecord
   belongs_to :bid, optional: true
   has_many :bid_offers
   has_many :reviews
+  has_secure_token
+
+  def to_param
+   token
+  end
+  
 end

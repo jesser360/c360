@@ -8,33 +8,78 @@ class UserOrdersController < ApplicationController
 
 
   def search
-    @user_order = UserOrder.find_by_id(params[:order_id])
+    @user_order = UserOrder.find_by_token(params[:order_token])
     @buyer_email = params[:email]
-    if @user_order.buyer_email == @buyer_email
-      if @user_order && @user_order.buy_now
-        redirect_to user_order_buy_now_path_path(@user_order)
-      elsif @user_order && @user_order.bulk_order.completed
+    if !@user_order.nil? && @user_order.buyer_email == @buyer_email
+      if @user_order.buy_now
+        redirect_to user_order_buy_now_path_path(@user_order.token)
+      elsif @user_order.bulk_order.completed
         redirect_to user_order_path(@user_order)
-      elsif @user_order
-        redirect_to edit_user_order_path(@user_order)
       else
-        redirect_to '/store'
+        redirect_to edit_user_order_path(@user_order)
       end
     else
       redirect_to '/store'
+      flash[:error] ='Order cannot be found'
     end
+  end
+
+  def find_previous_orders
+    @user = User.find_by_id(session[:user_id]) if session[:user_id]
+    @user_order = UserOrder.find_by_token(params[:order_token])
+    @bulk_order = @user_order.bulk_order
+    @buyer_email = params[:email]
+    if !@user_order.nil? && @user_order.buyer_email == @buyer_email
+      unless @user_order.buy_now
+        @open_orders = @user.user_orders.where(buy_now: nil)
+        @open_orders.each do |order|
+          if order.bulk_order == @user_order.bulk_order
+            @user_order.duplicate = true
+            order.duplicate = true
+            order.save
+          end
+        end
+      end
+      @user_order.user = @user
+      @user_order.save
+      @bulk_order.users.push(@user)
+      @bulk_order.save
+      redirect_to user_path_url(@user)
+      flash[:success] ='Order has been added to your profile!'
+    else
+      redirect_to user_path_url(@user)
+      flash[:error] ='Order cannot be found'
+    end
+  end
+
+  def combine_duplicates
+    @user_order = UserOrder.find_by_token(params[:token])
+    @user = User.find_by_id(session[:user_id]) if session[:user_id]
+    @bulk_order = @user_order.bulk_order
+    @other_orders = @user.user_orders.where(bulk_order_id: @bulk_order.id).where(buy_now: nil).where.not(id: @user_order.id)
+    @other_orders.each do |order|
+      @user_order.quantity += order.quantity
+      @user_order.total_price += order.total_price
+      @bulk_order.buyer_count -=1
+      @bulk_order.users.delete(order.user)
+      order.addresses.delete_all
+      order.destroy
+    end
+    # ADD ONE INSTANCE OF USER IN ORDER AFTER DUPLICATES REMOVED
+    @bulk_order.users.push(@user)
+    @bulk_order.save
+    @user_order.save
+    redirect_to user_path_url(@user)
+    flash[:success] ='Orders have been combined into one!'
   end
   # GET /user_orders/1
   # GET /user_orders/1.json
   def show
+    @user_order =  UserOrder.find_by_token(params[:id])
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @bulk = @user_order.bulk_order
     @item = @bulk.item
-    @user_order =  UserOrder.find_by_id(params[:id])
     @existing_review = Review.where(item: @item).where(bulk_order: @bulk)[0]
-  end
-
-  def show_buy_now
     @request = HTTParty.post('https://api.goshippo.com/tracks/',
       :body => {
         # "carrier": "usps",
@@ -43,13 +88,27 @@ class UserOrdersController < ApplicationController
 
       },
       :headers => {'Authorization':'ShippoToken shippo_test_1bf025e980d46aaea6ed705ebdb5ec4e3755edc1'})
-    @user_order =  UserOrder.find_by_id(params[:id])
+    @shipping_address = @user_order.addresses.where(:shipping => true)[0]
+    @billing_address = @user_order.addresses.where(:shipping => false)[0]
+    @status = @request['tracking_status']['status']
+    @status_message = @request['tracking_status']['status_details']
+  end
+
+  def show_buy_now
+    @user_order =  UserOrder.find_by_token(params[:token])
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @bulk = @user_order.bulk_order
     @item = @bulk.item
     @reviews = Review.where(item: @item)
     @existing_review = Review.where(item: @item).where(user_order: @user_order)[0]
+    @request = HTTParty.post('https://api.goshippo.com/tracks/',
+      :body => {
+        # "carrier": "usps",
+        # "tracking_number": @user_order.tracking_number
+        "carrier":"shippo","tracking_number":"SHIPPO_TRANSIT"
 
+      },
+      :headers => {'Authorization':'ShippoToken shippo_test_1bf025e980d46aaea6ed705ebdb5ec4e3755edc1'})
     @shipping_address = @user_order.addresses.where(:shipping => true)[0]
     @billing_address = @user_order.addresses.where(:shipping => false)[0]
     @status = @request['tracking_status']['status']
@@ -68,7 +127,7 @@ class UserOrdersController < ApplicationController
 
   # GET /user_orders/1/edit
   def edit
-    @user_order =  UserOrder.find_by_id(params[:id])
+    @user_order =  UserOrder.find_by_token(params[:id])
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @bulk = @user_order.bulk_order
     @item = @bulk.item
@@ -93,68 +152,7 @@ class UserOrdersController < ApplicationController
     @buyer_email = params[:stripeEmail]
     @user_order.buyer_email = @buyer_email
 
-    # Shippo::API.token = ENV['SHIPPO_TOKEN']
-    #
-    # address_from = {
-    #     :name => 'SC360 brokerage',
-    #     :street1 => '4601 Stuart St',
-    #     :city => 'Denver',
-    #     :state => 'CO',
-    #     :zip => '94117',
-    #     :country => 'US',
-    #     :phone => '+1 555 341 9393',
-    #     :email => 'c360@gmail.com'
-    # }
-    #
-    # address_to = {
-    #     :name => @shipping_address.name,
-    #     :street1 => @shipping_address.street,
-    #     :city => @shipping_address.name,
-    #     :state => @shipping_address.state,
-    #     :zip => @shipping_address.zipcode,
-    #     :country => 'US',
-    #     :phone => '+1 555 341 9393',
-    #     :email => @user.email
-    # }
-    #
-    # parcel = {
-    #     :length => 5,
-    #     :width => 1,
-    #     :height => 5.555,
-    #     :distance_unit => :in,
-    #     :weight => 2,
-    #     :mass_unit => :lb
-    # }
-    #
-    # shipment = Shippo::Shipment.create(
-    #     :address_from => address_from,
-    #     :address_to => address_to,
-    #     :parcels => parcel,
-    #     :async => false
-    # )
-    #
-    # # Get the first rate in the rates results.
-    # # Customize this based on your business logic.
-    # @rate = shipment.rates.first
-    #
-    # # Purchase the desired rate.
-    # @transaction = Shippo::Transaction.create(
-    #   :rate => @rate["object_id"],
-    #   :label_file_type => "PDF",
-    #   :async => false )
-    #
-    # # label_url and tracking_number
-    # if @transaction["status"] == "SUCCESS"
-    #   puts "Label sucessfully generated:"
-    #   puts "label_url: #{@transaction.label_url}"
-    #   puts "tracking_number: #{@transaction.tracking_number}"
-    #   @user_order.tracking_number = @transaction.tracking_number
-    #   @user_order.tracking_label = @transaction.label_url
-    #   @user_order.save
-    # else
-    #   puts "Error generating label:"
-    #   puts @transaction.messages
-    # end
+    ShippoService::create_shipment_buy_now(@shipping_address,@user_order)
 
     if @user
       NotifMailer.single_order_email(@bulk_order,@user_order).deliver
@@ -163,7 +161,6 @@ class UserOrdersController < ApplicationController
       NotifMailer.no_user_single_order_email(@bulk_order,@user_order).deliver
       # NotifMailer.no_user_vendor_buy_now_email(@user_order,@item).deliver
     end
-
 
     respond_to do |format|
       if @user_order.save
@@ -182,16 +179,14 @@ class UserOrdersController < ApplicationController
         format.json { render json: @user_order.errors, status: :unprocessable_entity }
       end
     end
-
     StripeService::buy_now_payment(params,@user_order)
-
   end
 
   # PATCH/PUT /user_orders/1
   # PATCH/PUT /user_orders/1.json
   # EDIT EXISTING USER ORDER
   def update
-    @user_order = UserOrder.find_by_id(params[:id])
+    @user_order = UserOrder.find_by_token(params[:id])
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @bulk_order = @user_order.bulk_order
     @users = @bulk_order.users
@@ -215,6 +210,7 @@ class UserOrdersController < ApplicationController
     if @bulk_order.percent_filled >= @bulk_order.max_amount
       @bulk_order.completed = true
       BulkOrder.email_bulk_order_users(@bulk_order)
+      ShippoService.create_shipments_bulk_order_fill(@bulk_order)
       @bulk_order.save!
     end
 
@@ -237,7 +233,7 @@ class UserOrdersController < ApplicationController
   # DELETE /user_orders/1
   # DELETE /user_orders/1.json
   def destroy
-    @user_order = UserOrder.find(params[:id])
+    @user_order = UserOrder.find_by_token(params[:id])
     @user = @user_order.user if @user_order.user
     @bulk_order = @user_order.bulk_order
 
@@ -245,8 +241,8 @@ class UserOrdersController < ApplicationController
 
     @bulk_order.percent_filled = @bulk_order.percent_filled - @user_order.quantity
     @bulk_order.buyer_count -=1
-    @bulk_order.save
     @bulk_order.users.delete(@user) if @user_order.user
+    @bulk_order.save
     @user_order.destroy
     respond_to do |format|
       if @user
@@ -265,7 +261,7 @@ class UserOrdersController < ApplicationController
   private
 
     def set_user_order
-      @user_order = UserOrder.find(params[:id])
+      @user_order = UserOrder.find_by_token(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

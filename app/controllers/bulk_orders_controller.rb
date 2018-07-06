@@ -12,7 +12,7 @@ class BulkOrdersController < ApplicationController
   # GET /bulk_orders/1
   # GET /bulk_orders/1.json
   def show
-    @bulk_order = BulkOrder.find(params[:id])
+    @bulk_order = BulkOrder.find_by_token(params[:id])
     @item = @bulk_order.item
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @seller = @item.user
@@ -57,7 +57,7 @@ class BulkOrdersController < ApplicationController
 
   # GET /bulk_orders/1/edit
   def edit
-    @bulk = BulkOrder.find_by_id(params[:id])
+    @bulk = BulkOrder.find_by_token(params[:id])
     @item = @bulk.item
     @seller = @item.user
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
@@ -65,7 +65,7 @@ class BulkOrdersController < ApplicationController
   end
 
   def seller_edit
-    @bulk_order = BulkOrder.find_by_id(params[:id])
+    @bulk_order = BulkOrder.find_by_token(params[:id])
     @item = Item.find_by_id(params[:item])
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
   end
@@ -74,13 +74,13 @@ class BulkOrdersController < ApplicationController
   # PATCH/PUT /bulk_orders/1.json
   # User adding to an exisiting bulk order for their first time
   def update
-    @bulk_order = BulkOrder.find_by_id(params[:id])
+    @bulk_order = BulkOrder.find_by_token(params[:id])
     @user = User.find_by_id(session[:user_id]) if session[:user_id]
     @users = @bulk_order.users
     @item = @bulk_order.item
     @buyer_email = params[:stripeEmail]
-
     if params[:quantity]
+
       @user_order = UserOrder.new()
       @user_order = UserOrder.create_user_order(params,@user,@bulk_order)
 
@@ -97,8 +97,9 @@ class BulkOrdersController < ApplicationController
       if @bulk_order.percent_filled >= @bulk_order.max_amount
         @bulk_order.completed = true
         BulkOrder.email_bulk_order_users(@bulk_order)
+        ShippoService.create_shipments_bulk_order_fill(@bulk_order)
       end
-
+      # PUT THIS IN ABOVE STATEMENT IN CASE THEY FILL ORDER ON JOING
       if !@user
         NotifMailer.no_user_bulk_order_email(@bulk_order,@user_order).deliver
       end
@@ -128,18 +129,18 @@ class BulkOrdersController < ApplicationController
 
 
   def publish
+    @bulk_order = BulkOrder.find_by_token(params[:token])
     @current_user = User.find_by_id(session[:user_id]) if session[:user_id]
-    @bulk_order = BulkOrder.find_by_id(params[:id])
     @bulk_order.published = true
     @bulk_order.save
-    redirect_to user_supplier_path_url(@current_user)
+    redirect_to user_supplier_path_url(@current_user.token)
   end
 
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_bulk_order
-      @bulk_order = BulkOrder.find(params[:id])
+      @bulk_order = BulkOrder.find_by_token(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
