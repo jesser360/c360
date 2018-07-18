@@ -12,6 +12,7 @@
 //= require jquery
 //= require jquery-ui
 //= require spin
+//= require liquidFillGauge
 //= require jquery.spin
 //= require bootstrap-sprockets
 //= require jquery_ujs

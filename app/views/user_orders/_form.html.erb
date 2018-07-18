@@ -96,6 +96,10 @@
         <div id='pieChart'></div>
       </div>
     </div>
+
+    <svg id="fillgauge1" width="97%" height="250" ></svg>
+
+
   </div>
   <!-- BUY NOW ORDER -->
 <%else%>
@@ -275,6 +279,7 @@
   var max_amount = $('#max_amount').text();
   var item = $('#item').val();
   var remaining_quant = max_amount-(percent_filled)
+  var start_percent = (user_order_quant / max_amount) * 100
   $('#quant_input').on('input',function(){
     var order_quant = $('#user_order_quantity').val();
     if($('#item_market_price').text() ==''){
@@ -321,8 +326,11 @@
           remaining_quant = (parseInt(max_amount)-parseInt(percent_filled));
           $('#user_order_quantity').val(ui.value);
           renderPieChart();
+          var percent = ( (user_order_quant+other_order_quant) / max_amount) * 100
+            setTimeout(function(){
+              gauge1.update(percent)
+            },500)
           $( "#amount" ).val(ui.value );
-          console.log(item_market_price,'hey')
           if($('#item_market_price').text() =='') {
               payment_amount = parseInt(item_price * user_order_quant) * 100
               $('#total_price').text( '$'+ (item_price * user_order_quant));
@@ -335,8 +343,23 @@
       $( "#amount" ).val( "$" + $( "#slider-range-min" ).slider( "value" ) );
     }
 
+
+      var gauge1 = loadLiquidFillGauge("fillgauge1", start_percent,config1);
+      var config1 = liquidFillGaugeDefaultSettings();
+      config1.circleColor = "#D4AB6A";
+      config1.textColor = "#553300";
+      config1.waveTextColor = "#805615";
+      config1.waveColor = "#AA7D39";
+      config1.circleThickness = 0.1;
+      config1.circleFillGap = 0.2;
+      config1.textVertPosition = 0.8;
+      config1.waveAnimateTime = 2000;
+      config1.waveHeight = 0.3;
+      config1.waveCount = 1;
+
   renderPieChart();
   renderSlider();
+
 
 // d3.select(".c3-chart-arcs-title")
 //     .append("tspan")
