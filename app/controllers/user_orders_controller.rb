@@ -87,7 +87,9 @@ class UserOrdersController < ApplicationController
         "carrier":"shippo","tracking_number":"SHIPPO_TRANSIT"
 
       },
-      :headers => {'Authorization':'ShippoToken shippo_test_1bf025e980d46aaea6ed705ebdb5ec4e3755edc1'})
+      :headers => {'Authorization':'ShippoToken shippo_test_02a0afc8eab896a9136878e824f8b43437e17243'})
+      puts @request
+      puts "REQUESTTTT"
     @shipping_address = @user_order.addresses.where(:shipping => true)[0]
     @billing_address = @user_order.addresses.where(:shipping => false)[0]
     @status = @request['tracking_status']['status']

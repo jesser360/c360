@@ -111,26 +111,6 @@ ActiveRecord::Schema.define(version: 20180706031448) do
     t.index ["user_id"], name: "index_items_on_user_id"
   end
 
-  create_table "order_items", force: :cascade do |t|
-    t.string "name"
-    t.integer "price"
-    t.integer "max_amount"
-    t.integer "bulk_order_amount"
-    t.integer "current_amount"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "avatar_file_name"
-    t.string "avatar_content_type"
-    t.integer "avatar_file_size"
-    t.datetime "avatar_updated_at"
-    t.bigint "user_id"
-    t.boolean "closed"
-    t.bigint "item_id"
-    t.integer "market_price"
-    t.index ["item_id"], name: "index_order_items_on_item_id"
-    t.index ["user_id"], name: "index_order_items_on_user_id"
-  end
-
   create_table "reviews", force: :cascade do |t|
     t.integer "rating"
     t.string "body"
@@ -193,8 +173,6 @@ ActiveRecord::Schema.define(version: 20180706031448) do
   add_foreign_key "bid_offers", "users"
   add_foreign_key "bulk_orders", "items"
   add_foreign_key "items", "users"
-  add_foreign_key "order_items", "items"
-  add_foreign_key "order_items", "users"
   add_foreign_key "reviews", "bulk_orders"
   add_foreign_key "reviews", "items"
   add_foreign_key "reviews", "user_orders"
