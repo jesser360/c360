@@ -282,7 +282,7 @@ a[aria-expanded="true"]::before {
   color:gold
 }
 #market-logo{
-  width:40%;
+  width:30%;
 }
  .gray-border{
    background-color:lightgray;
@@ -302,7 +302,18 @@ a[aria-expanded="true"]::before {
    color:#111416;
    text-align: center;
  }
+.card-view-card{
+  border:2px solid gray;
+  border-radius: 10px;
+  margin-bottom:2vw;
+}
+#reserve-btn{
+  background-color: #bbb;
+ display: block;
+ padding: 10px;
+ border-radius: 0px 0px 7px 7px;
 
+}
  .card {
   color: black;
   margin: -15px;

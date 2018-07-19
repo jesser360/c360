@@ -1,0 +1,105 @@
+<!-- LIST VIEW -->
+<div hidden class='card'>
+    <div style='margin: 2vw 0vw -3vw 0vw'class ="row" >
+      <div class="col-sm-4">
+        <%=link_to item_path(bulk_order.item),{:class => 'plain-link'} do %>
+          <h2 style="margin-left:10px"><%= bulk_order.item_name %></h2>
+        <%end%>
+        <h5 style="margin-left:10px">
+          <%if bulk_order.item.rating > 0%>
+              <h4><%(bulk_order.item.rating / bulk_order.item.rating_count).round.times do%>
+              <i class="glyphicon glyphicon-star"></i>
+              <%end%>
+              <%(5-((bulk_order.item.rating / bulk_order.item.rating_count).round)).times do%>
+              <i class="glyphicon glyphicon-star-empty"></i>
+              <%end%>
+            <%else%>
+            <h5 style="margin-left:10px">No reviews yet</h5>
+          <%end%>
+          </h5>
+        <%=link_to item_path(bulk_order.item) do %>
+        <span><%= image_tag(bulk_order.item.avatar.url, :size => "200x200") %></span>
+        <%end%>
+      </div>
+      <div class="col-sm-4">
+        <div class="row" >
+          <br>
+          <!-- <div class='piechart'id='pieChart_<%=i%>'></div> -->
+          <svg id="fillgauge_<%=i%>" width="97%" height="250" ></svg>
+          <div>
+            <%if @user%>
+              <%if (bulk_order.users.where(email: @user.email).length > 0) then @user_in_order = true end%>
+              <%if bulk_order.buyer_count == 0%>
+                <h5>Be the first user to join and recieve 5% off!</h5>
+              <%elsif bulk_order.buyer_count == 1 && @user_in_order%>
+                <h5>Just you so far, dont worry others are coming!</h5>
+              <%elsif bulk_order.buyer_count == 1 && !@user_in_order || bulk_order.buyer_count == 2 && @user_in_order%>
+                <h5> One other user has bought <%=bulk_order.percent_filled%> grams</h5>
+              <%elsif @user_in_order%>
+                <h5> <%=bulk_order.buyer_count-1%> other users have bought <%=bulk_order.percent_filled%> grams</h5>
+              <%else%>
+                <h5> <%=bulk_order.buyer_count%> other users have bought <%=bulk_order.percent_filled%> grams</h5>
+              <%end%>
+            <%else%>
+              <%if bulk_order.buyer_count == 0%>
+                <h5>Be the first user to join and recieve 5% off!</h5>
+              <%elsif bulk_order.buyer_count == 1%>
+                <h5> One other user has bought <%=bulk_order.percent_filled%> grams</h5>
+              <%else%>
+                <h5> <%=bulk_order.buyer_count%> other users have bought <%=bulk_order.percent_filled%> grams</h5>
+              <%end%>
+            <%end%>
+              <h5><%=bulk_order.max_amount - bulk_order.percent_filled%> grams still left!</h5>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+      <span hidden id='expire_date_<%=i%>' ><%=bulk_order.expire_date%></span>
+        <div class='row'>
+          <div class='col-sm-10'>
+            <% if @user && bulk_order.item.user_id == @user.id %>
+              <div class= 'clock' id='clock_<%=i%>'></div>
+              <h4 class="bulk_order_link" ><%= link_to 'View Batch', bulk_order_url(bulk_order) %></h4>
+            <%else%>
+              <%if @user && bulk_order.users.where(email: @user.email).length > 0%>
+              <div class= 'clock' id='clock_<%=i%>'></div>
+              <span hidden id='user_order_quantity'><%= bulk_order.user_orders.where(user_id: @user.id)[0].quantity%></span>
+                <%if @user && !@user.is_vendor?%>
+                  <h4 class="bulk_order_link"><%= link_to "Edit Order: $#{bulk_order.wholesale_price}/g", edit_user_order_url(bulk_order.user_orders.where(user_id: @user.id)[0], :item => bulk_order.item.id) %></h4>
+                  <h4 class="bulk_order_link" ><i class="glyphicon glyphicon-flash "></i>
+                  <%= link_to "Buy Now: $#{bulk_order.market_price}/g", new_user_order_url(:bulk_order => bulk_order.id)%><h4>
+                <%end%>
+              <%else%>
+              <div class= 'clock' id='clock_<%=i%>'></div>
+                <%if @user && !@user.is_vendor?%>
+                  <h4 class="bulk_order_link" ><%= link_to "Join Order: $#{bulk_order.wholesale_price}/g", edit_bulk_order_url(bulk_order, :item => bulk_order.item.id) %></h4>
+                  <h4 class="bulk_order_link" ><i class="glyphicon glyphicon-flash "></i>
+                  <%= link_to "Buy Now: $#{bulk_order.market_price}/g", new_user_order_url(:bulk_order => bulk_order.id)%><h4>
+                <%else%>
+                  <!-- <h4 class="bulk_order_link" ><%= link_to 'Join Order', '/login'%></h4> -->
+                  <h4 class="bulk_order_link" ><%= link_to "Join Order: $#{bulk_order.wholesale_price}/g", edit_bulk_order_url(bulk_order, :item => bulk_order.item.id) %></h4>
+                  <h4 class="bulk_order_link" ><i class="glyphicon glyphicon-flash "></i>
+                  <%= link_to "Buy Now: $#{bulk_order.market_price}/g", new_user_order_url(:bulk_order => bulk_order.id)%><h4>
+                <%end%>
+              <%end%>
+            <%end%>
+          </div>
+        </div>
+        <div class='row edit-card' style='margin:2vw 0vw 0vw 0vw'>
+          <div class='col-sm-6'>
+            <%=link_to user_supplier_path_url(bulk_order.item.user.token) do%>
+            <span><%=bulk_order.item.user.company_name%></span>
+            <%end%>
+            <span><%=bulk_order.item.user.city%>, <%=bulk_order.item.user.state%><span>
+          </div>
+          <div class='col-sm-3'>
+            <%=link_to user_supplier_path_url(bulk_order.item.user) do%>
+              <span ><%= image_tag(bulk_order.item.user.avatar.url, :size => "50x50") %></span>
+            <%end%>
+          </div>
+        </div>
+      </div>
+  </div>
+  <br><br>
+</div>
+<!-- END OF LIST VIEW -->
