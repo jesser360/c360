@@ -18,12 +18,12 @@
 <%if !@user_order.new_record?%>
 <span hidden id='item_price'><%= @bulk.wholesale_price%></span>
   <div class ="row edit-row">
-    <div class="col-md-6">
+    <div class="col-md-4">
       <div class='edit-card'>
       <%=link_to item_path(@item) do %>
-        <span style='float:right' class='oil-image'><%= image_tag(@item.avatar.url, :size => "220x220") %></span>
+        <!-- <span style='float:right' class='oil-image'><%= image_tag(@item.avatar.url, :size => "220x220") %></span> -->
       <%end%>
-      <h1 id='item_name'><%=@bulk.item_name %></h1>
+      <h1 id='item_name'><%=@bulk.item.item_name %></h1>
       <h3><%= @bulk.wholesale_price %>$ / gram</h3>
       <h4><%=@bulk.max_amount-@bulk.percent_filled%> grams available</h4>
       <h4><i><%=@bulk.item.description %></i></h4>
@@ -61,7 +61,7 @@
         </div>
       <%end%>
     </div>
-    <div class='col-md-3' style='font-size:1.2em;margin-top:-5vh'>
+    <div class='col-md-4' style='font-size:1.2em;margin-top:-5vh'>
       <div class='row edit-card' style='margin-top:5vh'>
         <div id='small-clock'></div>
       </div>
@@ -70,16 +70,19 @@
           <label>Current Order</label>
           <span><%=@user_order.quantity%> g for $<%=@user_order.total_price%> </span>
         </div>
+        <br>
         <div class="field" id='quant_input'>
           <label>Quantity (grams)</label>
         </div>
         <div id="slider-range-min"></div>
-        <input type="text" id="user_order_quantity" value='<%=@user_order.quantity%>' readonly style="border:0; color:#f6931f; font-weight:bold;"></input>
+        <!-- MAKE MAX AMOUNT THE CORRECTA MOUNT -->
+        <input type="number" max='<%=@user_order.bulk_order.max_amount%>' id="user_order_quantity" value='<%=@user_order.quantity%>'  style="border:0; color:#f6931f; width:100px;font-size:2em; font-weight:bold;"></input>
+        <span style ='font-size:1.5em;color:#f6931f'>grams</span>
         <div class="field">
           <label>Price</label>
           <span id='total_price'>$<%=@user_order.total_price%></span>
         </div>
-        <button type ='submit' id='payButton'>Edit Order</button>
+        <button type ='submit' id='payButton'>Change Reservation</button>
 
         <%unless @user_order.new_record?%>
         <h5>You will be asked to enter your card info again but you will not be double charged</h5>
@@ -91,22 +94,19 @@
         <%= hidden_field_tag(:price,params[:price])%>
       </div>
     </div>
-    <div class='col-md-3 '>
+    <div class='col-md-4 '>
       <div class='row'>
-        <div id='pieChart'></div>
+        <svg id="fillgauge" width="97%" height="250" ></svg>
+
       </div>
     </div>
-
-    <svg id="fillgauge1" width="97%" height="250" ></svg>
-
-
   </div>
   <!-- BUY NOW ORDER -->
 <%else%>
 <span hidden id='item_market_price'><%= @bulk_order.market_price rescue nil%></span>
   <div class ="row edit-row">
     <div class="col-md-6 edit-card">
-      <span style='float:right' class='oil-image'><%= image_tag(@item.avatar.url, :size => "250x250") %></span>
+      <!-- <span style='float:right' class='oil-image'><%= image_tag(@item.avatar.url, :size => "250x250") %></span> -->
       <h1 id='item_name'><%= @bulk_order.item_name %></h1>
       <h3><%= @bulk_order.market_price %>$ / gram</h3>
       <h4><%=link_to user_supplier_path_url(@item.user) do%>
@@ -131,23 +131,6 @@
         <%= hidden_field_tag(:bulk_order,params[:bulk_order])%>
         <%= hidden_field_tag(:price,params[:price])%>
       </div>
-      <!-- <div>
-        <a class="donate-with-crypto"
-           href="https://commerce.coinbase.com/checkout/2184bf26-dd75-4800-bf55-b85a56edfc48">
-          <span>Donate with Crypto</span>
-        </a>
-        <a class="buy-with-crypto"
-           href="https://commerce.coinbase.com/checkout/029325a1-5fb0-40b9-aed0-56445209719b">
-          <span>Buy with Crypto - 1$</span>
-        </a>
-        <script src="https://commerce.coinbase.com/v1/checkout.js">
-        </script>
-      </div>
-      <hr> -->
-      <!-- <div >
-          <input id='order-num'></input>
-          <button id='check-order' onclick='checkOrder()'>Check Order</button>
-      </div> -->
     </div>
     <div class='col-md-4'>
       <h2 class='text-left'>Customer Reviews</h2>
@@ -203,31 +186,22 @@
 
 <script src="https://checkout.stripe.com/checkout.js"></script>
 <script>
-
-  // function checkOrder(){
-  //   console.log('checking order '+$('#order-num').val())
-  //   $.ajaxSetup({
-  //     headers:{    'Content-Type': 'text/plain',
-  //                   'Access-Control-Allow-Origin' : '*',
-  //                   'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE'}
-  //   })
-  //   $.ajax({
-  //         url: 'https://cbd360.herokuapp.com/webhook',
-  //         type: 'post',
-  //         dataType: 'text',
-  //         // data: {'status':200},
-  //         success: function( response){
-  //           console.log('response!',response)
-  //         },
-  //         error: function( errorThrown ){
-  //             console.log( 'error!',errorThrown );
-  //         }
-  //     });
-  //   }
-
+  var liquid_percent = 0;
   var payment_amount=0;
+  var user_email = $('#user_email').text();
+  var item_price = $('#item_price').text();
+  var item_market_price = $('#item_market_price').text();
+  var percent_filled = $('#percent_filled').text();
+  var expire_date = $('#expire_date').text();
+  var buy_now_quant = $('#buy_now_quantity').val();
+  var user_order_quant = $('#user_order_quantity').val();
+  var other_order_quant = (percent_filled -user_order_quant)
+  var max_amount = $('#max_amount').text();
+  var item = $('#item').val();
+  var remaining_quant = max_amount-(percent_filled)
+  var start_percent = (user_order_quant / max_amount) * 100
+
   $('#payButton').on('click', function(e) {
-    console.log(payment_amount,'pay bitch')
     e.preventDefault();
       handler.open({
         billingAddress:true,
@@ -237,6 +211,7 @@
         email:$('#user_email').text(),
       });
   });
+
   var handler = StripeCheckout.configure({
     key: '<%= Rails.configuration.stripe[:publishable_key] %>',
     image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
@@ -259,61 +234,51 @@
         trail: 60, // Afterglow percentage
         shadow: false // Whether to render a shadow
       });
-
       $('form').submit()
     }
   });
+
   $(window).on('popstate', function() {
   handler.close();
   });
 
   // REMOVE THE PRICES FROM FRONT END AND NOT IN PARAMS EITHER! SEPERATE VIEWS FOR BUY NOW AND EDIT ORDER!!
-  var user_email = $('#user_email').text();
-  var item_price = $('#item_price').text();
-  var item_market_price = $('#item_market_price').text();
-  var percent_filled = $('#percent_filled').text();
-  var expire_date = $('#expire_date').text();
-  var buy_now_quant = $('#buy_now_quantity').val();
-  var user_order_quant = $('#user_order_quantity').val();
-  var other_order_quant = (percent_filled -user_order_quant)
-  var max_amount = $('#max_amount').text();
-  var item = $('#item').val();
-  var remaining_quant = max_amount-(percent_filled)
-  var start_percent = (user_order_quant / max_amount) * 100
-  $('#quant_input').on('input',function(){
-    var order_quant = $('#user_order_quantity').val();
-    if($('#item_market_price').text() ==''){
-      $('#total_price').text( '$'+order_quant * item_price);
-    }else{
-      $('#total_price').text( '$'+order_quant * item_market_price);
-    }
-  });
 
-  function renderPieChart(){
-    var Apiec3 = c3.generate({
-      bindto: '#pieChart',
-      data: {
-        columns: [
-          ['Other Orders', other_order_quant],
-          ['Your Order', user_order_quant],
-          ['Remaining', remaining_quant],
-        ],
-        type : 'donut',
-      },
-      legend: {
-        position: 'right'
-      },
-      donut: {
-        title: (percent_filled+"/"+max_amount+" spots taken"),
-        label: {
-          show:true
-        }
-      },
-      legend: {
-        show: false
-      }
-    });
-  }
+  // function renderPieChart(){
+  //   var Apiec3 = c3.generate({
+  //     bindto: '#pieChart',
+  //     data: {
+  //       columns: [
+  //         ['Other Orders', other_order_quant],
+  //         ['Your Order', user_order_quant],
+  //         ['Remaining', remaining_quant],
+  //       ],
+  //       type : 'donut',
+  //     },
+  //     legend: {
+  //       position: 'right'
+  //     },
+  //     donut: {
+  //       title: (percent_filled+"/"+max_amount+" spots taken"),
+  //       label: {
+  //         show:true
+  //       }
+  //     },
+  //     legend: {
+  //       show: false
+  //     }
+  //   });
+  // }
+
+    $('#user_order_quantity').on('input',function(){
+      var order_amount = parseInt($('#user_order_quantity').val())
+        var other_order = percent_filled > order_amount ? percent_filled-order_amount : 0
+         liquid_percent = ( (order_amount) / parseInt(max_amount)) * 100;
+         typeof liquid_percent === 'number' ? gauge.update( liquid_percent) : null;
+         payment_amount = parseInt(item_price * order_amount) * 100
+         $('#total_price').text( '$'+ (item_price * order_amount));
+    })
+
     function renderSlider(){
       $( "#slider-range-min" ).slider({
         range: "min",
@@ -325,11 +290,6 @@
           percent_filled = parseInt(other_order_quant) +parseInt(user_order_quant);
           remaining_quant = (parseInt(max_amount)-parseInt(percent_filled));
           $('#user_order_quantity').val(ui.value);
-          renderPieChart();
-          var percent = ( (user_order_quant+other_order_quant) / max_amount) * 100
-            setTimeout(function(){
-              gauge1.update(percent)
-            },500)
           $( "#amount" ).val(ui.value );
           if($('#item_market_price').text() =='') {
               payment_amount = parseInt(item_price * user_order_quant) * 100
@@ -338,28 +298,37 @@
               payment_amount = parseInt(item_market_price * user_order_quant) * 100
               $('#total_price').text( '$'+ (item_market_price * user_order_quant));
             }
+        },
+        change: function(event, ui){
+          liquid_percent = ( (user_order_quant+other_order_quant) / max_amount) * 100;
+          gauge.update(liquid_percent);
         }
       });
       $( "#amount" ).val( "$" + $( "#slider-range-min" ).slider( "value" ) );
     }
 
+    function updateGauge(){
+    }
 
-      var gauge1 = loadLiquidFillGauge("fillgauge1", start_percent,config1);
-      var config1 = liquidFillGaugeDefaultSettings();
-      config1.circleColor = "#D4AB6A";
-      config1.textColor = "#553300";
-      config1.waveTextColor = "#805615";
-      config1.waveColor = "#AA7D39";
-      config1.circleThickness = 0.1;
-      config1.circleFillGap = 0.2;
-      config1.textVertPosition = 0.8;
-      config1.waveAnimateTime = 2000;
-      config1.waveHeight = 0.3;
-      config1.waveCount = 1;
+    var config1= liquidFillGaugeDefaultSettings();
+    config1.circleColor = "#FF7777";
+    config1.textColor = "#FF4444";
+    config1.waveTextColor = "#FFAAAA";
+    config1.waveColor = "#FFDDDD";
+    config1.circleThickness = 0.2;
+    config1.textVertPosition = .8;
+    config1.textSize = .5;
+    config1.waveAnimateTime = 1000;
+    var gauge= loadLiquidFillGauge("fillgauge", start_percent, config1);
 
-  renderPieChart();
-  renderSlider();
+    renderSlider();
+  // renderPieChart();
 
+
+  var clock_1 = new FlipClock($('#small-clock'),new Date(expire_date), {
+    countdown: true,
+    clockFace: 'DailyCounter'
+  });
 
 // d3.select(".c3-chart-arcs-title")
 //     .append("tspan")
@@ -368,10 +337,6 @@
 //     .text(percent_filled+"/"+max_amount+" spots taken");
 
 
-  var clock_1 = new FlipClock($('#small-clock'),new Date(expire_date), {
-  countdown: true,
-  clockFace: 'DailyCounter'
-  });
 
 
 </script>
