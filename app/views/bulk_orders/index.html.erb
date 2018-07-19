@@ -91,7 +91,7 @@
                         <%elsif bulk_order.buyer_count == 1 && !@user_in_order%>
                           <h5> 1 Backer</h5>
                         <%elsif @user_in_order%>
-                          <h5> <%=bulk_order.buyer_count-1%> other Backers</h5>
+                          <h5> <%=bulk_order.buyer_count-1%> other Backers!</h5>
                         <%else%>
                           <h5> <%=bulk_order.buyer_count%> Backers</h5>
                         <%end%>
