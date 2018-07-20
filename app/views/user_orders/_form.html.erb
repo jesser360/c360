@@ -72,11 +72,10 @@
         </div>
         <br>
         <div class="field" id='quant_input'>
-          <label>Quantity (grams)</label>
+          <label>Quantity</label>
         </div>
         <div id="slider-range-min"></div>
-        <!-- MAKE MAX AMOUNT THE CORRECTA MOUNT -->
-        <input type="number" max='<%=@user_order.bulk_order.max_amount%>' id="user_order_quantity" value='<%=@user_order.quantity%>'  style="border:0; color:#f6931f; width:100px;font-size:2em; font-weight:bold;"></input>
+        <input type="number" min =1 max='<%=@user_order.bulk_order.max_amount.to_i-(@user_order.bulk_order.percent_filled.to_i-@user_order.quantity.to_i)%>' id="user_order_quantity" value='<%=@user_order.quantity%>'  style="border:0; color:#f6931f; width:100px;font-size:2em; font-weight:bold;"></input>
         <span style ='font-size:1.5em;color:#f6931f'>grams</span>
         <div class="field">
           <label>Price</label>
@@ -199,7 +198,7 @@
   var max_amount = $('#max_amount').text();
   var item = $('#item').val();
   var remaining_quant = max_amount-(percent_filled)
-  var start_percent = (user_order_quant / max_amount) * 100
+  var start_percent = (percent_filled / max_amount) * 100
 
   $('#payButton').on('click', function(e) {
     e.preventDefault();
@@ -244,39 +243,12 @@
 
   // REMOVE THE PRICES FROM FRONT END AND NOT IN PARAMS EITHER! SEPERATE VIEWS FOR BUY NOW AND EDIT ORDER!!
 
-  // function renderPieChart(){
-  //   var Apiec3 = c3.generate({
-  //     bindto: '#pieChart',
-  //     data: {
-  //       columns: [
-  //         ['Other Orders', other_order_quant],
-  //         ['Your Order', user_order_quant],
-  //         ['Remaining', remaining_quant],
-  //       ],
-  //       type : 'donut',
-  //     },
-  //     legend: {
-  //       position: 'right'
-  //     },
-  //     donut: {
-  //       title: (percent_filled+"/"+max_amount+" spots taken"),
-  //       label: {
-  //         show:true
-  //       }
-  //     },
-  //     legend: {
-  //       show: false
-  //     }
-  //   });
-  // }
-
     $('#user_order_quantity').on('input',function(){
       var order_amount = parseInt($('#user_order_quantity').val())
-        var other_order = percent_filled > order_amount ? percent_filled-order_amount : 0
-         liquid_percent = ( (order_amount) / parseInt(max_amount)) * 100;
-         typeof liquid_percent === 'number' ? gauge.update( liquid_percent) : null;
-         payment_amount = parseInt(item_price * order_amount) * 100
-         $('#total_price').text( '$'+ (item_price * order_amount));
+       liquid_percent = ( (order_amount + other_order_quant) / parseInt(max_amount)) * 100;
+       typeof liquid_percent === 'number' ? gauge.update( liquid_percent) : null;
+       payment_amount = parseInt(item_price * order_amount) * 100
+       $('#total_price').text( '$'+ (item_price * order_amount));
     })
 
     function renderSlider(){
@@ -307,9 +279,6 @@
       $( "#amount" ).val( "$" + $( "#slider-range-min" ).slider( "value" ) );
     }
 
-    function updateGauge(){
-    }
-
     var config1= liquidFillGaugeDefaultSettings();
     config1.circleColor = "#FF7777";
     config1.textColor = "#FF4444";
@@ -330,6 +299,31 @@
     clockFace: 'DailyCounter'
   });
 
+    // function renderPieChart(){
+    //   var Apiec3 = c3.generate({
+    //     bindto: '#pieChart',
+    //     data: {
+    //       columns: [
+    //         ['Other Orders', other_order_quant],
+    //         ['Your Order', user_order_quant],
+    //         ['Remaining', remaining_quant],
+    //       ],
+    //       type : 'donut',
+    //     },
+    //     legend: {
+    //       position: 'right'
+    //     },
+    //     donut: {
+    //       title: (percent_filled+"/"+max_amount+" spots taken"),
+    //       label: {
+    //         show:true
+    //       }
+    //     },
+    //     legend: {
+    //       show: false
+    //     }
+    //   });
+    // }
 // d3.select(".c3-chart-arcs-title")
 //     .append("tspan")
 //     .attr("dy", 16)

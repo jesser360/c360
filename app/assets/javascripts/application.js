@@ -14,6 +14,7 @@
 //= require spin
 //= require liquidFillGauge
 //= require jquery.spin
+//= require jquery.qtip.min
 //= require bootstrap-sprockets
 //= require jquery_ujs
 //= require c3

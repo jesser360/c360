@@ -94,23 +94,23 @@ class ShippoService
           :parcels => parcel,
           :async => false
       )
-      # Get the first rate in the rates results.
-      # Customize this based on your business logic.
-      @rate = shipment.rates.first
-      # Purchase the desired rate.
-      @transaction = Shippo::Transaction.create(
-        :rate => @rate["object_id"],
-        :label_file_type => "PDF",
-        :async => false )
-      # label_url and tracking_number
-      if @transaction["status"] == "SUCCESS"
-        user_order.tracking_number = @transaction.tracking_number
-        user_order.tracking_label = @transaction.label_url
-        user_order.save
-      else
-        puts "Error generating label:"
-        puts @transaction.messages
-      end
+      # # Get the first rate in the rates results.
+      # # Customize this based on your business logic.
+      # @rate = shipment.rates.first
+      # # Purchase the desired rate.
+      # @transaction = Shippo::Transaction.create(
+      #   :rate => @rate["object_id"],
+      #   :label_file_type => "PDF",
+      #   :async => false )
+      # # label_url and tracking_number
+      # if @transaction["status"] == "SUCCESS"
+      #   user_order.tracking_number = @transaction.tracking_number
+      #   user_order.tracking_label = @transaction.label_url
+      #   user_order.save
+      # else
+      #   puts "Error generating label:"
+      #   puts @transaction.messages
+      # end
     end
   end
 

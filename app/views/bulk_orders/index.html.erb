@@ -64,20 +64,48 @@
                     </div>
                     <div class='col-md-7'>
                       <%if bulk_order.item.rating > 0%>
-                          <h4><%(bulk_order.item.rating / bulk_order.item.rating_count).round.times do%>
+                        <span class ='review-stars'>
+                          <%(bulk_order.item.rating / bulk_order.item.rating_count).round.times do%>
                           <i class="glyphicon glyphicon-star"></i>
                           <%end%>
                           <%(5-((bulk_order.item.rating / bulk_order.item.rating_count).round)).times do%>
                           <i class="glyphicon glyphicon-star-empty"></i>
                           <%end%>
+                        </span>
                         <%else%>
                         <h5 style="margin-left:10px">No reviews yet</h5>
                       <%end%>
+                      <div class="tooltiptext" style='display:none'>
+                        <h5><%=bulk_order.item.rating_count%> buyer reviews </h5>
+                          <%bulk_order.item.reviews.first(3).each do |review|%>
+                            <%review.rating.times do%>
+                            <i class="glyphicon glyphicon-star"></i>
+                            <%end%>
+                            <%(5-review.rating).times do%>
+                            <i class="glyphicon glyphicon-star-empty"></i>
+                            <%end%>
+                            <b><%=review.title%></b> <br>
+                            - <i><%=review.user.email%></i><br>
+                            <%=review.body%>
+                            <br>
+                          <%end%>
+                      </div>
                       <%=link_to item_path(bulk_order.item),{:class => 'plain-link',:style =>'text-decoration:underline'} do %>
-                        <h4 ><%= bulk_order.item.item_name%></h4>
+                        <h4 class='item-name'><b><%= bulk_order.item.item_name%></b></h4>
+                        <div class="tooltiptext" style='display:none'>
+                          <h5><b><%= bulk_order.item.item_name%></b></h5>
+                          <span><%= bulk_order.item.description%></span>
+                            <%= image_tag(bulk_order.item.avatar.url,:size => "120x120",:style=>"float:right")  %>
+                        </div>
                       <%end%>
-                      by <%=link_to user_supplier_path_url(bulk_order.item.user.token),{:class => 'plain-link',:style =>'text-decoration:underline'} do%>
-                      <span><%=bulk_order.item.user.company_name%></span>
+                       <%=link_to user_supplier_path_url(bulk_order.item.user.token),{:class => 'plain-link',:style =>'text-decoration:underline'} do%>
+                      <h4 class='supplier-name'><%=bulk_order.item.user.company_name%></h4>
+                      <div class="tooltiptext" style='display:none'>
+                        <h5><b><%= bulk_order.item.user.company_name%></b><h5>
+                          <%= image_tag(bulk_order.item.user.avatar.url,:size => "120x120",:style=>"float:right")  %>
+                        <span><%= bulk_order.item.user.items.count-1%> other products available</span><br>
+                        <span><%= bulk_order.item.user.city%>,<%= bulk_order.item.user.state%></span>
+                      </div>
                       <%end%>
                       <%@user_in_order = false%>
                       <%if @user%>
@@ -135,7 +163,7 @@
                   <%end%>
                   <h5 style="margin-left:10px">
                     <%if bulk_order.item.rating > 0%>
-                        <h4><%(bulk_order.item.rating / bulk_order.item.rating_count).round.times do%>
+                        <%(bulk_order.item.rating / bulk_order.item.rating_count).round.times do%>
                         <i class="glyphicon glyphicon-star"></i>
                         <%end%>
                         <%(5-((bulk_order.item.rating / bulk_order.item.rating_count).round)).times do%>
@@ -245,6 +273,30 @@
 <script>
 $('.gray-border').height($('.all-items').height()+250)
 $('.reserve-btn').width($('.card-view-card').width())
+
+
+  function popUp(classname){
+    console.log('popup')
+    $(classname).each(function(){
+      $(this).qtip({
+        content: {
+          text: $(this).next('.tooltiptext')
+        },
+        hide:{ //moved hide to here,
+          delay:300, //give a small delay to allow the user to mouse over it.
+          fixed:true
+        },
+        position: {
+            my: 'bottom left',  // Position my top left...
+            at: 'middle right', // at the bottom right of...
+            target: $(this) // my target
+        }
+      });
+    })
+  }
+  popUp('.item-name');
+  popUp('.supplier-name');
+  popUp('.review-stars');
 
   $('#order-search-btn').on('click',function(e){
     e.preventDefault();

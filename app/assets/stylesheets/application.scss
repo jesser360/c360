@@ -12,6 +12,7 @@
 
  *= require jquery-ui
  *= require c3
+ *= require jquery.qtip.min
  *= require flipclock
  *= require slick
  *= require bootstrap-tabs-x.min
@@ -63,10 +64,36 @@ a.plain-link:hover{
     display: flex;
     align-items: stretch;
  }
+ .step_bubble{
+   padding:20px;
+   border:2px solid darkgray;
+   border-radius:50%;
+    -moz-border-radius:50%;
+    -webkit-border-radius:50%;
+    width:70px;
+    height:70px;
+    font-size:1.5em;
+ }
+.bubble_filled{
+  background-color: darkgray;
+  color:white;
+}
  // .item-box{
  //   border-radius:10px;
  //   border:1px solid lightgray;
  // }
+ .divided {
+   margin-left:10px;
+   padding:10px;
+  display: flex;
+  align-items: center;
+}
+
+.divider {
+  flex-grow: 1;
+  border-bottom: 1px solid black;
+  margin: 5px
+}
  #prof-pic{
    position: absolute;
    margin-left:90%;
@@ -196,6 +223,7 @@ a.plain-link:hover{
    height:5vw;
    width:5vw;
  }
+
  #proflink{
    margin-top: 1vw;
    color:#2e9cca !important;

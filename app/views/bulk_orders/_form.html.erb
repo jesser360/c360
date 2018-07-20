@@ -12,40 +12,97 @@
       </ul>
     </div>
   <% end %>
-
-  <div class ="row edit-row spin">
-      <div class="col-md-6 edit-card">
-        <%=link_to item_path(@bulk_order.item) do %>
-          <span style='float:right' class='oil-image'><%= image_tag(@bulk_order.item.avatar.url, :size => "220x220") %></span>
+  <br>
+    <div class ="row spin">
+      <div class="col-md-3">
+        <h4><%@bulk_order.item.rating.times do%>
+        <i class="glyphicon glyphicon-star"></i>
         <%end%>
-        <h1 id='item_name'><%= @bulk_order.item_name %></h1>
-        <h3><%= @bulk_order.wholesale_price %>$ / gram</h3>
-        <h4><%=@bulk_order.max_amount - @bulk_order.percent_filled%> grams available</h4>
-        <h4><i><%=@bulk_order.description rescue nil%></i></h4>
-        <h4><%=link_to user_supplier_path_url(@seller) do%>
-          <%= image_tag(@seller.avatar.url, :size => "50x50") %>
-          <%=@seller.company_name%></h3>
+        <%(5-@bulk_order.item.rating).times do%>
+        <i class="glyphicon glyphicon-star-empty"></i>
+        <%end%>
+        <%=link_to item_path(@bulk_order.item) do%>
+          <h1 class='plain-link' id='item_name'><%= @bulk_order.item.item_name %></h1>
+          <h5><%= image_tag(@bulk_order.item.avatar.url,:size => "120x120") %>
+        <%end%>
+        <h5><%=link_to user_supplier_path_url(@seller) do%>
+          <span class='plain-link'>by <%=@seller.company_name%></span></h3>
           <%end%>
-        </h4>
+        </h5>
+        <h5>$<%= @bulk_order.wholesale_price %> per gram</h5>
+        <h5><%=@bulk_order.max_amount - @bulk_order.percent_filled%> grams available</h5>
+        <h5><%=(bulk_order.expire_date.strftime("%d").to_i - Date.today.strftime("%d").to_i)%> days left </h5>
+        <h4><i><%=@bulk_order.description rescue nil%></i></h4>
       </div>
-      <div class='col-md-3' style='font-size:1.2em;margin-top:-5vh'>
-        <div class='row edit-card' style='margin-top:5vh'>
-          <div id='small-clock'></div>
+
+      <div class='col-md-6' style='padding:0vw 10vw 0vw 5vw'>
+        <%if !@user || @user.is_vendor == false%>
+        <div class='row divided'>
+          <span>
+            <span id='1' class='step_bubble bubble_filled'>1</span>
+          </span>
+          <span class="divider"></span>
+          <span>
+            <span id='2' class='step_bubble'>2</span>
+          </span>
+          <span class="divider"></span>
+          <span class='col-md-3'>
+            <span id='3' class='step_bubble'>3</span>
+          </span>
         </div>
-        <%if @user && @user.is_vendor == false%>
-          <div class='row' style='padding-left:10px;margin-top:2vw'>
-            <div class="field" >
-              <label>Quantity (grams)</label>
-              <div id="slider-range-min"></div>
+          <div class='row' id='step-1' style='padding-left:30px;margin-top:2vw'>
+            <h2>Select Amount</h2>
+            <div style='margin:2vw 0vw 2vw 0vw' >
+              <h5>Please select how many grams you want to reserve..</h5>
             </div>
-            <input type="text" id="user_order_quantity" value='0' readonly style="border:0; color:#f6931f; font-weight:bold;"></input>
-            <div class="field">
-              <label>Price</label>
+            <div id="slider-range-min"></div>
+            <span style ='font-size:1.5em;color:#f6931f'>grams:</span>
+            <input type="number" id="user_order_quantity" min=0 value='0' max='<%=@bulk_order.max_amount.to_i-@bulk_order.percent_filled.to_i%>'  style=";width:50px;font-size:1.3em;border:0; color:#f6931f; font-weight:900;"></input>
+            <div style='font-size:1.5em;float:right'>
+              <label >Price</label>
               <span id='total_price'>$</span>
+              <span id='zero'>0</span>
             </div>
-            <button type="submit" id='payButton'>PAY</button>
-            <h5>Your card will only be charged when this bulk order fills</h5>
+            <div class='text-center'style='margin:5vw 5vw 0vw 5vw'>
+              <button type="submit" id ='step-1-btn' style='width:21vw;height:4vw;font-size:1.4vw' class='.btn-lg blue-button'>Continue</button>
+            </div>
           </div>
+
+          <div class='row' hidden id='step-2' style='padding-left:30px;margin-top:2vw'>
+            <h2>Confirm + Reserve</h2>
+            <div style='margin:2vw 0vw 2vw 0vw' >
+              <h5>Please confirm that your order below is correct before completing your reservation</h5>
+            </div>
+            <div class='text-center' style='margin:2vw 0vw 2vw 0vw' >
+              <div class='row'>
+                <div class=' text-right col-sm-4'>
+                  <label>amount</label></br>
+                  <label>price</label>
+                </div>
+                <div class='text-left col-sm-3'>
+                  <span id='confirm-amount'></span> grams<br>
+                  $<span id='confirm-price'></span>
+                </div>
+                <div class=' text-left col-sm-4'>
+                  <a id='return-step-one'>Edit</a>
+                </div>
+              </div>
+            </div>
+            <div class='text-center'style='margin:5vw 5vw 0vw 5vw'>
+              <button type="submit" id ='step-2-btn' style='width:21vw;height:4vw;font-size:1.4vw' class='.btn-lg blue-button'>Confirm</button>
+            </div>
+          </div>
+          <div class='row' hidden id='step-3' style='padding-left:30px;margin-top:2vw'>
+            <h2>Enter Payment Details</h2>
+            <div style='margin:2vw 0vw 2vw 0vw' >
+              <h5>Don't worry, we will <b>not charge you</b> right now. Your card will only be charged if the bulk order is 100% claimed and fulfilled by the supplier</h5>
+              <h5>We use <i>Stripe</i> to verify that your account has enough funds to make this purchase</h5>
+            </div>
+            <div class='text-center'style='margin:5vw 5vw 0vw 5vw'>
+              <button type="submit" style='width:21vw;height:4vw;font-size:1.4vw' id='payButton'>Pay with Stripe</button>
+            </div>
+          </div>
+
         <%elsif @seller==@user%>
         <h4>Buyers:</h4>
           <% @bulk_order.user_orders.each do |user_order| %>
@@ -64,47 +121,35 @@
             </ul>
             <hr>
           <%end%>
-        <%else%>
-        <div class='row' style='padding-left:10px;margin-top:2vw'>
-          <div class="field" >
-            <label>Quantity (grams)</label>
-            <div id="slider-range-min"></div>
-          </div>
-          <input type="text" id="user_order_quantity" value='0' readonly style="border:0; color:#f6931f; font-weight:bold;"></input>
-          <div class="field">
-            <label>Price</label>
-            <span id='total_price'>$</span>
-          </div>
-          <button type="submit" id='payButton'>PAY</button>
-          <h5>Your card will only be charged when this bulk order fills</h5>
-        </div>
         <%end%>
       </div>
-      <div class='col-md-3 '>
+      <div class='col-md-3'>
         <div class='row'>
-          <div id='pieChart'></div>
+          <svg id="fillgauge" width="100%" height="250" ></svg>
+        </div>
+        <div class='row' style='margin-top:2vw'>
+          <div id='small-clock'></div>
         </div>
       </div>
     </div>
-
-    <div class='row'>
-      <h2 class='text-left'>Customer Reviews</h2>
+    <!-- <div class='row'>
+      <h4 class='text-left'>Customer Reviews</h4>
       <%@reviews.each do |review|%>
       <%=link_to user_path_url(review.user) do%>
-        <h5><%= image_tag(review.user.avatar.url, :class => "not_nav_prof_pic",) %>
-      <%end%>
-      <%=review.user.email%></h5>
-      <h4><%review.rating.times do%>
-      <i class="glyphicon glyphicon-star"></i>
-      <%end%>
-      <%(5-review.rating).times do%>
-      <i class="glyphicon glyphicon-star-empty"></i>
-      <%end%>
-      <%=review.title%></h4>
-      <h5><%=review.body%></h5>
-      <hr>
-      <%end%>
-    </div>
+      <h5><%= image_tag(review.user.avatar.url, :class => "not_nav_prof_pic",) %>
+        <%end%>
+        <%=review.user.email%></h5>
+        <h4><%review.rating.times do%>
+          <i class="glyphicon glyphicon-star"></i>
+          <%end%>
+          <%(5-review.rating).times do%>
+          <i class="glyphicon glyphicon-star-empty"></i>
+          <%end%>
+          <%=review.title%></h4>
+          <h5><%=review.body%></h5>
+          <hr>
+          <%end%>
+        </div> -->
 
   <%= hidden_field_tag(:user_id, @user.id) rescue nil%>
   <%= hidden_field_tag(:item,params[:item])%>
@@ -145,7 +190,47 @@
 
   <script src="https://checkout.stripe.com/checkout.js"></script>
   <script>
+  var liquid_percent = 0;
   var payment_amount=0;
+  var percent_filled = $('#percent_filled').text();
+  var user_order_quant = $('#user_order_quantity').val();
+  var other_order_quant = (percent_filled -user_order_quant)
+  var max_amount = $('#max_amount').text();
+  var expire_date = $('#expire_date').text();
+  var item_price = parseInt($('#item_price').text());
+  var item = $('#item').val();
+  var start_percent = (percent_filled / max_amount) * 100
+
+   $('#step-1-btn,#2').on('click',function(e){
+    e.preventDefault();
+    $('#2').addClass('bubble_filled')
+    $('#3').removeClass('bubble_filled')
+    $('#step-1').slideUp('slow');
+    $('#step-2').slideUp('slow');
+    $('#step-2').show('fast');
+    $('#confirm-amount').html(user_order_quant)
+    $('#confirm-price').html((item_price * user_order_quant))
+  });
+   $('#return-step-one,#1').on('click',function(e){
+    e.preventDefault();
+    $('#2').removeClass('bubble_filled')
+    $('#3').removeClass('bubble_filled')
+    $('#step-1').slideDown('slow');
+    $('#step-1').show();
+    $('#step-2').slideDown('slow');
+    setTimeout(function(){
+      $('#step-2').hide();
+    },600)
+  });
+  $('#step-2-btn,#3').on('click',function(e){
+   e.preventDefault();
+   $('#2').addClass('bubble_filled')
+   $('#3').addClass('bubble_filled')
+   $('#step-1').slideUp('slow');
+   $('#step-2').slideUp('slow');
+   $('#step-3').slideUp('slow');
+   $('#step-3').show('fast');
+ });
 
   $('#payButton').on('click', function(e) {
     e.preventDefault();
@@ -179,7 +264,6 @@
         trail: 60, // Afterglow percentage
         shadow: false // Whether to render a shadow
       });
-
       $('form').submit()
     }
   });
@@ -187,38 +271,17 @@ $(window).on('popstate', function() {
   handler.close();
 });
 
-var percent_filled = $('#percent_filled').text();
-var user_order_quant = $('#user_order_quantity').text();
-var other_order_quant = (percent_filled -user_order_quant)
-var max_amount = $('#max_amount').text();
-var expire_date = $('#expire_date').text();
-  var item_price = parseInt($('#item_price').text());
-  var item = $('#item').val();
-  function renderPieChart(){
-    var Apiec3 = c3.generate({
-      bindto: '#pieChart',
-      data: {
-        columns: [
-          ['Your Order', user_order_quant],
-          ['Other', other_order_quant || 0],
-          ['Remaining',  max_amount-(percent_filled)],
-        ],
-        type : 'donut',
-      },
-      legend: {
-        position: 'right'
-      },
-      donut: {
-        title: ( (percent_filled ||0)+"/"+max_amount+" spots taken"),
-        label: {
-          show:true
-        }
-      },
-      legend: {
-        show: false
-      }
-    });
-  }
+  $('#user_order_quantity').on('input',function(){
+    var order_amount = parseInt($('#user_order_quantity').val())
+    if(typeof order_amount === 'number' && (max_amount-other_order_quant)> order_amount > 0){
+    $("#slider-range-min" ).slider("value",order_amount)
+     liquid_percent = ( (order_amount + other_order_quant) / parseInt(max_amount)) * 100;
+     gauge.update( liquid_percent);
+     payment_amount = parseInt(item_price * order_amount) * 100
+     $('#total_price').text( '$'+ (item_price * order_amount));
+     $('#zero').hide();
+    }
+  })
   function renderSlider(){
     $( "#slider-range-min" ).slider({
       range: "min",
@@ -230,28 +293,74 @@ var expire_date = $('#expire_date').text();
         percent_filled = parseInt(other_order_quant) +parseInt(user_order_quant);
         remaining_quant = (parseInt(max_amount)-parseInt(percent_filled));
         $('#user_order_quantity').val(ui.value);
-        renderPieChart();
         $('#total_price').text( '$'+ (item_price * user_order_quant));
+        $('#zero').hide();
         $( "#amount" ).val(ui.value );
         payment_amount =(parseInt(item_price * user_order_quant)) * 100
+      },
+      change: function(event, ui){
+        liquid_percent = ( (user_order_quant+other_order_quant) / max_amount) * 100;
+        gauge.update(liquid_percent);
       }
     });
     $( "#amount" ).val( "$" + $( "#slider-range-min" ).slider( "value" ) );
   }
-
   renderSlider();
 
-  setTimeout(function(){
-    renderPieChart();
-  },10)
+  // function renderGauge(){
+    var config1= liquidFillGaugeDefaultSettings();
+    config1.circleColor = "#419ad3";
+    config1.textColor = "#f97e3f";
+    config1.waveTextColor = "#b8d3fb";
+    config1.waveColor = "#f6931f";
+    config1.circleThickness = 0.2;
+    config1.textVertPosition = .8;
+    config1.textSize = .5;
+    config1.waveAnimateTime = 1000;
+    var gauge= loadLiquidFillGauge("fillgauge", start_percent, config1);
+  // }
+  //
+  // setTimeout(function(){
+  // renderGauge();
+  // },10)
+
+  var clock_1 = new FlipClock($('#small-clock'),new Date(expire_date || 0), {
+  countdown: true,
+  clockFace: 'DailyCounter'
+  });
+
+  // function renderPieChart(){
+  //   var Apiec3 = c3.generate({
+  //     bindto: '#pieChart',
+  //     data: {
+  //       columns: [
+  //         ['Your Order', user_order_quant],
+  //         ['Other', other_order_quant || 0],
+  //         ['Remaining',  max_amount-(percent_filled)],
+  //       ],
+  //       type : 'donut',
+  //     },
+  //     legend: {
+  //       position: 'right'
+  //     },
+  //     donut: {
+  //       title: ( (percent_filled ||0)+"/"+max_amount+" spots taken"),
+  //       label: {
+  //         show:true
+  //       }
+  //     },
+  //     legend: {
+  //       show: false
+  //     }
+  //   });
+  // }
+  // setTimeout(function(){
+  //   renderPieChart();
+  // },10)
   // d3.select(".c3-chart-arcs-title")
   //     .append("tspan")
   //     .attr("dy", 16)
   //     .attr("x", 0)
   //     .text( (percent_filled ||0)+"/"+max_amount+" spots taken");
 
-  var clock_1 = new FlipClock($('#small-clock'),new Date(expire_date || 0), {
-  countdown: true,
-  clockFace: 'DailyCounter'
-  });
   </script>
